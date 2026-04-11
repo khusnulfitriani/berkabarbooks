@@ -1,130 +1,211 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tracking Order</title>
+  <title>Tracking Your Books Journey</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--t:#513534;--m:#846463;--h:#fff5f2;--th:#ffe6df;--a:#dc8778}
-    body{font-family:system-ui,sans-serif;color:var(--t);background:linear-gradient(180deg,#fffdfc,#fff8f4);min-height:100vh;padding:16px}
+    :root{
+      --rose:#c9746a;--rose-light:#e8a99f;--rose-pale:#fff0ee;--rose-muted:#f5dbd8;
+      --ink:#3a2a29;--ink-mid:#7a5a57;--ink-soft:#b08a86;
+      --cream:#fffaf8;--white:#ffffff;
+      --shadow:0 8px 32px rgba(140,70,60,.10);
+      --shadow-sm:0 2px 12px rgba(140,70,60,.08);
+    }
+    body{font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--cream);min-height:100vh;padding:20px 16px 40px}
     button,input,select{font:inherit}
-    .to-h,.to-s{background:#fff;border:1px solid rgba(231,178,165,.35);border-radius:24px;box-shadow:0 20px 50px rgba(147,89,87,.12)}
-    .to-h{position:sticky;top:8px;z-index:2;background:linear-gradient(135deg,#fff,var(--h));padding:10px 20px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    .to-h-left{display:flex;align-items:center;gap:12px}
-    .to-b{display:inline-flex;padding:6px 10px;border-radius:999px;background:#fff;color:var(--a);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-    h1{font-family:Georgia,serif;font-size:clamp(18px,3vw,26px);letter-spacing:.06em;line-height:1;margin:0}
-    h2{font-family:Georgia,serif;line-height:1;margin:10px 0 6px;font-size:clamp(16px,2.5vw,22px)}
-    p,.to-m,.to-f{color:var(--m)}
-    .to-main{display:grid;gap:18px}
-    .to-s{padding:20px}
-    .to-r,.to-q,.to-a2,.to-sel,.to-tb,.to-pg{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-    .to-st{padding:7px 12px;border-radius:999px;background:#fff7f4;color:var(--m);font-size:12px}
-    .to-q{margin:14px 0}
-    .to-fd{flex:1 1 300px;display:flex;flex-direction:column;gap:6px}
-    .to-fd span,.to-l{font-size:13px;font-weight:700;color:var(--m)}
-    input,select{width:100%;padding:11px 14px;border:1px solid rgba(221,170,158,.42);border-radius:14px;background:#fff;color:var(--t);outline:none}
-    .to-btn{border:none;border-radius:14px;padding:11px 18px;cursor:pointer;font-size:13px}
-    .to-btn:disabled{opacity:.5;cursor:not-allowed}
-    .to-pr{background:linear-gradient(135deg,#e89889,#d77a69);color:#fff}
-    .to-gh{background:#fff;color:var(--t);border:1px solid rgba(221,170,158,.32)}
-    .to-sel{padding:11px 16px;border-radius:14px;background:linear-gradient(135deg,#fff5f2,#fff);border:1px solid rgba(221,170,158,.22)}
-    .to-sum{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:10px}
-    .to-c{min-height:70px;display:flex;flex-direction:column;justify-content:space-between;gap:4px;padding:10px 12px;border-radius:14px;background:linear-gradient(180deg,#fff,#fff7f4);border:1px solid rgba(221,170,158,.2)}
-    .to-c span{color:var(--m);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-    .to-c strong{font-size:clamp(12px,1.4vw,15px);line-height:1.3;font-weight:700}
-    .to-tabs{display:flex;gap:6px;padding:6px;border-radius:14px;background:#fff5f2;margin-bottom:16px;width:100%}
-    .to-tab{flex:1;border:none;border-radius:10px;padding:10px 8px;background:transparent;color:var(--m);font-weight:700;cursor:pointer;font-size:13px;transition:all .15s}
-    .to-tab.a{background:#fff;color:var(--t);box-shadow:0 6px 16px rgba(216,147,132,.18)}
-    .to-tb{margin-bottom:14px}
-    .to-gr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    .to-w{overflow:auto;border-radius:14px;border:1px solid rgba(221,170,158,.22);background:#fff}
-    .to-table{width:100%;min-width:900px;border-collapse:collapse}
-    .to-table th{position:sticky;top:0;z-index:1;padding:11px 13px;background:var(--th);text-align:left;font-size:12px;white-space:nowrap}
-    .to-table td{padding:11px 13px;border-top:1px solid rgba(233,216,212,.75);vertical-align:top;font-size:13px}
-    .to-e,.to-eb{padding:24px 18px;text-align:center;color:var(--m)}
-    .to-pill{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;background:#fff0ec;color:#b06050}
-    .to-v{display:none}.to-v.a{display:block}
-    .to-i{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
-    .to-col{display:grid;gap:14px}
-    .to-ic{padding:18px;border-radius:16px;background:linear-gradient(145deg,#fff,#fff4f0);border:1px solid rgba(221,170,158,.22)}
-    .to-ic h3{margin-bottom:8px;font-size:14px}
-    .to-big{font-size:clamp(24px,4vw,36px);font-weight:800;line-height:1}
-    .to-mt{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-    .to-mt strong{font-size:clamp(16px,2.5vw,24px)}
-    .to-prg{margin-top:12px}
-    .to-tr{height:10px;border-radius:999px;overflow:hidden;background:rgba(233,216,212,.8)}
-    .to-fl{height:100%;background:linear-gradient(135deg,#e79d90,#d7705f);transition:width .4s ease}
-    .to-lg{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-size:12px;color:var(--m);flex-wrap:wrap}
-    .to-f{text-align:center;padding-top:10px;font-size:12px}
-    .to-pg{margin-top:14px}
-    .to-loading{display:flex;align-items:center;gap:8px;padding:20px;justify-content:center;color:var(--m);font-size:13px}
-    .to-spin{width:16px;height:16px;border:2px solid rgba(220,135,120,.3);border-top-color:var(--a);border-radius:50%;animation:spin .7s linear infinite}
+
+    /* ── HEADER ── */
+    .hdr{
+      text-align:center;padding:40px 20px 32px;
+      background:linear-gradient(160deg,#fff 60%,#ffecea);
+      border-radius:28px;border:1px solid var(--rose-muted);
+      box-shadow:var(--shadow);margin-bottom:20px;
+    }
+    .hdr-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:var(--rose-pale);color:var(--rose);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+    .hdr h1{font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,44px);color:var(--ink);line-height:1.15;margin-bottom:12px}
+    .hdr h1 em{color:var(--rose);font-style:italic}
+    .hdr p{color:var(--ink-mid);font-size:14px;max-width:480px;margin:0 auto;line-height:1.7;font-weight:300}
+
+    /* ── STICKY NAV ── */
+    .nav{position:sticky;top:8px;z-index:10;background:rgba(255,250,248,.92);backdrop-filter:blur(12px);border:1px solid var(--rose-muted);border-radius:20px;box-shadow:var(--shadow-sm);padding:12px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .nav-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--ink)}
+    .nav-status{font-size:12px;color:var(--ink-soft);padding:5px 12px;border-radius:999px;background:var(--rose-pale)}
+
+    /* ── SEARCH CARD ── */
+    .card{background:var(--white);border:1px solid var(--rose-muted);border-radius:24px;box-shadow:var(--shadow);padding:24px;margin-bottom:20px}
+    .search-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+    .search-label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+    .search-input-wrap{flex:1;min-width:200px}
+    input[type=text]{width:100%;padding:13px 16px;border:1.5px solid var(--rose-muted);border-radius:14px;background:#fff;color:var(--ink);font-size:14px;outline:none;transition:border-color .2s}
+    input[type=text]:focus{border-color:var(--rose-light)}
+    .btn{border:none;border-radius:14px;padding:13px 22px;cursor:pointer;font-size:13px;font-weight:600;transition:all .18s}
+    .btn-primary{background:linear-gradient(135deg,#d4867a,#c06b5f);color:#fff;box-shadow:0 4px 14px rgba(192,107,95,.3)}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(192,107,95,.35)}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .btn-ghost{background:#fff;color:var(--ink-mid);border:1.5px solid var(--rose-muted)}
+    .btn-ghost:hover{background:var(--rose-pale)}
+
+    /* ── CUSTOMER BANNER ── */
+    .customer-banner{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 20px;border-radius:16px;background:linear-gradient(135deg,var(--rose-pale),#fff);border:1px solid var(--rose-muted);margin-top:14px}
+    .customer-banner.show{display:flex}
+    .customer-name{font-family:'Playfair Display',serif;font-size:18px;color:var(--ink)}
+    .customer-id{font-size:12px;color:var(--ink-soft);margin-top:2px}
+
+    /* ── SUMMARY PILLS ── */
+    .summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .s-pill{flex:1;min-width:100px;padding:10px 14px;border-radius:14px;background:var(--rose-pale);border:1px solid rgba(201,116,106,.12)}
+    .s-pill-label{font-size:10px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em}
+    .s-pill-val{font-size:13px;font-weight:600;color:var(--ink);margin-top:3px;line-height:1.2}
+
+    /* ── TABS ── */
+    .tabs{display:flex;gap:6px;padding:6px;border-radius:16px;background:var(--rose-pale);margin-bottom:16px;width:100%}
+    .tab{flex:1;border:none;border-radius:11px;padding:10px 8px;background:transparent;color:var(--ink-mid);font-weight:600;cursor:pointer;font-size:13px;transition:all .15s;font-family:'DM Sans',sans-serif}
+    .tab.active{background:#fff;color:var(--ink);box-shadow:0 4px 14px rgba(140,70,60,.12)}
+
+    /* ── SIZE SELECT ── */
+    select{padding:8px 12px;border:1.5px solid var(--rose-muted);border-radius:10px;background:#fff;color:var(--ink);font-size:13px;outline:none}
+    .list-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+    .list-info{font-size:13px;color:var(--ink-soft)}
+
+    /* ── BOOK LIST CARDS ── */
+    .book-list{display:flex;flex-direction:column;gap:10px}
+    .book-card{display:flex;align-items:center;gap:16px;padding:16px 20px;background:#fff;border:1px solid var(--rose-muted);border-radius:18px;box-shadow:var(--shadow-sm);transition:box-shadow .18s}
+    .book-card:hover{box-shadow:0 8px 24px rgba(140,70,60,.13)}
+    .book-icon{width:42px;height:42px;border-radius:12px;background:var(--rose-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+    .book-main{flex:1;min-width:0}
+    .book-title{font-family:'Playfair Display',serif;font-size:15px;color:var(--rose);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .book-sub{font-size:12px;color:var(--ink-soft);margin-top:3px}
+    .book-right{text-align:right;flex-shrink:0}
+    .book-status{font-size:12px;font-weight:700;color:var(--ink-mid);font-style:italic}
+    .book-price{font-size:12px;color:var(--ink-soft);margin-top:3px}
+    .book-dp{font-size:11px;color:var(--ink-soft)}
+
+    /* ── EMPTY / LOADING ── */
+    .empty{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:14px}
+    .empty-icon{font-size:36px;margin-bottom:10px}
+    .spin{display:inline-block;width:16px;height:16px;border:2px solid var(--rose-muted);border-top-color:var(--rose);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
     @keyframes spin{to{transform:rotate(360deg)}}
-    @media(max-width:960px){.to-sum,.to-i{grid-template-columns:1fr 1fr}}
-    @media(max-width:720px){body{padding:10px}.to-h,.to-s{padding:12px 14px;border-radius:18px}.to-sum{grid-template-columns:1fr 1fr}.to-i{grid-template-columns:1fr}.to-a2,.to-gr{width:100%}.to-btn,select{width:100%}}
+
+    /* ── INFOGRAFIS ── */
+    .info-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+    .info-card{padding:20px;border-radius:18px;background:linear-gradient(145deg,#fff,#fff5f2);border:1px solid var(--rose-muted)}
+    .info-card h3{font-size:13px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+    .info-big{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,34px);color:var(--ink);line-height:1}
+    .info-sub{font-size:12px;color:var(--ink-soft);margin-top:6px;line-height:1.6}
+    .progress-bar{height:8px;border-radius:999px;background:var(--rose-muted);margin-top:14px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--rose-light),var(--rose));border-radius:999px;transition:width .5s ease}
+    .progress-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);margin-top:6px}
+    .info-stat{font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,26px);color:var(--ink)}
+
+    /* ── PAGINATION ── */
+    .pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}
+    .page-info{font-size:13px;color:var(--ink-soft)}
+
+    /* ── VIEW HIDDEN ── */
+    .view{display:none}.view.active{display:block}
+
+    @media(max-width:720px){
+      body{padding:12px 10px 32px}
+      .hdr{padding:28px 16px 24px}
+      .info-grid{grid-template-columns:1fr}
+      .summary{gap:8px}
+      .s-pill{min-width:calc(50% - 4px);flex:none}
+      .book-card{padding:12px 14px;gap:12px}
+    }
   </style>
 </head>
 <body>
-<div id="to-app">
-  <div class="to-h">
-    <div class="to-h-left">
-      <div class="to-b">Order Monitor</div>
-      <h1>TRACKING ORDER</h1>
+
+<!-- STICKY NAV -->
+<nav class="nav">
+  <div class="nav-title">📚 Books Journey</div>
+  <div class="nav-status" data-sync>Ready</div>
+</nav>
+
+<!-- HERO HEADER -->
+<header class="hdr">
+  <div class="hdr-badge">📖 Order Tracker</div>
+  <h1>Tracking Your<br><em>Books Journey</em></h1>
+  <p>Enter your unique Customer ID to unveil the status of your curated literary collection and upcoming arrivals.</p>
+</header>
+
+<!-- SEARCH CARD -->
+<div class="card">
+  <form data-form autocomplete="off">
+    <label class="search-label">Customer ID</label>
+    <div class="search-row">
+      <div class="search-input-wrap">
+        <input data-input type="text" placeholder="e.g. 5aba" autocomplete="new-password">
+      </div>
+      <button class="btn btn-primary" type="submit" data-submit>Search</button>
+      <button class="btn btn-ghost" type="button" data-reset>Clear</button>
     </div>
-    <div class="to-st" data-sync>Siap</div>
+  </form>
+
+  <!-- Customer banner (shown after search) -->
+  <div class="customer-banner" data-banner>
+    <div>
+      <div class="customer-name" data-cname>—</div>
+      <div class="customer-id" data-cid></div>
+    </div>
+    <div class="summary" data-summary style="margin-top:0;flex:1;justify-content:flex-end">
+      <div class="s-pill"><div class="s-pill-label">Total Spent</div><div class="s-pill-val" data-sb>Rp 0</div></div>
+      <div class="s-pill"><div class="s-pill-label">Paid</div><div class="s-pill-val" data-sd>Rp 0</div></div>
+      <div class="s-pill"><div class="s-pill-label">Remaining</div><div class="s-pill-val" data-sr>Rp 0</div></div>
+      <div class="s-pill"><div class="s-pill-label">Books</div><div class="s-pill-val" data-sq>0</div></div>
+    </div>
   </div>
-  <div class="to-main">
-    <section class="to-s">
-      <div class="to-r">
-        <div><h2>Temukan data customer</h2><p style="font-size:13px;margin-top:4px">Masukkan customer id untuk melihat ringkasan pesanan.</p></div>
-      </div>
-      <form class="to-q" data-form autocomplete="off">
-        <label class="to-fd">
-          <span>Customer ID</span>
-          <input data-input type="text" placeholder="Contoh: 5aba" autocomplete="new-password">
-        </label>
-        <div class="to-a2">
-          <button class="to-btn to-pr" type="submit" data-submit>Cari Data</button>
-          <button class="to-btn to-gh" type="button" data-reset>Reset</button>
-        </div>
-      </form>
-      <div class="to-sel"><span class="to-m">Nama customer</span><strong data-picked>Belum ada data dipilih</strong></div>
-      <div class="to-sum">
-        <article class="to-c"><span>Nama</span><strong data-sn>-</strong></article>
-        <article class="to-c"><span>Total Belanja</span><strong data-sb>Rp 0</strong></article>
-        <article class="to-c"><span>Total Deposit</span><strong data-sd>Rp 0</strong></article>
-        <article class="to-c"><span>Sisa Tanggungan</span><strong data-sr>Rp 0</strong></article>
-        <article class="to-c"><span>Jumlah Buku</span><strong data-sq>0</strong></article>
-      </div>
-    </section>
-    <section class="to-s">
-      <div class="to-tabs">
-        <button class="to-tab a" type="button" data-tab="belum">Belum Terkirim</button>
-        <button class="to-tab" type="button" data-tab="terkirim">Terkirim</button>
-        <button class="to-tab" type="button" data-tab="info">Infografis</button>
-      </div>
-      <div class="to-tb">
-        <div class="to-gr"><span class="to-l">Tampilkan</span>
-          <select data-size><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="all">Semua</option></select>
-        </div>
-        <div class="to-m" data-ri>Belum ada data ditampilkan</div>
-      </div>
-      <div class="to-v a" data-view="belum">
-        <div class="to-w"><table class="to-table"><thead><tr><th>Tanggal</th><th>Nama</th><th>Penerbit</th><th>Judul</th><th>Format</th><th>QTY</th><th>Harga Total</th><th>DP</th><th>Tanggal TF</th><th>ETA</th><th>Status</th></tr></thead><tbody data-tb1><tr><td colspan="11" class="to-e">Silakan cari customer id untuk menampilkan data.</td></tr></tbody></table></div>
-      </div>
-      <div class="to-v" data-view="terkirim">
-        <div class="to-w"><table class="to-table"><thead><tr><th>Tanggal</th><th>Nama</th><th>Penerbit</th><th>Judul</th><th>Format</th><th>QTY</th><th>Harga Total</th><th>DP</th><th>Tanggal TF</th><th>ETA</th><th>Status</th></tr></thead><tbody data-tb2><tr><td colspan="11" class="to-e">Silakan cari customer id untuk menampilkan data.</td></tr></tbody></table></div>
-      </div>
-      <div class="to-v" data-view="info"><div data-info class="to-eb">Silakan cari customer id untuk menampilkan infografis.</div></div>
-      <div class="to-pg">
-        <button class="to-btn to-gh" type="button" data-prev>← Sebelumnya</button>
-        <div data-pi>Halaman 1 dari 1</div>
-        <button class="to-btn to-gh" type="button" data-next>Selanjutnya →</button>
-      </div>
-    </section>
+</div>
+
+<!-- TABS + LISTS -->
+<div class="card">
+  <div class="tabs">
+    <button class="tab active" type="button" data-tab="active">Active Orders</button>
+    <button class="tab" type="button" data-tab="sent">Delivered</button>
+    <button class="tab" type="button" data-tab="info">Overview</button>
   </div>
-  <div class="to-f">Tracking Order · Data langsung dari Google Spreadsheet</div>
+
+  <div class="list-meta">
+    <div class="list-info" data-ri>No data displayed</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:12px;color:var(--ink-soft)">Show</span>
+      <select data-size><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="all">All</option></select>
+    </div>
+  </div>
+
+  <!-- Active Orders -->
+  <div class="view active" data-view="active">
+    <div class="book-list" data-list1>
+      <div class="empty"><div class="empty-icon">🔍</div>Search your Customer ID to see your active orders.</div>
+    </div>
+  </div>
+
+  <!-- Delivered -->
+  <div class="view" data-view="sent">
+    <div class="book-list" data-list2>
+      <div class="empty"><div class="empty-icon">📦</div>Search your Customer ID to see delivered books.</div>
+    </div>
+  </div>
+
+  <!-- Overview / Infografis -->
+  <div class="view" data-view="info">
+    <div data-info>
+      <div class="empty"><div class="empty-icon">📊</div>Search your Customer ID to see your payment overview.</div>
+    </div>
+  </div>
+
+  <div class="pagination">
+    <button class="btn btn-ghost" type="button" data-prev>← Prev</button>
+    <div class="page-info" data-pi>Page 1 of 1</div>
+    <button class="btn btn-ghost" type="button" data-next>Next →</button>
+  </div>
+</div>
+
+<div style="text-align:center;font-size:12px;color:var(--ink-soft);padding-top:8px">
+  Books Journey Tracker · Connected to Google Spreadsheet
 </div>
 
 <script>
@@ -132,201 +213,192 @@
   // =============================================
   // GANTI URL INI dengan Web App URL dari Apps Script
   // =============================================
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycUkbNcbtoC720Ua8xpP4RXPNm84bBy96f7lIiF_W3G1cjXotoN2L4NYNYDCXp7pMC/exec";
-  // Contoh: "https://script.google.com/macros/s/AKfycbx.../exec"
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfuOAIvfZAUIg3joNa0lDEi75QK9sxlPUQnn5NQptC5Xy24zajbyXnbLMwiq8WYwA0/exec";
   // =============================================
 
-  const app = document.getElementById("to-app");
   const E = {
-    form:    app.querySelector("[data-form]"),
-    input:   app.querySelector("[data-input]"),
-    reset:   app.querySelector("[data-reset]"),
-    submit:  app.querySelector("[data-submit]"),
-    sync:    app.querySelector("[data-sync]"),
-    picked:  app.querySelector("[data-picked]"),
-    sn:      app.querySelector("[data-sn]"),
-    sb:      app.querySelector("[data-sb]"),
-    sd:      app.querySelector("[data-sd]"),
-    sr:      app.querySelector("[data-sr]"),
-    sq:      app.querySelector("[data-sq]"),
-    tabs:    [...app.querySelectorAll("[data-tab]")],
-    views:   [...app.querySelectorAll("[data-view]")],
-    size:    app.querySelector("[data-size]"),
-    ri:      app.querySelector("[data-ri]"),
-    tb1:     app.querySelector("[data-tb1]"),
-    tb2:     app.querySelector("[data-tb2]"),
-    info:    app.querySelector("[data-info]"),
-    prev:    app.querySelector("[data-prev]"),
-    next:    app.querySelector("[data-next]"),
-    pi:      app.querySelector("[data-pi]"),
+    form:   document.querySelector("[data-form]"),
+    input:  document.querySelector("[data-input]"),
+    reset:  document.querySelector("[data-reset]"),
+    submit: document.querySelector("[data-submit]"),
+    sync:   document.querySelector("[data-sync]"),
+    banner: document.querySelector("[data-banner]"),
+    cname:  document.querySelector("[data-cname]"),
+    cid:    document.querySelector("[data-cid]"),
+    sb:     document.querySelector("[data-sb]"),
+    sd:     document.querySelector("[data-sd]"),
+    sr:     document.querySelector("[data-sr]"),
+    sq:     document.querySelector("[data-sq]"),
+    tabs:   [...document.querySelectorAll("[data-tab]")],
+    views:  [...document.querySelectorAll("[data-view]")],
+    size:   document.querySelector("[data-size]"),
+    ri:     document.querySelector("[data-ri]"),
+    list1:  document.querySelector("[data-list1]"),
+    list2:  document.querySelector("[data-list2]"),
+    info:   document.querySelector("[data-info]"),
+    prev:   document.querySelector("[data-prev]"),
+    next:   document.querySelector("[data-next]"),
+    pi:     document.querySelector("[data-pi]"),
   };
 
-  const S = {
-    tab: "belum",
-    size: 10,
-    page: { belum: 1, terkirim: 1 },
-    data: null, // hasil dari Apps Script
-    loading: false,
-  };
+  const S = { tab:"active", size:10, page:{active:1,sent:1}, data:null };
 
-  const fc = v => new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(v||0);
+  const fc = v => new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(v||0);
   const fn = v => new Intl.NumberFormat("id-ID").format(v||0);
+  function toNum(v){const c=String(v||"").replace(/Rp/gi,"").replace(/[^\d,-]/g,"").replace(/\./g,"").replace(",",".");const n=parseFloat(c);return isFinite(n)?n:0;}
 
-  function setLoading(on) {
-    S.loading = on;
-    E.submit.disabled = on;
-    E.submit.textContent = on ? "Mencari..." : "Cari Data";
-    E.sync.textContent = on ? "Memuat data..." : (S.data ? "Data dimuat" : "Siap");
+  function setLoading(on){
+    E.submit.disabled=on;
+    E.submit.textContent=on?'Searching...':'Search';
+    E.sync.textContent=on?'Loading...':'Ready';
   }
 
-  function clearSummary() {
-    E.picked.textContent = "Belum ada data dipilih";
-    E.sn.textContent = "-"; E.sb.textContent = "Rp 0";
-    E.sd.textContent = "Rp 0"; E.sr.textContent = "Rp 0"; E.sq.textContent = "0";
+  function bookCard(r){
+    const title  = r["JUDUL"]||r["Judul"]||"Untitled";
+    const pub    = r["PENERBIT"]||r["Penerbit"]||"";
+    const fmt    = r["Format"]||"";
+    const qty    = r["Qty"]||r["QTY"]||"1";
+    const status = r["Status"]||"—";
+    const harga  = toNum(r["Harga Total"]);
+    const dp     = toNum(r["DP"]);
+    const eta    = r["ETA"]||"";
+    const sub    = [pub,fmt?fmt+" Edition":"",`Qty: ${qty}`].filter(Boolean).join(" · ");
+    return `<div class="book-card">
+      <div class="book-icon">📘</div>
+      <div class="book-main">
+        <div class="book-title">${esc(title)}</div>
+        <div class="book-sub">${esc(sub)}${eta?' · ETA: '+esc(eta):''}</div>
+      </div>
+      <div class="book-right">
+        <div class="book-status">${esc(status)}</div>
+        <div class="book-price">${fc(harga)}</div>
+        ${dp?`<div class="book-dp">DP: ${fc(dp)}</div>`:''}
+      </div>
+    </div>`;
   }
 
-  function setSummary(d) {
-    E.picked.textContent = d.nama || "Customer tidak ditemukan";
-    E.sn.textContent     = d.nama || "-";
-    E.sb.textContent     = fc(d.totalBelanja);
-    E.sd.textContent     = fc(d.totalDeposit);
-    E.sr.textContent     = fc(d.sisaTanggungan);
-    E.sq.textContent     = fn(d.totalQty);
-  }
+  function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
-  function rowsBy(tab) {
-    if (!S.data) return [];
-    if (tab === "belum")    return S.data.orders || [];
-    if (tab === "terkirim") return S.data.sent   || [];
-    return [];
-  }
-
-  function page(rows, key) {
-    if (S.size === "all") { S.page[key]=1; return { rows, total:1, cur:1, s:rows.length?1:0, e:rows.length }; }
-    const z = Number(S.size), total = Math.max(Math.ceil(rows.length/z),1);
-    S.page[key] = Math.min(S.page[key], total);
-    const cur = Math.max(S.page[key],1), st = (cur-1)*z, part = rows.slice(st, st+z);
-    return { rows:part, total, cur, s:rows.length?st+1:0, e:Math.min(st+part.length, rows.length) };
-  }
-
-  function renderTable(t, rows) {
-    if (!rows.length) { t.innerHTML='<tr><td colspan="11" class="to-e">Tidak ada data untuk customer ini.</td></tr>'; return; }
-    t.innerHTML = rows.map(r =>
-      '<tr>'
-      +'<td>'+(r["Tanggal"]||"-")+'</td>'
-      +'<td>'+(r["Nama"]||"-")+'</td>'
-      +'<td>'+(r["PENERBIT"]||r["Penerbit"]||"-")+'</td>'
-      +'<td>'+(r["JUDUL"]||r["Judul"]||"-")+'</td>'
-      +'<td>'+(r["Format"]||"-")+'</td>'
-      +'<td>'+(r["Qty"]||r["QTY"]||"-")+'</td>'
-      +'<td>'+fc(toNum(r["Harga Total"]))+'</td>'
-      +'<td>'+fc(toNum(r["DP"]))+'</td>'
-      +'<td>'+(r["Tanggal TF"]||"-")+'</td>'
-      +'<td>'+(r["ETA"]||"-")+'</td>'
-      +'<td><span class="to-pill">'+(r["Status"]||"-")+'</span></td>'
-      +'</tr>'
-    ).join("");
-  }
-
-  function toNum(v) {
-    const c = String(v||"").replace(/Rp/gi,"").replace(/[^\d,-]/g,"").replace(/\./g,"").replace(",",".");
-    const n = parseFloat(c); return isFinite(n)?n:0;
-  }
-
-  function renderInfo() {
-    if (!S.data) { E.info.className="to-eb"; E.info.textContent="Silakan cari customer id untuk menampilkan infografis."; return; }
-    const d = S.data;
-    const pr = d.totalBelanja > 0 ? Math.min(d.totalDeposit/d.totalBelanja*100,100) : 0;
-    E.info.className = "to-i";
-    E.info.innerHTML =
-      '<div class="to-col">'
-      +'<article class="to-ic"><h3>'+(d.nama||"Customer")+'</h3>'
-      +'<p class="to-big">'+fc(d.totalDeposit)+'</p>'
-      +'<p style="font-size:13px;color:var(--m);margin-top:6px">Total pembayaran yang sudah tercatat.</p>'
-      +'<div class="to-prg"><div class="to-tr"><div class="to-fl" style="width:'+pr+'%"></div></div>'
-      +'<div class="to-lg"><span>Pembayaran: '+fc(d.totalDeposit)+'</span><span>Sisa: '+fc(d.sisaTanggungan)+'</span></div></div></article>'
-      +'<article class="to-ic"><h3>Snapshot Customer</h3>'
-      +'<p style="font-size:13px;color:var(--m)">Dihitung dari semua data aktif + terkirim.</p>'
-      +'<div class="to-lg" style="margin-top:12px"><span>Total belanja: '+fc(d.totalBelanja)+'</span><span>ID: '+d.id+'</span></div></article>'
-      +'</div>'
-      +'<div class="to-col">'
-      +'<article class="to-ic"><h3>Total pembayaran</h3><div class="to-mt"><strong>'+fc(d.totalDeposit)+'</strong><span style="font-size:13px;color:var(--m)">'+Math.round(pr)+'%</span></div></article>'
-      +'<article class="to-ic"><h3>Total buku</h3><div class="to-mt"><strong>'+fn(d.totalQty)+'</strong><span style="font-size:13px;color:var(--m)">qty</span></div></article>'
-      +'<article class="to-ic"><h3>Sisa tanggungan</h3><div class="to-mt"><strong>'+fc(d.sisaTanggungan)+'</strong><span style="font-size:13px;color:var(--m)">belum lunas</span></div></article>'
-      +'</div>';
-  }
-
-  function renderState() {
-    E.tabs.forEach(t => t.classList.toggle("a", t.dataset.tab === S.tab));
-    E.views.forEach(v => v.classList.toggle("a", v.dataset.view === S.tab));
-  }
-
-  function renderTables() {
-    const b = rowsBy("belum"), t = rowsBy("terkirim");
-    const pb = page(b,"belum"), pt = page(t,"terkirim");
-    renderTable(E.tb1, pb.rows);
-    renderTable(E.tb2, pt.rows);
-    if (S.tab === "info") {
-      E.prev.disabled = !0; E.next.disabled = !0;
-      E.pi.textContent = "Infografis aktif";
-      E.ri.textContent = S.data ? "Infografis berdasarkan customer terpilih" : "Belum ada data ditampilkan";
+  function renderList(el, rows){
+    if(!rows.length){
+      el.innerHTML='<div class="empty"><div class="empty-icon">📭</div>No books found for this customer in this tab.</div>';
       return;
     }
-    const ar = S.tab==="terkirim"?t:b, ap = S.tab==="terkirim"?pt:pb;
-    E.prev.disabled = !S.data || ap.cur<=1 || !ar.length;
-    E.next.disabled = !S.data || ap.cur>=ap.total || !ar.length;
-    E.pi.textContent = "Halaman "+ap.cur+" dari "+ap.total;
-    E.ri.textContent = !S.data
-      ? "Belum ada data ditampilkan"
-      : !ar.length ? "0 data ditemukan"
-      : "Menampilkan "+ap.s+"-"+ap.e+" dari "+ar.length+" data";
+    el.innerHTML=rows.map(bookCard).join("");
   }
 
-  function render() {
-    if (S.data) setSummary(S.data); else clearSummary();
+  function rowsBy(tab){
+    if(!S.data)return[];
+    if(tab==="active")return S.data.orders||[];
+    if(tab==="sent")  return S.data.sent||[];
+    return[];
+  }
+
+  function page(rows,key){
+    if(S.size==="all"){S.page[key]=1;return{rows,total:1,cur:1,s:rows.length?1:0,e:rows.length};}
+    const z=Number(S.size),total=Math.max(Math.ceil(rows.length/z),1);
+    S.page[key]=Math.min(S.page[key],total);
+    const cur=Math.max(S.page[key],1),st=(cur-1)*z,part=rows.slice(st,st+z);
+    return{rows:part,total,cur,s:rows.length?st+1:0,e:Math.min(st+part.length,rows.length)};
+  }
+
+  function renderInfo(){
+    if(!S.data){E.info.innerHTML='<div class="empty"><div class="empty-icon">📊</div>Search your Customer ID to see your payment overview.</div>';return;}
+    const d=S.data;
+    const pr=d.totalBelanja>0?Math.min(d.totalDeposit/d.totalBelanja*100,100):0;
+    E.info.innerHTML=`<div class="info-grid">
+      <div>
+        <div class="info-card" style="margin-bottom:14px">
+          <h3>Payment Progress</h3>
+          <div class="info-big">${fc(d.totalDeposit)}</div>
+          <div class="info-sub">Total payments recorded for your account.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pr}%"></div></div>
+          <div class="progress-labels"><span>Paid: ${fc(d.totalDeposit)}</span><span>Remaining: ${fc(d.sisaTanggungan)}</span></div>
+        </div>
+        <div class="info-card">
+          <h3>Account Snapshot</h3>
+          <div class="info-sub">Calculated from all active and delivered orders.</div>
+          <div class="progress-labels" style="margin-top:12px"><span>Total spent: ${fc(d.totalBelanja)}</span><span>ID: ${esc(d.id)}</span></div>
+        </div>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="info-card"><h3>Total Paid</h3><div class="info-stat">${fc(d.totalDeposit)}</div><div class="info-sub">${Math.round(pr)}% of total</div></div>
+        <div class="info-card"><h3>Total Books</h3><div class="info-stat">${fn(d.totalQty)}</div><div class="info-sub">qty ordered</div></div>
+        <div class="info-card"><h3>Remaining Balance</h3><div class="info-stat">${fc(d.sisaTanggungan)}</div><div class="info-sub">outstanding</div></div>
+      </div>
+    </div>`;
+  }
+
+  function render(){
+    E.tabs.forEach(t=>t.classList.toggle("active",t.dataset.tab===S.tab));
+    E.views.forEach(v=>v.classList.toggle("active",v.dataset.view===S.tab));
+
+    const a=rowsBy("active"),s=rowsBy("sent");
+    const pa=page(a,"active"),ps=page(s,"sent");
+    renderList(E.list1,pa.rows);
+    renderList(E.list2,ps.rows);
     renderInfo();
-    renderTables();
-    renderState();
+
+    if(S.tab==="info"){
+      E.prev.disabled=!0;E.next.disabled=!0;
+      E.pi.textContent="Overview";
+      E.ri.textContent=S.data?"Payment overview":"No data displayed";
+      return;
+    }
+    const ar=S.tab==="sent"?s:a, ap=S.tab==="sent"?ps:pa;
+    E.prev.disabled=!S.data||ap.cur<=1||!ar.length;
+    E.next.disabled=!S.data||ap.cur>=ap.total||!ar.length;
+    E.pi.textContent=`Page ${ap.cur} of ${ap.total}`;
+    E.ri.textContent=!S.data?"No data displayed":!ar.length?"0 books found":`Showing ${ap.s}–${ap.e} of ${ar.length} books`;
   }
 
-  function reset() {
-    S.data = null; S.page.belum = 1; S.page.terkirim = 1;
-    E.input.value = "";
-    E.sync.textContent = "Siap";
-    E.tb1.innerHTML = '<tr><td colspan="11" class="to-e">Silakan cari customer id untuk menampilkan data.</td></tr>';
-    E.tb2.innerHTML = '<tr><td colspan="11" class="to-e">Silakan cari customer id untuk menampilkan data.</td></tr>';
+  function reset(){
+    S.data=null;S.page.active=1;S.page.sent=1;
+    E.input.value="";
+    E.banner.classList.remove("show");
+    E.sync.textContent="Ready";
+    E.list1.innerHTML='<div class="empty"><div class="empty-icon">🔍</div>Search your Customer ID to see your active orders.</div>';
+    E.list2.innerHTML='<div class="empty"><div class="empty-icon">📦</div>Search your Customer ID to see delivered books.</div>';
     render();
   }
 
-  async function search(raw) {
-    const id = raw.trim().toLowerCase();
-    if (!id) { reset(); return; }
-    if (SCRIPT_URL === "GANTI_DENGAN_URL_APPS_SCRIPT_KAMU") {
-      E.sync.textContent = "⚠ URL Apps Script belum diisi di index.html";
-      return;
+  async function search(raw){
+    const id=raw.trim().toLowerCase();
+    if(!id){reset();return;}
+    if(SCRIPT_URL==="GANTI_DENGAN_URL_APPS_SCRIPT_KAMU"){
+      E.sync.textContent="⚠ Apps Script URL not set";return;
     }
     setLoading(true);
-    S.page.belum = 1; S.page.terkirim = 1;
-    try {
-      const res = await fetch(SCRIPT_URL + "?id=" + encodeURIComponent(id));
-      const json = await res.json();
-      if (json.error) throw new Error(json.error);
-      S.data = json;
-      E.sync.textContent = "✓ Data dimuat · " + fn((json.orders?.length||0)+(json.sent?.length||0)) + " baris";
-    } catch(err) {
-      E.sync.textContent = "Gagal: " + err.message;
-      S.data = null;
+    S.page.active=1;S.page.sent=1;
+    try{
+      const res=await fetch(SCRIPT_URL+"?id="+encodeURIComponent(id));
+      const json=await res.json();
+      if(json.error)throw new Error(json.error);
+      S.data=json;
+      E.banner.classList.add("show");
+      E.cname.textContent=json.nama||"Unknown Customer";
+      E.cid.textContent="Customer ID: "+id;
+      E.sb.textContent=fc(json.totalBelanja);
+      E.sd.textContent=fc(json.totalDeposit);
+      E.sr.textContent=fc(json.sisaTanggungan);
+      E.sq.textContent=fn(json.totalQty);
+      const total=(json.orders?.length||0)+(json.sent?.length||0);
+      E.sync.textContent="✓ "+fn(total)+" books loaded";
+    }catch(err){
+      E.sync.textContent="Error: "+err.message;
+      S.data=null;
+      E.banner.classList.remove("show");
     }
     setLoading(false);
     render();
   }
 
-  E.form.addEventListener("submit", e => { e.preventDefault(); search(E.input.value); });
-  E.reset.addEventListener("click", reset);
-  E.tabs.forEach(t => t.addEventListener("click", () => { S.tab = t.dataset.tab; render(); }));
-  E.size.addEventListener("change", e => { S.size = e.target.value==="all"?"all":Number(e.target.value); S.page.belum=1; S.page.terkirim=1; render(); });
-  E.prev.addEventListener("click", () => { if(S.tab==="info")return; S.page[S.tab]=Math.max(S.page[S.tab]-1,1); render(); });
-  E.next.addEventListener("click", () => { if(S.tab==="info")return; S.page[S.tab]+=1; render(); });
+  E.form.addEventListener("submit",e=>{e.preventDefault();search(E.input.value);});
+  E.reset.addEventListener("click",reset);
+  E.tabs.forEach(t=>t.addEventListener("click",()=>{S.tab=t.dataset.tab;render();}));
+  E.size.addEventListener("change",e=>{S.size=e.target.value==="all"?"all":Number(e.target.value);S.page.active=1;S.page.sent=1;render();});
+  E.prev.addEventListener("click",()=>{if(S.tab==="info")return;S.page[S.tab]=Math.max(S.page[S.tab]-1,1);render();});
+  E.next.addEventListener("click",()=>{if(S.tab==="info")return;S.page[S.tab]+=1;render();});
   render();
 })();
 </script>
