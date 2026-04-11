@@ -4,164 +4,336 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tracking Your Books Journey</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
-      --rose:#c9746a;--rose-light:#e8a99f;--rose-pale:#fff0ee;--rose-muted:#f5dbd8;
-      --ink:#3a2a29;--ink-mid:#7a5a57;--ink-soft:#b08a86;
-      --cream:#fffaf8;--white:#ffffff;
-      --shadow:0 8px 32px rgba(140,70,60,.10);
-      --shadow-sm:0 2px 12px rgba(140,70,60,.08);
+      --dr:#b07878;        /* dusty rose main */
+      --dr-light:#c99090;  /* lighter dusty rose */
+      --dr-pale:#eedede;   /* very pale rose */
+      --dr-bg:#f5e8e8;     /* page background */
+      --dr-muted:#e2cece;  /* borders / muted */
+      --white:#ffffff;
+      --gray-50:#faf9f9;
+      --gray-100:#f0eded;
+      --gray-400:#a89898;
+      --gray-600:#7a6868;
+      --ink:#2e2020;
+      --ink-mid:#6b4f4f;
+      --ink-soft:#a08080;
     }
-    body{font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--cream);min-height:100vh;padding:20px 16px 40px}
+
+    @keyframes spin{to{transform:rotate(360deg)}}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Jost',sans-serif;
+      color:var(--ink);
+      background:var(--dr-bg);
+      min-height:100vh;
+      padding:0;
+    }
     button,input,select{font:inherit}
 
-    /* ── HEADER ── */
-    .hdr{
-      text-align:center;padding:40px 20px 32px;
-      background:linear-gradient(160deg,#fff 60%,#ffecea);
-      border-radius:28px;border:1px solid var(--rose-muted);
-      box-shadow:var(--shadow);margin-bottom:20px;
+    /* ─── STICKY NAV ─── */
+    .nav{
+      position:sticky;top:0;z-index:100;
+      background:var(--dr);
+      padding:14px 32px;
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
     }
-    .hdr-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:var(--rose-pale);color:var(--rose);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
-    .hdr h1{font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,44px);color:var(--ink);line-height:1.15;margin-bottom:12px}
-    .hdr h1 em{color:var(--rose);font-style:italic}
-    .hdr p{color:var(--ink-mid);font-size:14px;max-width:480px;margin:0 auto;line-height:1.7;font-weight:300}
+    .nav-brand{display:flex;align-items:center;gap:10px;color:var(--white)}
+    .nav-brand svg{width:22px;height:22px;opacity:.9}
+    .nav-brand span{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.04em}
+    .nav-pill{
+      width:30px;height:30px;border-radius:50%;
+      background:rgba(255,255,255,.12);color:rgba(255,255,255,.55);
+      border:1px solid rgba(255,255,255,.18);
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;font-size:11px;font-weight:300;
+    }
 
-    /* ── STICKY NAV ── */
-    .nav{position:sticky;top:8px;z-index:10;background:rgba(255,250,248,.92);backdrop-filter:blur(12px);border:1px solid var(--rose-muted);border-radius:20px;box-shadow:var(--shadow-sm);padding:12px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    .nav-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--ink)}
-    .nav-status{font-size:12px;color:var(--ink-soft);padding:5px 12px;border-radius:999px;background:var(--rose-pale)}
+    /* ─── HERO ─── */
+    .hero{
+      text-align:center;
+      padding:72px 24px 56px;
+      background:linear-gradient(180deg, var(--dr-bg) 0%, #ede0e0 100%);
+    }
+    .hero h1{
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(42px,8vw,80px);
+      font-weight:300;
+      color:var(--ink);
+      line-height:1.05;
+      letter-spacing:.01em;
+      margin-bottom:18px;
+    }
+    .hero h1 em{
+      font-style:italic;
+      color:var(--dr);
+      display:block;
+    }
+    .hero p{
+      font-size:14px;
+      font-weight:300;
+      color:var(--ink-mid);
+      max-width:420px;
+      margin:0 auto 36px;
+      line-height:1.8;
+      letter-spacing:.02em;
+    }
 
-    /* ── SEARCH CARD ── */
-    .card{background:var(--white);border:1px solid var(--rose-muted);border-radius:24px;box-shadow:var(--shadow);padding:24px;margin-bottom:20px}
-    .search-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
-    .search-label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
-    .search-input-wrap{flex:1;min-width:200px}
-    input[type=text]{width:100%;padding:13px 16px;border:1.5px solid var(--rose-muted);border-radius:14px;background:#fff;color:var(--ink);font-size:14px;outline:none;transition:border-color .2s}
-    input[type=text]:focus{border-color:var(--rose-light)}
-    .btn{border:none;border-radius:14px;padding:13px 22px;cursor:pointer;font-size:13px;font-weight:600;transition:all .18s}
-    .btn-primary{background:linear-gradient(135deg,#d4867a,#c06b5f);color:#fff;box-shadow:0 4px 14px rgba(192,107,95,.3)}
-    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(192,107,95,.35)}
-    .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
-    .btn-ghost{background:#fff;color:var(--ink-mid);border:1.5px solid var(--rose-muted)}
-    .btn-ghost:hover{background:var(--rose-pale)}
+    /* ─── SEARCH BOX ─── */
+    .search-wrap{
+      max-width:580px;
+      margin:0 auto;
+      background:var(--white);
+      border-radius:16px;
+      padding:8px 8px 8px 20px;
+      display:flex;align-items:center;gap:8px;
+      box-shadow:0 12px 40px rgba(100,50,50,.12);
+      border:1px solid var(--dr-muted);
+    }
+    .search-wrap input{
+      flex:1;border:none;outline:none;background:transparent;
+      font-size:15px;color:var(--ink);font-weight:400;
+      padding:8px 0;
+    }
+    .search-wrap input::placeholder{color:var(--ink-soft);font-weight:300}
+    .btn-search{
+      border:none;border-radius:12px;
+      padding:12px 28px;
+      background:var(--dr);color:var(--white);
+      font-size:14px;font-weight:500;letter-spacing:.04em;
+      cursor:pointer;transition:background .18s,transform .15s;
+      white-space:nowrap;
+      font-family:'Jost',sans-serif;
+    }
+    .btn-search:hover{background:var(--dr-light);transform:translateY(-1px)}
+    .btn-search:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .btn-clear{
+      border:none;background:transparent;
+      color:var(--ink-soft);font-size:13px;font-weight:400;
+      cursor:pointer;padding:8px 12px;border-radius:8px;
+      transition:color .15s,background .15s;white-space:nowrap;
+      font-family:'Jost',sans-serif;
+    }
+    .btn-clear:hover{color:var(--ink);background:var(--gray-100)}
 
-    /* ── CUSTOMER BANNER ── */
-    .customer-banner{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 20px;border-radius:16px;background:linear-gradient(135deg,var(--rose-pale),#fff);border:1px solid var(--rose-muted);margin-top:14px}
-    .customer-banner.show{display:flex}
-    .customer-name{font-family:'Playfair Display',serif;font-size:18px;color:var(--ink)}
-    .customer-id{font-size:12px;color:var(--ink-soft);margin-top:2px}
+    /* ─── CUSTOMER BANNER ─── */
+    .customer-strip{
+      display:none;
+      background:var(--white);
+      border-top:1px solid var(--dr-muted);
+      border-bottom:1px solid var(--dr-muted);
+      padding:16px 32px;
+      align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    }
+    .customer-strip.show{display:flex}
+    .cust-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink)}
+    .cust-id{font-size:12px;color:var(--ink-soft);margin-top:2px;letter-spacing:.04em}
+    .cust-pills{display:flex;gap:10px;flex-wrap:wrap}
+    .c-pill{
+      padding:8px 16px;border-radius:10px;
+      background:var(--gray-50);border:1px solid var(--dr-muted);
+      min-width:90px;
+    }
+    .c-pill-label{font-size:10px;font-weight:500;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+    .c-pill-val{font-size:13px;font-weight:600;color:var(--ink);margin-top:2px}
 
-    /* ── SUMMARY PILLS ── */
-    .summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .s-pill{flex:1;min-width:100px;padding:10px 14px;border-radius:14px;background:var(--rose-pale);border:1px solid rgba(201,116,106,.12)}
-    .s-pill-label{font-size:10px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em}
-    .s-pill-val{font-size:13px;font-weight:600;color:var(--ink);margin-top:3px;line-height:1.2}
+    /* ─── MAIN CONTENT ─── */
+    .main{max-width:880px;margin:0 auto;padding:32px 20px 60px}
 
-    /* ── TABS ── */
-    .tabs{display:flex;gap:6px;padding:6px;border-radius:16px;background:var(--rose-pale);margin-bottom:16px;width:100%}
-    .tab{flex:1;border:none;border-radius:11px;padding:10px 8px;background:transparent;color:var(--ink-mid);font-weight:600;cursor:pointer;font-size:13px;transition:all .15s;font-family:'DM Sans',sans-serif}
-    .tab.active{background:#fff;color:var(--ink);box-shadow:0 4px 14px rgba(140,70,60,.12)}
+    /* ─── TABS ─── */
+    .tabs{
+      display:flex;
+      border-bottom:1.5px solid var(--dr-muted);
+      margin-bottom:28px;
+      gap:0;
+    }
+    .tab{
+      flex:1;
+      border:none;background:transparent;
+      font-family:'Jost',sans-serif;
+      font-size:14px;font-weight:400;letter-spacing:.04em;
+      color:var(--ink-soft);
+      padding:14px 8px;
+      cursor:pointer;
+      transition:color .18s;
+      border-bottom:2px solid transparent;
+      margin-bottom:-1.5px;
+      text-align:center;
+    }
+    .tab:hover{color:var(--ink-mid)}
+    .tab.active{
+      color:var(--dr);
+      font-weight:600;
+      border-bottom-color:var(--dr);
+    }
 
-    /* ── SIZE SELECT ── */
-    select{padding:8px 12px;border:1.5px solid var(--rose-muted);border-radius:10px;background:#fff;color:var(--ink);font-size:13px;outline:none}
-    .list-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-    .list-info{font-size:13px;color:var(--ink-soft)}
+    /* ─── LIST META ─── */
+    .list-meta{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;flex-wrap:wrap;margin-bottom:18px;
+    }
+    .list-info{font-size:13px;color:var(--ink-soft);font-weight:300}
+    .size-wrap{display:flex;align-items:center;gap:8px}
+    .size-wrap label{font-size:12px;color:var(--ink-soft);font-weight:400}
+    select{
+      padding:7px 12px;
+      border:1px solid var(--dr-muted);border-radius:8px;
+      background:var(--white);color:var(--ink);font-size:13px;
+      outline:none;cursor:pointer;
+    }
 
-    /* ── BOOK LIST CARDS ── */
+    /* ─── BOOK CARDS ─── */
     .book-list{display:flex;flex-direction:column;gap:10px}
-    .book-card{display:flex;align-items:center;gap:16px;padding:16px 20px;background:#fff;border:1px solid var(--rose-muted);border-radius:18px;box-shadow:var(--shadow-sm);transition:box-shadow .18s}
-    .book-card:hover{box-shadow:0 8px 24px rgba(140,70,60,.13)}
-    .book-icon{width:42px;height:42px;border-radius:12px;background:var(--rose-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
-    .book-main{flex:1;min-width:0}
-    .book-title{font-family:'Playfair Display',serif;font-size:15px;color:var(--rose);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .book-sub{font-size:12px;color:var(--ink-soft);margin-top:3px}
+    .book-card{
+      background:var(--white);
+      border:1px solid var(--dr-muted);
+      border-radius:14px;
+      padding:18px 22px;
+      display:flex;align-items:center;gap:18px;
+      transition:box-shadow .18s,transform .15s;
+    }
+    .book-card:hover{
+      box-shadow:0 6px 24px rgba(100,50,50,.10);
+      transform:translateY(-1px);
+    }
+    .book-icon{
+      width:44px;height:44px;border-radius:10px;
+      background:linear-gradient(135deg,var(--dr-pale),var(--dr-muted));
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;font-size:20px;
+    }
+    .book-body{flex:1;min-width:0}
+    .book-title{
+      font-family:'Cormorant Garamond',serif;
+      font-size:16px;font-weight:600;color:var(--dr);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      letter-spacing:.01em;
+    }
+    .book-meta{font-size:12px;color:var(--ink-soft);margin-top:4px;font-weight:300}
     .book-right{text-align:right;flex-shrink:0}
-    .book-status{font-size:12px;font-weight:700;color:var(--ink-mid);font-style:italic}
-    .book-price{font-size:12px;color:var(--ink-soft);margin-top:3px}
-    .book-dp{font-size:11px;color:var(--ink-soft)}
+    .book-status{
+      font-size:13px;font-weight:500;
+      color:var(--ink-mid);
+      font-style:italic;
+      font-family:'Cormorant Garamond',serif;
+      font-size:15px;
+    }
+    .book-price{font-size:12px;color:var(--ink-soft);margin-top:4px;font-weight:300}
 
-    /* ── EMPTY / LOADING ── */
-    .empty{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:14px}
-    .empty-icon{font-size:36px;margin-bottom:10px}
-    .spin{display:inline-block;width:16px;height:16px;border:2px solid var(--rose-muted);border-top-color:var(--rose);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    /* ─── EMPTY ─── */
+    .empty{
+      padding:64px 20px;text-align:center;
+      color:var(--ink-soft);
+    }
+    .empty-img{
+      width:120px;height:120px;margin:0 auto 20px;
+      background:var(--dr-pale);border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:48px;
+    }
+    .empty p{font-size:14px;font-weight:300;line-height:1.7;max-width:300px;margin:0 auto}
 
-    /* ── INFOGRAFIS ── */
-    .info-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
-    .info-card{padding:20px;border-radius:18px;background:linear-gradient(145deg,#fff,#fff5f2);border:1px solid var(--rose-muted)}
-    .info-card h3{font-size:13px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
-    .info-big{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,34px);color:var(--ink);line-height:1}
-    .info-sub{font-size:12px;color:var(--ink-soft);margin-top:6px;line-height:1.6}
-    .progress-bar{height:8px;border-radius:999px;background:var(--rose-muted);margin-top:14px;overflow:hidden}
-    .progress-fill{height:100%;background:linear-gradient(90deg,var(--rose-light),var(--rose));border-radius:999px;transition:width .5s ease}
-    .progress-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);margin-top:6px}
-    .info-stat{font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,26px);color:var(--ink)}
-
-    /* ── PAGINATION ── */
-    .pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}
-    .page-info{font-size:13px;color:var(--ink-soft)}
-
-    /* ── VIEW HIDDEN ── */
+    /* ─── VIEW HIDDEN ─── */
     .view{display:none}.view.active{display:block}
 
+    /* ─── PAGINATION ─── */
+    .pagination{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;margin-top:28px;
+      padding-top:20px;border-top:1px solid var(--dr-muted);
+    }
+    .btn-page{
+      border:1px solid var(--dr-muted);border-radius:10px;
+      padding:10px 22px;background:var(--white);
+      color:var(--ink-mid);font-size:13px;font-weight:500;
+      cursor:pointer;transition:all .15s;
+      font-family:'Jost',sans-serif;
+    }
+    .btn-page:hover:not(:disabled){background:var(--dr-pale);border-color:var(--dr-light);color:var(--ink)}
+    .btn-page:disabled{opacity:.4;cursor:not-allowed}
+    .page-info{font-size:13px;color:var(--ink-soft);font-weight:300}
+
+    /* ─── OVERVIEW ─── */
+    .overview-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}
+    .ov-card{
+      background:var(--white);border:1px solid var(--dr-muted);
+      border-radius:14px;padding:22px;
+    }
+    .ov-label{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px}
+    .ov-big{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,4vw,38px);font-weight:300;color:var(--ink);line-height:1}
+    .ov-sub{font-size:12px;color:var(--ink-soft);margin-top:6px;font-weight:300;line-height:1.6}
+    .prog-bar{height:6px;border-radius:999px;background:var(--dr-pale);margin-top:16px;overflow:hidden}
+    .prog-fill{height:100%;background:linear-gradient(90deg,var(--dr-light),var(--dr));border-radius:999px;transition:width .5s ease}
+    .prog-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);margin-top:7px;font-weight:300}
+    .ov-stats{display:grid;gap:10px}
+
+    /* ─── FOOTER ─── */
+    .footer{
+      text-align:center;font-size:12px;color:var(--ink-soft);
+      padding:20px;font-weight:300;letter-spacing:.04em;
+    }
+
     @media(max-width:720px){
-      body{padding:12px 10px 32px}
-      .hdr{padding:28px 16px 24px}
-      .info-grid{grid-template-columns:1fr}
-      .summary{gap:8px}
-      .s-pill{min-width:calc(50% - 4px);flex:none}
-      .book-card{padding:12px 14px;gap:12px}
+      .nav{padding:12px 18px}
+      .hero{padding:48px 18px 40px}
+      .customer-strip{padding:14px 18px}
+      .main{padding:24px 14px 48px}
+      .overview-grid{grid-template-columns:1fr}
+      .cust-pills{gap:8px}
+      .c-pill{min-width:80px}
+      .book-card{padding:14px 16px;gap:12px}
     }
   </style>
 </head>
 <body>
 
-<!-- STICKY NAV -->
+<!-- NAV -->
 <nav class="nav">
-  <div class="nav-title">📚 Books Journey</div>
-  <div class="nav-status" data-sync>Ready</div>
+  <div class="nav-brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke-linecap="round"/>
+      <path d="M4 4.5A2.5 2.5 0 016.5 7H20v13H6.5A2.5 2.5 0 014 17.5v-13z" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Books Journey</span>
+  </div>
+  <div class="nav-pill" data-sync>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
 </nav>
 
-<!-- HERO HEADER -->
-<header class="hdr">
-  <div class="hdr-badge">📖 Order Tracker</div>
-  <h1>Tracking Your<br><em>Books Journey</em></h1>
+<!-- HERO -->
+<section class="hero">
+  <h1>Tracking Your<em>Books Journey</em></h1>
   <p>Enter your unique Customer ID to unveil the status of your curated literary collection and upcoming arrivals.</p>
-</header>
-
-<!-- SEARCH CARD -->
-<div class="card">
   <form data-form autocomplete="off">
-    <label class="search-label">Customer ID</label>
-    <div class="search-row">
-      <div class="search-input-wrap">
-        <input data-input type="text" placeholder="e.g. 5aba" autocomplete="new-password">
-      </div>
-      <button class="btn btn-primary" type="submit" data-submit>Search</button>
-      <button class="btn btn-ghost" type="button" data-reset>Clear</button>
+    <div class="search-wrap">
+      <input data-input type="text" placeholder="e.g. 5aba" autocomplete="new-password">
+      <button class="btn-clear" type="button" data-reset>Clear</button>
+      <button class="btn-search" type="submit" data-submit>Search</button>
     </div>
   </form>
+</section>
 
-  <!-- Customer banner (shown after search) -->
-  <div class="customer-banner" data-banner>
-    <div>
-      <div class="customer-name" data-cname>—</div>
-      <div class="customer-id" data-cid></div>
-    </div>
-    <div class="summary" data-summary style="margin-top:0;flex:1;justify-content:flex-end">
-      <div class="s-pill"><div class="s-pill-label">Total Spent</div><div class="s-pill-val" data-sb>Rp 0</div></div>
-      <div class="s-pill"><div class="s-pill-label">Paid</div><div class="s-pill-val" data-sd>Rp 0</div></div>
-      <div class="s-pill"><div class="s-pill-label">Remaining</div><div class="s-pill-val" data-sr>Rp 0</div></div>
-      <div class="s-pill"><div class="s-pill-label">Books</div><div class="s-pill-val" data-sq>0</div></div>
-    </div>
+<!-- CUSTOMER STRIP -->
+<div class="customer-strip" data-banner>
+  <div>
+    <div class="cust-name" data-cname>—</div>
+    <div class="cust-id" data-cid></div>
+  </div>
+  <div class="cust-pills">
+    <div class="c-pill"><div class="c-pill-label">Total Spent</div><div class="c-pill-val" data-sb>Rp 0</div></div>
+    <div class="c-pill"><div class="c-pill-label">Paid</div><div class="c-pill-val" data-sd>Rp 0</div></div>
+    <div class="c-pill"><div class="c-pill-label">Remaining</div><div class="c-pill-val" data-sr>Rp 0</div></div>
+    <div class="c-pill"><div class="c-pill-label">Books</div><div class="c-pill-val" data-sq>0</div></div>
   </div>
 </div>
 
-<!-- TABS + LISTS -->
-<div class="card">
+<!-- MAIN -->
+<main class="main">
+  <!-- TABS -->
   <div class="tabs">
     <button class="tab active" type="button" data-tab="active">Active Orders</button>
     <button class="tab" type="button" data-tab="sent">Delivered</button>
@@ -169,9 +341,9 @@
   </div>
 
   <div class="list-meta">
-    <div class="list-info" data-ri>No data displayed</div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <span style="font-size:12px;color:var(--ink-soft)">Show</span>
+    <div class="list-info" data-ri>Enter your Customer ID to begin.</div>
+    <div class="size-wrap">
+      <label>Show</label>
       <select data-size><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="all">All</option></select>
     </div>
   </div>
@@ -179,44 +351,51 @@
   <!-- Active Orders -->
   <div class="view active" data-view="active">
     <div class="book-list" data-list1>
-      <div class="empty"><div class="empty-icon">🔍</div>Search your Customer ID to see your active orders.</div>
+      <div class="empty">
+        <div class="empty-img">📬</div>
+        <p>Search your Customer ID to see your active orders.</p>
+      </div>
     </div>
   </div>
 
   <!-- Delivered -->
   <div class="view" data-view="sent">
     <div class="book-list" data-list2>
-      <div class="empty"><div class="empty-icon">📦</div>Search your Customer ID to see delivered books.</div>
+      <div class="empty">
+        <div class="empty-img">📦</div>
+        <p>Search your Customer ID to see your delivered books.</p>
+      </div>
     </div>
   </div>
 
-  <!-- Overview / Infografis -->
+  <!-- Overview -->
   <div class="view" data-view="info">
     <div data-info>
-      <div class="empty"><div class="empty-icon">📊</div>Search your Customer ID to see your payment overview.</div>
+      <div class="empty">
+        <div class="empty-img">📊</div>
+        <p>Search your Customer ID to see your payment overview.</p>
+      </div>
     </div>
   </div>
 
+  <!-- PAGINATION -->
   <div class="pagination">
-    <button class="btn btn-ghost" type="button" data-prev>← Prev</button>
+    <button class="btn-page" type="button" data-prev>← Prev</button>
     <div class="page-info" data-pi>Page 1 of 1</div>
-    <button class="btn btn-ghost" type="button" data-next>Next →</button>
+    <button class="btn-page" type="button" data-next>Next →</button>
   </div>
-</div>
+</main>
 
-<div style="text-align:center;font-size:12px;color:var(--ink-soft);padding-top:8px">
-  Books Journey Tracker · Connected to Google Spreadsheet
-</div>
+<div class="footer">Books Journey Tracker · Connected to Google Spreadsheet</div>
 
 <script>
 (()=>{
   // =============================================
   // GANTI URL INI dengan Web App URL dari Apps Script
-  // =============================================
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfuOAIvfZAUIg3joNa0lDEi75QK9sxlPUQnn5NQptC5Xy24zajbyXnbLMwiq8WYwA0/exec";
   // =============================================
 
-  const E = {
+  const E={
     form:   document.querySelector("[data-form]"),
     input:  document.querySelector("[data-input]"),
     reset:  document.querySelector("[data-reset]"),
@@ -241,47 +420,49 @@
     pi:     document.querySelector("[data-pi]"),
   };
 
-  const S = { tab:"active", size:10, page:{active:1,sent:1}, data:null };
+  const S={tab:"active",size:10,page:{active:1,sent:1},data:null};
 
-  const fc = v => new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(v||0);
-  const fn = v => new Intl.NumberFormat("id-ID").format(v||0);
+  const fc=v=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(v||0);
+  const fn=v=>new Intl.NumberFormat("id-ID").format(v||0);
   function toNum(v){const c=String(v||"").replace(/Rp/gi,"").replace(/[^\d,-]/g,"").replace(/\./g,"").replace(",",".");const n=parseFloat(c);return isFinite(n)?n:0;}
+  function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+  const iconCheck = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+  const iconSpin  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 11-3.2-6.9"/></svg>`;
+  const iconWarn  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
 
   function setLoading(on){
     E.submit.disabled=on;
-    E.submit.textContent=on?'Searching...':'Search';
-    E.sync.textContent=on?'Loading...':'Ready';
+    E.submit.textContent=on?"Searching...":"Search";
+    E.sync.innerHTML=on?iconSpin:iconCheck;
   }
 
   function bookCard(r){
-    const title  = r["JUDUL"]||r["Judul"]||"Untitled";
-    const pub    = r["PENERBIT"]||r["Penerbit"]||"";
-    const fmt    = r["Format"]||"";
-    const qty    = r["Qty"]||r["QTY"]||"1";
-    const status = r["Status"]||"—";
-    const harga  = toNum(r["Harga Total"]);
-    const dp     = toNum(r["DP"]);
-    const eta    = r["ETA"]||"";
-    const sub    = [pub,fmt?fmt+" Edition":"",`Qty: ${qty}`].filter(Boolean).join(" · ");
+    const title =r["JUDUL"]||r["Judul"]||"Untitled";
+    const pub   =r["PENERBIT"]||r["Penerbit"]||"";
+    const fmt   =r["Format"]||"";
+    const qty   =r["Qty"]||r["QTY"]||"1";
+    const status=r["Status"]||"—";
+    const harga =toNum(r["Harga Total"]);
+    const dp    =toNum(r["DP"]);
+    const eta   =r["ETA"]||"";
+    const parts =[pub,fmt&&fmt+" Edition","Qty: "+qty,eta&&"ETA: "+eta].filter(Boolean);
     return `<div class="book-card">
       <div class="book-icon">📘</div>
-      <div class="book-main">
+      <div class="book-body">
         <div class="book-title">${esc(title)}</div>
-        <div class="book-sub">${esc(sub)}${eta?' · ETA: '+esc(eta):''}</div>
+        <div class="book-meta">${esc(parts.join(" · "))}</div>
       </div>
       <div class="book-right">
         <div class="book-status">${esc(status)}</div>
-        <div class="book-price">${fc(harga)}</div>
-        ${dp?`<div class="book-dp">DP: ${fc(dp)}</div>`:''}
+        <div class="book-price">${fc(harga)}${dp?" · DP "+fc(dp):""}</div>
       </div>
     </div>`;
   }
 
-  function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-
-  function renderList(el, rows){
+  function renderList(el,rows){
     if(!rows.length){
-      el.innerHTML='<div class="empty"><div class="empty-icon">📭</div>No books found for this customer in this tab.</div>';
+      el.innerHTML='<div class="empty"><div class="empty-img">📭</div><p>No books found for this Customer ID in this tab.</p></div>';
       return;
     }
     el.innerHTML=rows.map(bookCard).join("");
@@ -290,7 +471,7 @@
   function rowsBy(tab){
     if(!S.data)return[];
     if(tab==="active")return S.data.orders||[];
-    if(tab==="sent")  return S.data.sent||[];
+    if(tab==="sent")return S.data.sent||[];
     return[];
   }
 
@@ -302,29 +483,35 @@
     return{rows:part,total,cur,s:rows.length?st+1:0,e:Math.min(st+part.length,rows.length)};
   }
 
-  function renderInfo(){
-    if(!S.data){E.info.innerHTML='<div class="empty"><div class="empty-icon">📊</div>Search your Customer ID to see your payment overview.</div>';return;}
+  function renderOverview(){
+    if(!S.data){
+      E.info.innerHTML='<div class="empty"><div class="empty-img">📊</div><p>Search your Customer ID to see your payment overview.</p></div>';
+      return;
+    }
     const d=S.data;
     const pr=d.totalBelanja>0?Math.min(d.totalDeposit/d.totalBelanja*100,100):0;
-    E.info.innerHTML=`<div class="info-grid">
-      <div>
-        <div class="info-card" style="margin-bottom:14px">
-          <h3>Payment Progress</h3>
-          <div class="info-big">${fc(d.totalDeposit)}</div>
-          <div class="info-sub">Total payments recorded for your account.</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${pr}%"></div></div>
-          <div class="progress-labels"><span>Paid: ${fc(d.totalDeposit)}</span><span>Remaining: ${fc(d.sisaTanggungan)}</span></div>
+    E.info.innerHTML=`<div class="overview-grid">
+      <div style="display:grid;gap:14px">
+        <div class="ov-card">
+          <div class="ov-label">Payment Progress</div>
+          <div class="ov-big">${fc(d.totalDeposit)}</div>
+          <div class="ov-sub">Total payments recorded for your account.</div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pr}%"></div></div>
+          <div class="prog-labels"><span>Paid: ${fc(d.totalDeposit)}</span><span>Remaining: ${fc(d.sisaTanggungan)}</span></div>
         </div>
-        <div class="info-card">
-          <h3>Account Snapshot</h3>
-          <div class="info-sub">Calculated from all active and delivered orders.</div>
-          <div class="progress-labels" style="margin-top:12px"><span>Total spent: ${fc(d.totalBelanja)}</span><span>ID: ${esc(d.id)}</span></div>
+        <div class="ov-card">
+          <div class="ov-label">Account Snapshot</div>
+          <div class="ov-sub">Calculated from all active and delivered orders combined.</div>
+          <div class="prog-labels" style="margin-top:14px">
+            <span>Total spent: ${fc(d.totalBelanja)}</span>
+            <span>ID: ${esc(d.id)}</span>
+          </div>
         </div>
       </div>
-      <div style="display:grid;gap:14px">
-        <div class="info-card"><h3>Total Paid</h3><div class="info-stat">${fc(d.totalDeposit)}</div><div class="info-sub">${Math.round(pr)}% of total</div></div>
-        <div class="info-card"><h3>Total Books</h3><div class="info-stat">${fn(d.totalQty)}</div><div class="info-sub">qty ordered</div></div>
-        <div class="info-card"><h3>Remaining Balance</h3><div class="info-stat">${fc(d.sisaTanggungan)}</div><div class="info-sub">outstanding</div></div>
+      <div class="ov-stats">
+        <div class="ov-card"><div class="ov-label">Total Paid</div><div class="ov-big">${fc(d.totalDeposit)}</div><div class="ov-sub">${Math.round(pr)}% of total order value</div></div>
+        <div class="ov-card"><div class="ov-label">Total Books</div><div class="ov-big">${fn(d.totalQty)}</div><div class="ov-sub">qty across all orders</div></div>
+        <div class="ov-card"><div class="ov-label">Remaining Balance</div><div class="ov-big">${fc(d.sisaTanggungan)}</div><div class="ov-sub">outstanding balance</div></div>
       </div>
     </div>`;
   }
@@ -332,33 +519,30 @@
   function render(){
     E.tabs.forEach(t=>t.classList.toggle("active",t.dataset.tab===S.tab));
     E.views.forEach(v=>v.classList.toggle("active",v.dataset.view===S.tab));
-
     const a=rowsBy("active"),s=rowsBy("sent");
     const pa=page(a,"active"),ps=page(s,"sent");
     renderList(E.list1,pa.rows);
     renderList(E.list2,ps.rows);
-    renderInfo();
-
+    renderOverview();
     if(S.tab==="info"){
       E.prev.disabled=!0;E.next.disabled=!0;
       E.pi.textContent="Overview";
-      E.ri.textContent=S.data?"Payment overview":"No data displayed";
+      E.ri.textContent=S.data?"Payment overview active":"Enter your Customer ID to begin.";
       return;
     }
-    const ar=S.tab==="sent"?s:a, ap=S.tab==="sent"?ps:pa;
+    const ar=S.tab==="sent"?s:a,ap=S.tab==="sent"?ps:pa;
     E.prev.disabled=!S.data||ap.cur<=1||!ar.length;
     E.next.disabled=!S.data||ap.cur>=ap.total||!ar.length;
     E.pi.textContent=`Page ${ap.cur} of ${ap.total}`;
-    E.ri.textContent=!S.data?"No data displayed":!ar.length?"0 books found":`Showing ${ap.s}–${ap.e} of ${ar.length} books`;
+    E.ri.textContent=!S.data?"Enter your Customer ID to begin.":!ar.length?"No books found.":"Showing "+ap.s+"–"+ap.e+" of "+ar.length+" books";
   }
 
   function reset(){
     S.data=null;S.page.active=1;S.page.sent=1;
     E.input.value="";
     E.banner.classList.remove("show");
-    E.sync.textContent="Ready";
-    E.list1.innerHTML='<div class="empty"><div class="empty-icon">🔍</div>Search your Customer ID to see your active orders.</div>';
-    E.list2.innerHTML='<div class="empty"><div class="empty-icon">📦</div>Search your Customer ID to see delivered books.</div>';
+    E.sync.innerHTML=iconCheck;
+    E.sync.title="";
     render();
   }
 
@@ -366,7 +550,7 @@
     const id=raw.trim().toLowerCase();
     if(!id){reset();return;}
     if(SCRIPT_URL==="GANTI_DENGAN_URL_APPS_SCRIPT_KAMU"){
-      E.sync.textContent="⚠ Apps Script URL not set";return;
+      E.sync.innerHTML=iconWarn;E.sync.title="Apps Script URL not set";return;
     }
     setLoading(true);
     S.page.active=1;S.page.sent=1;
@@ -383,9 +567,11 @@
       E.sr.textContent=fc(json.sisaTanggungan);
       E.sq.textContent=fn(json.totalQty);
       const total=(json.orders?.length||0)+(json.sent?.length||0);
-      E.sync.textContent="✓ "+fn(total)+" books loaded";
+      E.sync.innerHTML=iconCheck;
+      E.sync.title=fn(total)+" books loaded";
     }catch(err){
-      E.sync.textContent="Error: "+err.message;
+      E.sync.innerHTML=iconWarn;
+      E.sync.title="Error: "+err.message;
       S.data=null;
       E.banner.classList.remove("show");
     }
