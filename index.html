@@ -213,6 +213,8 @@
       letter-spacing:.01em;
     }
     .book-meta{font-size:12px;color:var(--ink-soft);margin-top:4px;font-weight:300}
+    .book-meta-dim{font-size:11px;color:var(--ink-soft);opacity:.65;margin-top:2px;font-weight:300}
+    .book-dp-row{font-size:11px;color:var(--ink-soft);margin-top:3px;font-weight:300}
     .book-right{text-align:right;flex-shrink:0}
     .book-status{
       font-size:13px;font-weight:500;
@@ -437,25 +439,42 @@
     E.sync.innerHTML=on?iconSpin:iconCheck;
   }
 
+  // Ambil nilai kolom dengan fallback case-insensitive
+  function col(r,...keys){
+    for(const k of keys){
+      if(r[k]!==undefined&&String(r[k]).trim()!="")return r[k];
+      const low=k.toLowerCase();
+      const found=Object.keys(r).find(rk=>rk.toLowerCase()===low);
+      if(found&&String(r[found]).trim()!="")return r[found];
+    }
+    return "";
+  }
+
   function bookCard(r){
-    const title =r["JUDUL"]||r["Judul"]||"Untitled";
-    const pub   =r["PENERBIT"]||r["Penerbit"]||"";
-    const fmt   =r["Format"]||"";
-    const qty   =r["Qty"]||r["QTY"]||"1";
-    const status=r["Status"]||"—";
-    const harga =toNum(r["Harga Total"]);
-    const dp    =toNum(r["DP"]);
-    const eta   =r["ETA"]||"";
-    const parts =[pub,fmt&&fmt+" Edition","Qty: "+qty,eta&&"ETA: "+eta].filter(Boolean);
+    const title  =col(r,"JUDUL","Judul","judul")||"—";
+    const pub    =col(r,"PENERBIT","Penerbit","penerbit");
+    const fmt    =col(r,"Format","FORMAT","format");
+    const qty    =col(r,"Qty","QTY","qty");
+    const status =col(r,"Status","STATUS","status")||"—";
+    const harga  =toNum(col(r,"Harga Total","harga total","HARGA TOTAL"));
+    const dp     =toNum(col(r,"DP","dp"));
+    const tglDp  =col(r,"Tanggal TF","Tanggal DP","tanggal tf","tanggal dp","Tgl TF","Tgl DP");
+    const tglFix =col(r,"Tanggal","Tanggal Fix","tanggal","tanggal fix","Tgl Fix");
+    const eta    =col(r,"ETA","eta");
+    const meta1  =[pub,fmt,qty?"Qty: "+qty:""].filter(Boolean).join(" · ");
+    const meta2  =[tglFix?"Fix: "+tglFix:"",eta?"ETA: "+eta:""].filter(Boolean).join(" · ");
+    const dpStr  =dp?fc(dp)+(tglDp?" ("+tglDp+")":""):"";
     return `<div class="book-card">
       <div class="book-icon">📘</div>
       <div class="book-body">
         <div class="book-title">${esc(title)}</div>
-        <div class="book-meta">${esc(parts.join(" · "))}</div>
+        ${meta1?'<div class="book-meta">'+esc(meta1)+'</div>':""}
+        ${meta2?'<div class="book-meta book-meta-dim">'+esc(meta2)+'</div>':""}
       </div>
       <div class="book-right">
         <div class="book-status">${esc(status)}</div>
-        <div class="book-price">${fc(harga)}${dp?" · DP "+fc(dp):""}</div>
+        <div class="book-price">${fc(harga)}</div>
+        ${dpStr?'<div class="book-dp-row">DP '+esc(dpStr)+'</div>':""}
       </div>
     </div>`;
   }
