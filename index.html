@@ -230,63 +230,136 @@
     }
 
     /* ─── CUSTOMER BANNER ─── */
+    /* ─── CUSTOMER BANNER (stat cards) ─── */
     .customer-strip {
       display: none;
-      background: var(--white);
+      background: var(--dr-bg);
       border-top: 1px solid var(--dr-muted);
       border-bottom: 1px solid var(--dr-muted);
-      padding: 16px 32px;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
+      padding: 20px 32px;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .customer-strip.show {
-      display: flex
+      display: flex;
+    }
+
+    .cust-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
     }
 
     .cust-name {
       font-family: 'Cormorant Garamond', serif;
       font-size: 20px;
       font-weight: 600;
-      color: var(--ink)
+      color: var(--ink);
     }
 
     .cust-id {
       font-size: 12px;
       color: var(--ink-soft);
-      margin-top: 2px;
-      letter-spacing: .04em
+      letter-spacing: .04em;
     }
 
-    .cust-pills {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap
+    /* 4-card stat row */
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
     }
 
-    .c-pill {
-      padding: 8px 16px;
-      border-radius: 10px;
-      background: var(--gray-50);
+    .stat-card {
+      background: var(--white);
       border: 1px solid var(--dr-muted);
-      min-width: 90px;
+      border-radius: 16px;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .15s, box-shadow .15s;
     }
 
-    .c-pill-label {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--ink-soft);
-      text-transform: uppercase;
-      letter-spacing: .08em
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(100,50,50,.10);
     }
 
-    .c-pill-val {
-      font-size: 13px;
-      font-weight: 600;
+    /* Card 1 — dark primary */
+    .stat-card--primary {
+      background: var(--dr);
+      border-color: var(--dr);
+    }
+
+    .stat-card--primary .stat-icon,
+    .stat-card--primary .stat-num,
+    .stat-card--primary .stat-label {
+      color: rgba(255,255,255,.95);
+    }
+
+    .stat-card--primary .stat-label {
+      color: rgba(255,255,255,.72);
+    }
+
+    /* Card 2 — accent bottom border */
+    .stat-card--accent {
+      border-bottom: 3px solid var(--dr-light);
+    }
+
+    /* Card 4 — pale rose */
+    .stat-card--pale {
+      background: var(--dr-pale);
+      border-color: var(--dr-muted);
+    }
+
+    .stat-icon {
+      font-size: 22px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-num {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(18px, 3vw, 28px);
+      font-weight: 700;
       color: var(--ink);
-      margin-top: 2px
+      letter-spacing: -.02em;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: var(--ink-soft);
+      margin-top: 4px;
+    }
+
+    .stat-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: var(--dr-pale);
+      color: var(--dr);
+      border: 1px solid var(--dr-muted);
+      letter-spacing: .03em;
+    }
+
+    @media(max-width:720px) {
+      .stat-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     /* ─── MAIN CONTENT ─── */
@@ -727,6 +800,124 @@
       gap: 10px
     }
 
+    /* ─── MAIN CONTENT GATE ─── */
+    .main-content {
+      display: none;
+    }
+
+    .main-content.show {
+      display: block;
+    }
+
+    /* ─── FILTER BARS (Active + Delivered) ─── */
+    .tab-filters {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 10px 16px;
+      background: var(--white);
+      border: 1px solid var(--dr-muted);
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .tab-filters.show {
+      display: flex;
+    }
+
+    .tab-filters label {
+      font-size: 12px;
+      color: var(--ink-soft);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .tab-filters select {
+      padding: 6px 10px;
+      font-size: 13px;
+      border-radius: 8px;
+    }
+
+    /* chip-style status buttons */
+    .status-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .status-chip {
+      border: 1px solid var(--dr-muted);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'Jost', sans-serif;
+      background: transparent;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .status-chip:hover {
+      border-color: var(--dr-light);
+      color: var(--ink);
+    }
+
+    .status-chip.active {
+      background: var(--dr);
+      border-color: var(--dr);
+      color: #fff;
+    }
+
+    /* ─── FILTER SUMMARY STRIP ─── */
+    .filter-summary {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px 16px;
+      background: var(--dr-pale);
+      border: 1px solid var(--dr-muted);
+      border-radius: 12px;
+      margin-bottom: 14px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .filter-summary.show {
+      display: flex;
+    }
+
+    .fs-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--ink-soft);
+    }
+
+    .fs-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: 2px;
+    }
+
+    .fs-val.fs-red {
+      color: #c0392b;
+    }
+
+    .fs-group {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .fs-item {
+      text-align: center;
+    }
+
     /* ─── FOOTER ─── */
     .footer {
       text-align: center;
@@ -812,32 +1003,44 @@
 
   <!-- CUSTOMER STRIP -->
   <div class="customer-strip" data-banner>
-    <div>
+    <div class="cust-header">
       <div class="cust-name" data-cname>—</div>
       <div class="cust-id" data-cid></div>
     </div>
-    <div class="cust-pills">
-      <div class="c-pill">
-        <div class="c-pill-label">Total Active Orders</div>
-        <div class="c-pill-val" data-sb>Rp 0</div>
+    <div class="stat-cards">
+      <!-- Card 1: Total Price (dark primary) -->
+      <div class="stat-card stat-card--primary">
+        <div class="stat-icon">📚</div>
+        <div class="stat-num" data-sb>Rp 0</div>
+        <div class="stat-label">Total Price</div>
       </div>
-      <div class="c-pill">
-        <div class="c-pill-label">Paid</div>
-        <div class="c-pill-val" data-sd>Rp 0</div>
+      <!-- Card 2: Paid Deposit (accent border, with % badge) -->
+      <div class="stat-card stat-card--accent">
+        <div class="stat-badge" data-pct-paid>0% Paid</div>
+        <div class="stat-icon">💰</div>
+        <div class="stat-num" data-sd>Rp 0</div>
+        <div class="stat-label">Paid (Deposit)</div>
       </div>
-      <div class="c-pill">
-        <div class="c-pill-label">Remaining</div>
-        <div class="c-pill-val" data-sr>Rp 0</div>
+      <!-- Card 3: Remaining Balance -->
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-num" data-sr style="color:#c0392b;">Rp 0</div>
+        <div class="stat-label">Remaining Balance</div>
       </div>
-      <div class="c-pill">
-        <div class="c-pill-label">Books</div>
-        <div class="c-pill-val" data-sq>0</div>
+      <!-- Card 4: Books qty (pale) -->
+      <div class="stat-card stat-card--pale">
+        <div class="stat-icon">📖</div>
+        <div class="stat-num" data-sq>0</div>
+        <div class="stat-label">Books</div>
       </div>
     </div>
   </div>
 
   <!-- MAIN -->
   <main class="main">
+    <!-- TABS + CONTENT (hidden until Customer ID is entered) -->
+    <div class="main-content" data-main-content>
+
     <!-- TABS -->
     <div class="tabs">
       <button class="tab active" type="button" data-tab="active">Active Orders</button>
@@ -848,6 +1051,13 @@
     <div class="list-meta">
       <div class="list-info" data-ri>Enter your Customer ID to begin.</div>
       <div class="list-actions">
+        <!-- Active-tab ETA filter (hidden on other tabs) -->
+        <div class="active-tab-controls" data-active-tab-controls style="display:none; align-items:center; gap:8px;">
+          <label style="font-size:12px; color:var(--ink-soft); white-space:nowrap;">ETA</label>
+          <select data-active-filter style="padding:7px 10px; border:1px solid var(--dr-muted); border-radius:8px; background:var(--white); color:var(--ink); font-size:13px; outline:none; cursor:pointer; min-width:140px;">
+            <option value="">All ETA</option>
+          </select>
+        </div>
         <div class="search-local-wrap">
           <input type="text" data-lsearch placeholder="Search title or publisher...">
         </div>
@@ -875,6 +1085,18 @@
 
     <!-- Delivered -->
     <div class="view" data-view="sent">
+      <!-- Delivered filter bar -->
+      <div class="tab-filters" data-sent-filters>
+        <label>📅 Month:</label>
+        <select data-sent-month>
+          <option value="">All Months</option>
+        </select>
+        <label style="margin-left:8px;">⇅ Sort:</label>
+        <select data-sent-sort>
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+        </select>
+      </div>
       <div class="book-list" data-list2>
         <div class="empty">
           <div class="empty-img">📦</div>
@@ -899,6 +1121,8 @@
       <div class="page-info" data-pi>Page 1 of 1</div>
       <button class="btn-page" type="button" data-next>Next →</button>
     </div>
+
+    </div><!-- end .main-content -->
   </main>
 
   <div class="footer">Books Journey Tracker · Connected to Google Spreadsheet</div>
@@ -923,6 +1147,7 @@
         sd: document.querySelector("[data-sd]"),
         sr: document.querySelector("[data-sr]"),
         sq: document.querySelector("[data-sq]"),
+        pctPaid: document.querySelector("[data-pct-paid]"),
         tabs: [...document.querySelectorAll("[data-tab]")],
         views: [...document.querySelectorAll("[data-view]")],
         size: document.querySelector("[data-size]"),
@@ -934,9 +1159,15 @@
         next: document.querySelector("[data-next]"),
         pi: document.querySelector("[data-pi]"),
         lsearch: document.querySelector("[data-lsearch]"),
+        mainContent: document.querySelector("[data-main-content]"),
+        activeTabControls: document.querySelector("[data-active-tab-controls]"),
+        sentFilters: document.querySelector("[data-sent-filters]"),
+        sentMonth: document.querySelector("[data-sent-month]"),
+        sentSort: document.querySelector("[data-sent-sort]"),
+        activeFilter: document.querySelector("[data-active-filter]"),
       };
 
-      const S = { tab: "active", size: 10, page: { active: 1, sent: 1 }, search: "", data: null };
+      const S = { tab: "active", size: 10, page: { active: 1, sent: 1 }, search: "", data: null, sentMonth: "", sentSort: "newest", activeFilter: "" };
 
       const fc = v => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(v || 0);
       const fn = v => new Intl.NumberFormat("id-ID").format(v || 0);
@@ -963,7 +1194,6 @@
         E.sync.innerHTML = on ? iconSpin : iconCheck;
       }
 
-      // Ambil nilai kolom dengan fallback case-insensitive
       function col(r, ...keys) {
         for (const k of keys) {
           if (r[k] !== undefined && String(r[k]).trim() != "") return r[k];
@@ -1039,6 +1269,147 @@
         el.innerHTML = rows.map(r => bookCard(r, isSent)).join("");
       }
 
+      function parseShipDate(r) {
+        const raw = col(r, "Shipment Date", "shipment date", "SHIPMENT DATE");
+        if (!raw) return null;
+        const dt = new Date(raw);
+        return isNaN(dt.getTime()) ? null : dt;
+      }
+
+      function parseEtaDate(r) {
+        const raw = col(r, "ETA", "eta");
+        if (!raw) return null;
+        const s = String(raw).trim();
+        if (/^\d{4}$/.test(s)) return new Date(s + "-01-01");
+        const idMonths = { jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11 };
+        const m = s.match(/([a-z]+)\s+(\d{4})/i);
+        if (m) {
+          const mo = idMonths[m[1].toLowerCase().slice(0,3)];
+          if (mo !== undefined) return new Date(Number(m[2]), mo, 1);
+        }
+        const dt = new Date(s);
+        return isNaN(dt.getTime()) ? null : dt;
+      }
+
+      function populateActiveEta() {
+        if (!E.activeEta) return;
+        const rows = S.data ? (S.data.orders || []) : [];
+        const seen = new Set();
+        const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const entries = [];
+        rows.forEach(r => {
+          const dt = parseEtaDate(r);
+          if (!dt) {
+            if (!seen.has("__other")) { seen.add("__other"); entries.push({ key: "__other", label: "Others (no ETA)" }); }
+            return;
+          }
+          const key = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            entries.push({ key, label: `${MONTHS[dt.getMonth()]} ${dt.getFullYear()}` });
+          }
+        });
+        entries.sort((a, b) => {
+          if (a.key === "__other") return 1;
+          if (b.key === "__other") return -1;
+          return a.key.localeCompare(b.key);
+        });
+        const prev = E.activeEta.value;
+        E.activeEta.innerHTML = '<option value="">All ETA</option>';
+        entries.forEach(e => {
+          const opt = document.createElement("option");
+          opt.value = e.key;
+          opt.textContent = e.label;
+          E.activeEta.appendChild(opt);
+        });
+        if ([...E.activeEta.options].some(o => o.value === prev)) E.activeEta.value = prev;
+        else { E.activeEta.value = ""; S.activeEta = ""; }
+      }
+
+      function populateActiveFilter() {
+        if (!E.activeFilter) return;
+        const sel = E.activeFilter;
+        const rows = S.data ? (S.data.orders || []) : [];
+        const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const seen = new Set();
+        const etaEntries = [];
+        rows.forEach(r => {
+          const dt = parseEtaDate(r);
+          if (!dt) {
+            if (!seen.has("__other")) { seen.add("__other"); etaEntries.push({ key: "__other", label: "No ETA" }); }
+            return;
+          }
+          const key = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            etaEntries.push({ key, label: `${MONTHS[dt.getMonth()]} ${dt.getFullYear()}` });
+          }
+        });
+        etaEntries.sort((a, b) => {
+          if (a.key === "__other") return 1;
+          if (b.key === "__other") return -1;
+          return a.key.localeCompare(b.key);
+        });
+        const prev = S.activeFilter;
+        // Bangun ulang: All | Ready | ETA months | No ETA
+        sel.innerHTML = '<option value="">All</option><option value="ready">✔️ Ready</option>';
+        etaEntries.forEach(e => {
+          const opt = document.createElement("option");
+          opt.value = e.key;  // "YYYY-MM" atau "__other"
+          opt.textContent = "📅 " + e.label;
+          sel.appendChild(opt);
+        });
+        const validValues = [...sel.options].map(o => o.value);
+        sel.value = validValues.includes(prev) ? prev : "";
+        if (!validValues.includes(prev)) S.activeFilter = "";
+      }
+
+      function updateBannerFromRows(filteredRows) {
+        if (!S.data || !E.sb) return;
+        let totalQty = 0, totalPrice = 0, totalDp = 0;
+        filteredRows.forEach(r => {
+          const qs = col(r, "Qty", "QTY", "qty");
+          totalQty += (qs === "" || qs === undefined) ? 1 : toNum(qs);
+          totalPrice += toNum(col(r, "Harga Total", "harga total", "HARGA TOTAL"));
+          totalDp += toNum(col(r, "DP", "dp"));
+        });
+        const totalRem = Math.max(totalPrice - totalDp, 0);
+        const pct = totalPrice > 0 ? Math.round(totalDp / totalPrice * 100) : 0;
+        E.sb.textContent = fc(totalPrice);
+        E.sd.textContent = fc(totalDp);
+        E.sr.textContent = fc(totalRem);
+        E.sq.textContent = fn(totalQty);
+        if (E.pctPaid) E.pctPaid.textContent = pct + "% Paid";
+      }
+
+      function populateSentMonths() {
+        if (!E.sentMonth) return;
+        const rows = S.data ? (S.data.sent || []) : [];
+        const seen = new Set();
+        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const entries = [];
+        rows.forEach(r => {
+          const dt = parseShipDate(r);
+          if (!dt) return;
+          const key = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            entries.push({ key, label: `${months[dt.getMonth()]} ${dt.getFullYear()}` });
+          }
+        });
+        entries.sort((a, b) => b.key.localeCompare(a.key));
+        const prev = E.sentMonth.value;
+        E.sentMonth.innerHTML = '<option value="">All Months</option>';
+        entries.forEach(e => {
+          const opt = document.createElement("option");
+          opt.value = e.key;
+          opt.textContent = e.label;
+          E.sentMonth.appendChild(opt);
+        });
+        if ([...E.sentMonth.options].some(o => o.value === prev)) E.sentMonth.value = prev;
+        else { E.sentMonth.value = ""; S.sentMonth = ""; }
+      }
+
       function rowsBy(tab) {
         if (!S.data) return [];
         let rows = [];
@@ -1053,6 +1424,45 @@
             return String(title).toLowerCase().includes(q) || String(publisher).toLowerCase().includes(q);
           });
         }
+
+        if (tab === "active" && S.activeFilter) {
+          const f = S.activeFilter;
+          if (f === "ready") {
+            // Tampilkan hanya buku yang statusnya Ready
+            rows = rows.filter(r => {
+              const st = (col(r, "Status", "STATUS", "status") || "").toLowerCase();
+              return st.includes("ready") || st.includes("terkirim");
+            });
+          } else if (f === "__other") {
+            // Buku tanpa ETA (masih PO, belum ada jadwal)
+            rows = rows.filter(r => !parseEtaDate(r));
+          } else {
+            // Filter per bulan ETA "YYYY-MM"
+            const [yr, mo] = f.split("-").map(Number);
+            rows = rows.filter(r => {
+              const dt = parseEtaDate(r);
+              return dt && dt.getFullYear() === yr && (dt.getMonth() + 1) === mo;
+            });
+          }
+        }
+
+        if (tab === "sent") {
+          if (S.sentMonth) {
+            const [yr, mo] = S.sentMonth.split("-").map(Number);
+            rows = rows.filter(r => {
+              const dt = parseShipDate(r);
+              return dt && dt.getFullYear() === yr && (dt.getMonth() + 1) === mo;
+            });
+          }
+          rows = [...rows].sort((a, b) => {
+            const da = parseShipDate(a), db = parseShipDate(b);
+            if (!da && !db) return 0;
+            if (!da) return 1;
+            if (!db) return -1;
+            return S.sentSort === "oldest" ? da - db : db - da;
+          });
+        }
+
         return rows;
       }
 
@@ -1182,10 +1592,14 @@
       function render() {
         E.tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === S.tab));
         E.views.forEach(v => v.classList.toggle("active", v.dataset.view === S.tab));
+        if (E.mainContent) E.mainContent.classList.toggle("show", !!S.data);
+        if (E.activeTabControls) E.activeTabControls.style.display = (S.tab === "active" && S.data) ? "flex" : "none";
+        if (E.sentFilters) E.sentFilters.classList.toggle("show", S.tab === "sent");
         const a = rowsBy("active"), s = rowsBy("sent");
         const pa = page(a, "active"), ps = page(s, "sent");
         renderList(E.list1, pa.rows, false);
         renderList(E.list2, ps.rows, true);
+        if (S.tab === "active" && S.data) updateBannerFromRows(a);
         renderOverview();
         if (S.tab === "info") {
           E.prev.disabled = !0; E.next.disabled = !0;
@@ -1202,6 +1616,9 @@
 
       function reset() {
         S.data = null; S.page.active = 1; S.page.sent = 1; S.search = "";
+        S.activeFilter = "";
+        if (E.mainContent) E.mainContent.classList.remove("show");
+        if (E.activeFilter) E.activeFilter.value = "";
         E.input.value = "";
         if (E.lsearch) E.lsearch.value = "";
         E.banner.classList.remove("show");
@@ -1223,6 +1640,8 @@
           const json = await res.json();
           if (json.error) throw new Error(json.error);
           S.data = json;
+          populateSentMonths();
+          populateActiveFilter();
           E.banner.classList.add("show");
           E.cname.textContent = json.nama || "Unknown Customer";
           E.cid.textContent = "Customer ID: " + id;
@@ -1236,11 +1655,13 @@
             });
           }
           const actSisa = Math.max(actBelanja - actDeposit, 0);
+          const actPct = actBelanja > 0 ? Math.round(actDeposit / actBelanja * 100) : 0;
 
           E.sb.textContent = fc(actBelanja);
           E.sd.textContent = fc(actDeposit);
           E.sr.textContent = fc(actSisa);
           E.sq.textContent = fn(actQty);
+          if (E.pctPaid) E.pctPaid.textContent = actPct + "% Paid";
           const total = (json.orders?.length || 0) + (json.sent?.length || 0);
           E.sync.innerHTML = iconCheck;
           E.sync.title = fn(total) + " books loaded";
@@ -1259,7 +1680,19 @@
 
       E.form.addEventListener("submit", e => { e.preventDefault(); search(E.input.value); });
       if (E.lsearch) E.lsearch.addEventListener("input", e => { S.search = e.target.value; S.page.active = 1; S.page.sent = 1; render(); });
-      E.reset.addEventListener("click", reset);
+      // Delivered filters
+      if (E.sentMonth) E.sentMonth.addEventListener("change", e => { S.sentMonth = e.target.value; S.page.sent = 1; render(); });
+      if (E.sentSort) E.sentSort.addEventListener("change", e => { S.sentSort = e.target.value; S.page.sent = 1; render(); });
+      // Active orders single combined filter
+      if (E.activeFilter) E.activeFilter.addEventListener("change", e => { S.activeFilter = e.target.value; S.page.active = 1; render(); });
+      // Reset activeFilter state on clear
+
+      E.reset.addEventListener("click", () => {
+        S.sentMonth = ""; S.sentSort = "newest";
+        if (E.sentMonth) E.sentMonth.value = "";
+        if (E.sentSort) E.sentSort.value = "newest";
+        reset();
+      });
       E.tabs.forEach(t => t.addEventListener("click", () => { S.tab = t.dataset.tab; render(); }));
       E.size.addEventListener("change", e => { S.size = e.target.value === "all" ? "all" : Number(e.target.value); S.page.active = 1; S.page.sent = 1; render(); });
       E.prev.addEventListener("click", () => { if (S.tab === "info") return; S.page[S.tab] = Math.max(S.page[S.tab] - 1, 1); render(); });
