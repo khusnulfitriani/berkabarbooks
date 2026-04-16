@@ -479,36 +479,99 @@
       font-weight: 400
     }
 
-    .book-dp-row {
+    .book-card {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .book-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .book-card-bottom {
+      display: flex;
+      gap: 0;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--dr-muted);
+    }
+
+    .book-fin-col {
+      flex: 1;
+      padding: 0 12px;
+    }
+
+    .book-fin-col:first-child {
+      padding-left: 0;
+    }
+
+    .book-fin-col:last-child {
+      padding-right: 0;
+    }
+
+    .book-fin-label {
       font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      color: var(--ink-mid);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .book-fin-val {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
       margin-top: 3px;
-      font-weight: 500
+    }
+
+    .book-fin-val.remaining {
+      color: #c0392b;
+    }
+
+    .book-fin-val.zero {
+      color: var(--ink-mid);
     }
 
     .book-right {
-      text-align: right;
-      flex-shrink: 0
+      flex-shrink: 0;
+      margin-left: auto;
     }
 
     .book-status {
       font-family: 'Inter', sans-serif;
       font-weight: 600;
       color: var(--ink);
-      font-size: 14px;
-      display: flex;
+      font-size: 13px;
+      display: inline-flex;
       align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: var(--dr-pale);
+      border: 1px solid var(--dr-muted);
     }
 
-    .book-price {
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      color: var(--ink-mid);
-      margin-top: 4px;
-      font-weight: 500
+    .book-status.status-ready {
+      background: #e8f5e9;
+      border-color: #a5d6a7;
+      color: #2e7d32;
+    }
+
+    .book-status.status-ordered {
+      background: #fff8e1;
+      border-color: #ffe082;
+      color: #f57f17;
+    }
+
+    .book-status.status-canceled {
+      background: #fce4ec;
+      border-color: #f48fb1;
+      color: #c62828;
     }
 
     /* ─── EMPTY ─── */
@@ -786,7 +849,7 @@
       <div class="list-info" data-ri>Enter your Customer ID to begin.</div>
       <div class="list-actions">
         <div class="search-local-wrap">
-          <input type="text" data-lsearch placeholder="Search book title...">
+          <input type="text" data-lsearch placeholder="Search title or publisher...">
         </div>
         <div class="size-wrap">
           <label>Show</label>
@@ -935,17 +998,35 @@
         }
         const dpStr = dp ? fc(dp) + (tglDp ? " (" + tglDp + ")" : "") : "";
         const isCanceled = (qty !== "" && qty !== undefined && toNum(qty) === 0);
+        const remaining = Math.max(harga - dp, 0);
+        const srLowStatus = statusRaw.toLowerCase();
+        const statusClass = srLowStatus.includes("ready") || srLowStatus.includes("terkirim") ? "status-ready" :
+                            srLowStatus.includes("cancel") ? "status-canceled" : "status-ordered";
         return `<div class="book-card ${isCanceled ? 'canceled' : ''}">
-      <div class="book-icon">📘</div>
-      <div class="book-body">
-        <div class="book-title">${esc(title)}</div>
-        ${meta1 ? '<div class="book-meta">' + esc(meta1) + '</div>' : ""}
-        ${meta2 ? '<div class="book-meta book-meta-dim">' + esc(meta2) + '</div>' : ""}
+      <div class="book-card-top">
+        <div class="book-icon">📘</div>
+        <div class="book-body">
+          <div class="book-title">${esc(title)}</div>
+          ${meta1 ? '<div class="book-meta">' + esc(meta1) + '</div>' : ""}
+          ${meta2 ? '<div class="book-meta book-meta-dim">' + esc(meta2) + '</div>' : ""}
+        </div>
+        <div class="book-right">
+          <div class="book-status ${statusClass}">${esc(statusRaw)}</div>
+        </div>
       </div>
-      <div class="book-right">
-        <div class="book-status">${esc(status)}</div>
-        <div class="book-price">${fc(harga)}</div>
-        ${dpStr ? '<div class="book-dp-row">DP ' + esc(dpStr) + '</div>' : ""}
+      <div class="book-card-bottom">
+        <div class="book-fin-col">
+          <div class="book-fin-label">Price</div>
+          <div class="book-fin-val">${fc(harga)}</div>
+        </div>
+        <div class="book-fin-col" style="border-left:1px dashed var(--dr-muted); border-right:1px dashed var(--dr-muted);">
+          <div class="book-fin-label">Deposit</div>
+          <div class="book-fin-val">${fc(dp)}</div>
+        </div>
+        <div class="book-fin-col" style="text-align:right;">
+          <div class="book-fin-label">Remaining</div>
+          <div class="book-fin-val ${remaining > 0 ? 'remaining' : 'zero'}">${fc(remaining)}</div>
+        </div>
       </div>
     </div>`;
       }
@@ -968,7 +1049,8 @@
           const q = S.search.toLowerCase();
           rows = rows.filter(r => {
             const title = col(r, "JUDUL", "Judul", "judul", "Title") || "";
-            return String(title).toLowerCase().includes(q);
+            const publisher = col(r, "PENERBIT", "Penerbit", "penerbit") || "";
+            return String(title).toLowerCase().includes(q) || String(publisher).toLowerCase().includes(q);
           });
         }
         return rows;
