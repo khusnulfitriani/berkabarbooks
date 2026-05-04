@@ -81,22 +81,35 @@
     .badge-closing{background:var(--orange-bg);color:var(--orange)}
 
     /* Card right — details */
-    .po-body{padding:24px 28px;display:flex;flex-direction:column}
-    .po-publisher-tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--burgundy-pale);margin-bottom:6px}
-    .po-name{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--text-dark);line-height:1.3;margin-bottom:10px}
+    .po-body{padding:24px 28px;display:flex;flex-direction:column;gap:0}
+    .po-publisher-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--burgundy-pale);margin-bottom:6px}
+    .po-publisher-name{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--text-dark);line-height:1.3;margin-bottom:10px}
     .po-desc{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:16px}
 
-    .po-dates{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+    .po-dates{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)}
     .po-date-row{display:flex;justify-content:space-between;align-items:baseline}
     .po-date-label{font-size:13px;color:var(--text-muted)}
     .po-date-value{font-size:13px;font-weight:500;color:var(--text-dark)}
     .po-date-value.urgent{color:var(--orange);font-weight:600}
 
-    .po-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
-    .btn-catalog{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;border:1.5px solid var(--burgundy);color:var(--burgundy);background:transparent;transition:all .18s;font-family:'DM Sans',sans-serif;cursor:pointer}
-    .btn-catalog:hover{background:rgba(122,46,46,0.06)}
-    .btn-wa{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;background:var(--burgundy);color:#fff;border:1.5px solid var(--burgundy);transition:all .18s;font-family:'DM Sans',sans-serif}
-    .btn-wa:hover{background:var(--burgundy-light)}
+    /* Buttons */
+    .po-actions{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+    .btn-group-row{display:flex;gap:8px;flex-wrap:wrap}
+    .btn-catalog{
+      display:inline-flex;align-items:center;justify-content:center;gap:7px;
+      padding:9px 18px;border-radius:99px;font-size:13px;font-weight:500;
+      text-decoration:none;border:1.5px solid var(--border);color:var(--text-mid);
+      background:var(--white);transition:all .18s;font-family:'DM Sans',sans-serif;
+      white-space:nowrap;
+    }
+    .btn-catalog:hover{border-color:var(--burgundy-pale);color:var(--burgundy);background:rgba(122,46,46,0.04)}
+    .btn-wa{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      padding:11px 20px;border-radius:99px;font-size:14px;font-weight:500;
+      text-decoration:none;background:var(--burgundy);color:#fff;
+      border:none;transition:background .18s,transform .15s;font-family:'DM Sans',sans-serif;
+    }
+    .btn-wa:hover{background:var(--burgundy-light);transform:translateY(-1px)}
 
     /* INFO BOX */
     .info-box{max-width:860px;margin:8px auto 0;padding:0 40px}
@@ -248,41 +261,27 @@
         photoHtml = `<div class="po-preview-no-photo">Belum ada foto preview</div>`;
       }
 
-      // Catalog mini links
-      const cats = [
-        po.katalog_pdf  ? {url: po.katalog_pdf,  label: 'Katalog PDF'}  : null,
-        po.katalog_pdf2 ? {url: po.katalog_pdf2, label: 'PDF 2'}        : null,
-        po.katalog_canva  ? {url: po.katalog_canva,  label: 'Katalog'}  : null,
-        po.katalog_canva2 ? {url: po.katalog_canva2, label: 'Katalog 2'}: null,
-        po.katalog_canva3 ? {url: po.katalog_canva3, label: 'Katalog 3'}: null,
+      // Catalog buttons (right panel only)
+      const catalogBtns = [
+        po.katalog_pdf    ? `<a href="${po.katalog_pdf}"   target="_blank" rel="noopener" class="btn-catalog">${iconPDF} Katalog PDF</a>`    : '',
+        po.katalog_pdf2   ? `<a href="${po.katalog_pdf2}"  target="_blank" rel="noopener" class="btn-catalog">${iconPDF} Katalog PDF 2</a>`  : '',
+        po.katalog_canva  ? `<a href="${po.katalog_canva}" target="_blank" rel="noopener" class="btn-catalog">${iconLink} Katalog</a>`        : '',
+        po.katalog_canva2 ? `<a href="${po.katalog_canva2}" target="_blank" rel="noopener" class="btn-catalog">${iconLink} Katalog 2</a>`     : '',
+        po.katalog_canva3 ? `<a href="${po.katalog_canva3}" target="_blank" rel="noopener" class="btn-catalog">${iconLink} Katalog 3</a>`     : '',
       ].filter(Boolean);
 
-      const previewFooter = cats.length ? `<div class="po-preview-footer">
-        <div class="po-preview-footer-label">Lihat katalog lengkap di sini 👇</div>
-        <div class="po-preview-footer-links">
-          ${cats.map(c => `<a href="${c.url}" target="_blank" rel="noopener" class="cat-mini">${c.label}</a>`).join('')}
-        </div>
-      </div>` : '';
-
-      // Action buttons
-      const pdfBtns = [
-        po.katalog_pdf   ? `<a href="${po.katalog_pdf}"  target="_blank" class="btn-catalog">${iconPDF} Buka Katalog PDF</a>`  : '',
-        po.katalog_canva ? `<a href="${po.katalog_canva}" target="_blank" class="btn-catalog">${iconLink} Buka Katalog Canva</a>` : '',
-      ].filter(Boolean).join('');
-
       const waBtn = po.wa_link ? `<a href="${po.wa_link}" target="_blank" rel="noopener" class="btn-wa">${iconWA} Order via WhatsApp</a>` : '';
-
       const desc = po.deskripsi && po.deskripsi !== '-' ? `<p class="po-desc">${po.deskripsi}</p>` : '';
+      const catRow = catalogBtns.length ? `<div class="btn-group-row">${catalogBtns.join('')}</div>` : '';
 
       return `<div class="po-card">
         <div class="po-preview">
           ${badgeHtml}
           ${photoHtml}
-          ${previewFooter}
         </div>
         <div class="po-body">
-          <div class="po-publisher-tag">${po.publisher || '—'}</div>
-          <div class="po-name">${po.kategori}</div>
+          <div class="po-publisher-label">Penerbit</div>
+          <div class="po-publisher-name">${po.publisher || '—'}</div>
           ${desc}
           <div class="po-dates">
             ${po.tgl_tutup ? `<div class="po-date-row">
@@ -294,7 +293,10 @@
               <span class="po-date-value">${po.eta}</span>
             </div>` : ''}
           </div>
-          <div class="po-actions">${pdfBtns}${waBtn}</div>
+          <div class="po-actions">
+            ${catRow}
+            ${waBtn}
+          </div>
         </div>
       </div>`;
     }
