@@ -1,1190 +1,708 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tracking Your Books Journey</title>
-
-  <!-- =============================================
-    FAVICON / ICON TAB BROWSER
-    Cara ganti dengan logo sendiri:
-    1. Siapkan file logo format PNG ukuran 32x32 atau 64x64
-    2. Upload ke folder yang sama dengan index.html
-    3. Ganti baris di bawah jadi:
-       <link rel="icon" type="image/png" href="logo.png">
-    ============================================= -->
-  <link rel="icon" type="image/png" href="Logo only.png">
-  <link rel="apple-touch-icon" href="Logo only.png">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap"
-    rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Berkabarbooks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --dr: #b07878;
-      /* dusty rose main */
-      --dr-light: #c99090;
-      /* lighter dusty rose */
-      --dr-pale: #eedede;
-      /* very pale rose */
-      --dr-bg: #f5e8e8;
-      /* page background */
-      --dr-muted: #e2cece;
-      /* borders / muted */
-      --white: #ffffff;
-      --gray-50: #faf9f9;
-      --gray-100: #f0eded;
-      --gray-400: #a89898;
-      --gray-600: #7a6868;
-      --ink: #2e2020;
-      --ink-mid: #6b4f4f;
-      --ink-soft: #a08080;
+      --cream: #F5F0E8;
+      --cream-dark: #EDE6D8;
+      --burgundy: #7A2E2E;
+      --burgundy-light: #9B4040;
+      --burgundy-pale: #C97070;
+      --text-dark: #2C1A1A;
+      --text-mid: #5C3D3D;
+      --text-muted: #9A7B7B;
+      --white: #FFFFFF;
+      --border: rgba(122,46,46,0.12);
+      --card-shadow: 0 2px 20px rgba(44,26,26,0.07);
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg)
-      }
-    }
-
-    html {
-      scroll-behavior: smooth
-    }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Jost', sans-serif;
-      color: var(--ink);
-      background: var(--dr-bg);
-      min-height: 100vh;
-      padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    button,
-    input,
-    select {
-      font: inherit
-    }
-
-    /* ─── STICKY NAV ─── */
-    .nav {
+    /* NAV */
+    nav {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: var(--dr);
-      padding: 14px 32px;
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 60px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      gap: 32px;
     }
 
     .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--white)
-    }
-
-    .nav-brand svg {
-      width: 22px;
-      height: 22px;
-      opacity: .9
-    }
-
-    .nav-brand span {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: .04em
-    }
-
-    .nav-pill {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, .12);
-      color: rgba(255, 255, 255, .55);
-      border: 1px solid rgba(255, 255, 255, .18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 11px;
-      font-weight: 300;
-    }
-
-    /* ─── HERO ─── */
-    .hero {
-      text-align: center;
-      padding: 72px 24px 56px;
-      background: linear-gradient(180deg, var(--dr-bg) 0%, #ede0e0 100%);
-    }
-
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(42px, 8vw, 80px);
-      font-weight: 300;
-      color: var(--ink);
-      line-height: 1.05;
-      letter-spacing: .01em;
-      margin-bottom: 18px;
-    }
-
-    .hero h1 em {
+      font-family: 'Lora', serif;
       font-style: italic;
-      color: var(--dr);
-      display: block;
+      font-size: 20px;
+      color: var(--burgundy);
+      text-decoration: none;
+      margin-right: auto;
+      letter-spacing: -0.01em;
     }
 
-    .hero p {
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--ink-mid);
-      max-width: 420px;
-      margin: 0 auto 36px;
-      line-height: 1.8;
-      letter-spacing: .02em;
-    }
-
-    /* ─── SEARCH BOX ─── */
-    .search-wrap {
-      max-width: 580px;
-      margin: 0 auto;
-      background: var(--white);
-      border-radius: 16px;
-      padding: 8px 8px 8px 20px;
+    .nav-links {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 12px 40px rgba(100, 50, 50, .12);
-      border: 1px solid var(--dr-muted);
+      gap: 28px;
+      list-style: none;
     }
 
-    .search-wrap input {
-      flex: 1;
-      border: none;
-      outline: none;
-      background: transparent;
-      font-size: 15px;
-      color: var(--ink);
-      font-weight: 400;
-      padding: 8px 0;
-    }
-
-    .search-wrap input::placeholder {
-      color: var(--ink-soft);
-      font-weight: 300
-    }
-
-    .btn-search {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 28px;
-      background: var(--dr);
-      color: var(--white);
+    .nav-links a {
+      font-family: 'Lora', serif;
+      font-style: italic;
       font-size: 14px;
-      font-weight: 500;
-      letter-spacing: .04em;
-      cursor: pointer;
-      transition: background .18s, transform .15s;
-      white-space: nowrap;
-      font-family: 'Jost', sans-serif;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
     }
 
-    .btn-search:hover {
-      background: var(--dr-light);
-      transform: translateY(-1px)
-    }
+    .nav-links a:hover { color: var(--burgundy); }
 
-    .btn-search:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-      transform: none
-    }
-
-    .btn-clear {
-      border: none;
-      background: transparent;
-      color: var(--ink-soft);
-      font-size: 13px;
-      font-weight: 400;
-      cursor: pointer;
-      padding: 8px 12px;
-      border-radius: 8px;
-      transition: color .15s, background .15s;
-      white-space: nowrap;
-      font-family: 'Jost', sans-serif;
-    }
-
-    .btn-clear:hover {
-      color: var(--ink);
-      background: var(--gray-100)
-    }
-
-    /* ─── CUSTOMER BANNER ─── */
-    .customer-strip {
-      display: none;
-      background: var(--white);
-      border-top: 1px solid var(--dr-muted);
-      border-bottom: 1px solid var(--dr-muted);
-      padding: 16px 32px;
-      align-items: center;
-      justify-content: space-between;
+    .nav-icons {
+      display: flex;
       gap: 16px;
-      flex-wrap: wrap;
+      align-items: center;
     }
 
-    .customer-strip.show {
-      display: flex
-    }
-
-    .cust-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--ink)
-    }
-
-    .cust-id {
-      font-size: 12px;
-      color: var(--ink-soft);
-      margin-top: 2px;
-      letter-spacing: .04em
-    }
-
-    .cust-pills {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap
-    }
-
-    .c-pill {
-      padding: 8px 16px;
-      border-radius: 10px;
-      background: var(--gray-50);
-      border: 1px solid var(--dr-muted);
-      min-width: 90px;
-    }
-
-    .c-pill-label {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--ink-soft);
-      text-transform: uppercase;
-      letter-spacing: .08em
-    }
-
-    .c-pill-val {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--ink);
-      margin-top: 2px
-    }
-
-    /* ─── MAIN CONTENT ─── */
-    .main {
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 32px 20px 60px
-    }
-
-    /* ─── TABS ─── */
-    .tabs {
-      display: flex;
-      border-bottom: 1.5px solid var(--dr-muted);
-      margin-bottom: 28px;
-      gap: 0;
-    }
-
-    .tab {
-      flex: 1;
+    .nav-icon-btn {
+      background: none;
       border: none;
-      background: transparent;
-      font-family: 'Jost', sans-serif;
-      font-size: 14px;
-      font-weight: 400;
-      letter-spacing: .04em;
-      color: var(--ink-soft);
-      padding: 14px 8px;
       cursor: pointer;
-      transition: color .18s;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1.5px;
-      text-align: center;
-    }
-
-    .tab:hover {
-      color: var(--ink-mid)
-    }
-
-    .tab.active {
-      color: var(--dr);
-      font-weight: 600;
-      border-bottom-color: var(--dr);
-    }
-
-    /* ─── LIST META ─── */
-    .list-meta {
+      color: var(--text-mid);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
+      padding: 4px;
+      transition: color 0.2s;
     }
 
-    .list-info {
-      font-size: 13px;
-      color: var(--ink-soft);
-      font-weight: 300
-    }
+    .nav-icon-btn:hover { color: var(--burgundy); }
 
-    .list-actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .search-local-wrap input {
-      padding: 7px 12px;
-      border: 1px solid var(--dr-muted);
-      border-radius: 8px;
-      background: var(--white);
-      color: var(--ink);
-      font-size: 13px;
-      outline: none;
-      width: 160px;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .search-local-wrap input::placeholder {
-      color: var(--ink-soft);
-    }
-
-    .size-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px
-    }
-
-    .size-wrap label {
-      font-size: 12px;
-      color: var(--ink-soft);
-      font-weight: 400
-    }
-
-    select {
-      padding: 7px 12px;
-      border: 1px solid var(--dr-muted);
-      border-radius: 8px;
-      background: var(--white);
-      color: var(--ink);
-      font-size: 13px;
-      outline: none;
-      cursor: pointer;
-    }
-
-    /* ─── BOOK CARDS ─── */
-    .book-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px
-    }
-
-    .book-card {
-      background: var(--white);
-      border: 1px solid var(--dr-muted);
-      border-radius: 14px;
-      padding: 18px 22px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      transition: box-shadow .18s, transform .15s;
-    }
-
-    .book-card:hover {
-      box-shadow: 0 6px 24px rgba(100, 50, 50, .10);
-      transform: translateY(-1px);
-    }
-
-    .book-card.canceled {
-      opacity: 0.75;
-    }
-
-    .book-card.canceled .book-title {
-      color: #d15b5b;
-      text-decoration: line-through;
-      font-style: italic;
-    }
-
-    .book-card.canceled .book-price {
-      text-decoration: line-through;
-      color: var(--ink-soft);
-    }
-
-    .book-card.canceled .book-icon {
-      filter: grayscale(100%);
-      opacity: 0.5;
-    }
-
-    .book-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--dr-pale), var(--dr-muted));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 20px;
-    }
-
-    .book-body {
-      flex: 1;
-      min-width: 0
-    }
-
-    .book-title {
-      font-family: 'Inter', sans-serif;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--ink);
-      line-height: 1.4;
-      letter-spacing: .01em;
-    }
-
-    .book-meta {
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      color: var(--ink-mid);
-      margin-top: 4px;
-      font-weight: 400
-    }
-
-    .book-meta-dim {
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      color: var(--ink-soft);
-      opacity: .8;
-      margin-top: 2px;
-      font-weight: 400
-    }
-
-    .book-dp-row {
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      color: var(--ink-mid);
-      margin-top: 3px;
-      font-weight: 500
-    }
-
-    .book-right {
-      text-align: right;
-      flex-shrink: 0
-    }
-
-    .book-status {
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      color: var(--ink);
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
-    }
-
-    .book-price {
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      color: var(--ink-mid);
-      margin-top: 4px;
-      font-weight: 500
-    }
-
-    /* ─── EMPTY ─── */
-    .empty {
-      padding: 64px 20px;
-      text-align: center;
-      color: var(--ink-soft);
-    }
-
-    .empty-img {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 20px;
-      background: var(--dr-pale);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-    }
-
-    .empty p {
-      font-size: 14px;
-      font-weight: 300;
-      line-height: 1.7;
-      max-width: 300px;
-      margin: 0 auto
-    }
-
-    /* ─── VIEW HIDDEN ─── */
-    .view {
-      display: none
-    }
-
-    .view.active {
-      display: block
-    }
-
-    /* ─── PAGINATION ─── */
-    .pagination {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 28px;
-      padding-top: 20px;
-      border-top: 1px solid var(--dr-muted);
-    }
-
-    .btn-page {
-      border: 1px solid var(--dr-muted);
-      border-radius: 10px;
-      padding: 10px 22px;
-      background: var(--white);
-      color: var(--ink-mid);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all .15s;
-      font-family: 'Jost', sans-serif;
-    }
-
-    .btn-page:hover:not(:disabled) {
-      background: var(--dr-pale);
-      border-color: var(--dr-light);
-      color: var(--ink)
-    }
-
-    .btn-page:disabled {
-      opacity: .4;
-      cursor: not-allowed
-    }
-
-    .page-info {
-      font-size: 13px;
-      color: var(--ink-soft);
-      font-weight: 300
-    }
-
-    /* ─── OVERVIEW ─── */
-    .overview-grid {
+    /* HERO */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 64px 40px 80px;
       display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 14px
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      min-height: calc(100vh - 60px - 80px);
     }
 
-    .ov-card {
-      background: var(--white);
-      border: 1px solid var(--dr-muted);
-      border-radius: 14px;
-      padding: 22px;
-    }
+    .hero-content { padding-right: 24px; }
 
-    .ov-label {
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
+    .hero-heading {
+      font-family: 'Lora', serif;
+      font-size: clamp(32px, 4vw, 52px);
       font-weight: 600;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--ink-soft);
-      margin-bottom: 10px
-    }
-
-    .ov-big {
-      font-family: 'Inter', sans-serif;
-      font-size: clamp(26px, 4vw, 38px);
-      font-weight: 700;
-      color: var(--ink);
-      line-height: 1;
+      line-height: 1.15;
+      color: var(--burgundy);
+      margin-bottom: 32px;
       letter-spacing: -0.02em;
     }
 
-    .ov-sub {
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      color: var(--ink-mid);
-      margin-top: 6px;
-      font-weight: 400;
-      line-height: 1.5
-    }
-
-    .prog-labels,
-    .ov-stats .ov-card {
-      font-family: 'Inter', sans-serif;
-    }
-
-    .prog-bar {
-      height: 6px;
-      border-radius: 999px;
-      background: var(--dr-pale);
-      margin-top: 16px;
-      overflow: hidden
-    }
-
-    .prog-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--dr-light), var(--dr));
-      border-radius: 999px;
-      transition: width .5s ease
-    }
-
-    .prog-labels {
+    .hero-buttons {
       display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--ink-soft);
-      margin-top: 7px;
-      font-weight: 300
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .ov-stats {
-      display: grid;
-      gap: 10px
+    .btn-primary {
+      background: var(--burgundy);
+      color: var(--white);
+      border: 1.5px solid var(--burgundy);
+      padding: 11px 24px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, transform 0.15s;
     }
 
-    /* ─── FOOTER ─── */
-    .footer {
+    .btn-primary:hover {
+      background: var(--burgundy-light);
+      border-color: var(--burgundy-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--burgundy);
+      border: 1.5px solid var(--burgundy);
+      padding: 11px 24px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(122,46,46,0.06);
+      transform: translateY(-1px);
+    }
+
+    .hero-image {
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 4/3.2;
+      background: var(--cream-dark);
+      position: relative;
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Hero image placeholder */
+    .hero-image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #E8DDD0 0%, #D4C5B0 100%);
+      color: var(--text-muted);
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 14px;
       text-align: center;
-      font-size: 12px;
-      color: var(--ink-soft);
-      padding: 20px;
-      font-weight: 300;
-      letter-spacing: .04em;
+      padding: 24px;
     }
 
-    @media(max-width:720px) {
-      .nav {
-        padding: 12px 18px
-      }
+    /* SECTION DIVIDER */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* FEATURE CARDS */
+    .features {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 64px 40px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--card-shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(44,26,26,0.12);
+    }
+
+    .feature-card-image {
+      aspect-ratio: 16/9;
+      background: var(--cream-dark);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .feature-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .feature-card-image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .feature-card-body {
+      padding: 20px 22px 24px;
+    }
+
+    .feature-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .feature-card-icon {
+      color: var(--burgundy);
+      display: flex;
+      align-items: center;
+    }
+
+    .feature-badge {
+      background: rgba(122,46,46,0.1);
+      color: var(--burgundy);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+
+    .feature-card-title {
+      font-family: 'Lora', serif;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .feature-card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+
+    .feature-card-link {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.2s;
+    }
+
+    .feature-card-link:hover { color: var(--burgundy); }
+
+    /* SOCIAL / CONNECT SECTION */
+    .connect {
+      background: var(--cream-dark);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 64px 40px;
+    }
+
+    .connect-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .connect-heading {
+      font-family: 'Lora', serif;
+      font-size: 32px;
+      font-weight: 500;
+      text-align: center;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .connect-sub {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 36px;
+    }
+
+    .connect-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .connect-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      text-decoration: none;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      position: relative;
+    }
+
+    .connect-card:hover {
+      border-color: var(--burgundy-pale);
+      box-shadow: 0 4px 16px rgba(122,46,46,0.1);
+      transform: translateY(-2px);
+    }
+
+    .connect-card-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(122,46,46,0.08);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--burgundy);
+      flex-shrink: 0;
+    }
+
+    .connect-card-info {}
+
+    .connect-card-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-dark);
+      margin-bottom: 2px;
+    }
+
+    .connect-card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .soon-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--burgundy-pale);
+      color: white;
+      font-size: 9px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 99px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 48px 40px 32px;
+      text-align: center;
+    }
+
+    .footer-brand {
+      font-family: 'Lora', serif;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--burgundy);
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--burgundy); }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
 
       .hero {
-        padding: 48px 18px 40px
+        grid-template-columns: 1fr;
+        padding: 40px 20px 48px;
+        gap: 32px;
+        min-height: unset;
       }
 
-      .customer-strip {
-        padding: 14px 18px
-      }
+      .hero-content { padding-right: 0; }
+      .hero-image { order: -1; }
 
-      .main {
-        padding: 24px 14px 48px
-      }
+      .features { padding: 48px 20px; }
+      .features-grid { grid-template-columns: 1fr; }
 
-      .overview-grid {
-        grid-template-columns: 1fr
-      }
+      .connect { padding: 48px 20px; }
+      .connect-grid { grid-template-columns: 1fr 1fr; }
 
-      .cust-pills {
-        gap: 8px
-      }
-
-      .c-pill {
-        min-width: 80px
-      }
-
-      .book-card {
-        padding: 14px 16px;
-        gap: 12px
-      }
-
-      .book-icon {
-        display: none;
-      }
+      footer { padding: 36px 20px 24px; }
+      .footer-links { gap: 16px; flex-wrap: wrap; }
     }
+
+    @media (max-width: 480px) {
+      .connect-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Page load animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-content { animation: fadeUp 0.6s ease both; }
+    .hero-image { animation: fadeUp 0.6s ease 0.15s both; }
+    .feature-card:nth-child(1) { animation: fadeUp 0.5s ease 0.1s both; }
+    .feature-card:nth-child(2) { animation: fadeUp 0.5s ease 0.2s both; }
+    .feature-card:nth-child(3) { animation: fadeUp 0.5s ease 0.3s both; }
   </style>
 </head>
-
 <body>
 
   <!-- NAV -->
-  <nav class="nav">
-    <div class="nav-brand">
-      <img src="Logo_bg.png" alt="BerkabarBooks Logo" style="height:36px; width:36px; object-fit:cover; border-radius:50%; border:2px solid rgba(255,255,255,0.35); flex-shrink:0;">
-      <a href="https://www.berkabarbooks.com" target="_blank" style="display:flex; align-items:center; gap:6px; color:rgba(255,255,255,0.85); font-family:'Jost',sans-serif; font-size:13px; font-weight:400; letter-spacing:.04em; text-decoration:none; padding:7px 14px; border-radius:10px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.18); transition:background .18s, color .18s;" onmouseover="this.style.background='rgba(255,255,255,0.22)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.85)'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Back to Home
-      </a>
-    </div>
-    <div class="nav-pill" data-sync>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-        stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="20 6 9 17 4 12" />
-      </svg>
+  <nav>
+    <a href="/" class="nav-brand">Berkabarbooks</a>
+    <ul class="nav-links">
+      <li><a href="/readystock.html">Readystock</a></li>
+      <li><a href="/preorder.html">Pre-order</a></li>
+      <li><a href="/tracking.html">Tracking</a></li>
+    </ul>
+    <div class="nav-icons">
+      <button class="nav-icon-btn" aria-label="Cari">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+      <button class="nav-icon-btn" aria-label="Keranjang">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </button>
     </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <h1>Tracking Your<em>Books Journey</em></h1>
-    <p>Enter your unique Customer ID to unveil the status of your curated literary collection and upcoming arrivals.</p>
-    <form data-form autocomplete="off">
-      <div class="search-wrap">
-        <input data-input type="text" placeholder="e.g. 5aba" autocomplete="new-password">
-        <button class="btn-clear" type="button" data-reset>Clear</button>
-        <button class="btn-search" type="submit" data-submit>Search</button>
+    <div class="hero-content">
+      <h1 class="hero-heading">Discover an exciting<br>world in every page.</h1>
+      <div class="hero-buttons">
+        <a href="/readystock.html" class="btn-primary">Jelajahi Readystock</a>
+        <a href="/preorder.html" class="btn-outline">Lihat Pre-order</a>
       </div>
-    </form>
+    </div>
+    <div class="hero-image">
+      <!-- Ganti src dengan foto toko / buku kamu -->
+      <!-- <img src="assets/hero.jpg" alt="Berkabarbooks" /> -->
+      <div class="hero-image-placeholder">
+        Foto hero di sini<br><small>Ganti dengan gambar asli</small>
+      </div>
+    </div>
   </section>
 
-  <!-- CUSTOMER STRIP -->
-  <div class="customer-strip" data-banner>
-    <div>
-      <div class="cust-name" data-cname>—</div>
-      <div class="cust-id" data-cid></div>
-    </div>
-    <div class="cust-pills">
-      <div class="c-pill">
-        <div class="c-pill-label">Total Active Orders</div>
-        <div class="c-pill-val" data-sb>Rp 0</div>
-      </div>
-      <div class="c-pill">
-        <div class="c-pill-label">Paid</div>
-        <div class="c-pill-val" data-sd>Rp 0</div>
-      </div>
-      <div class="c-pill">
-        <div class="c-pill-label">Remaining</div>
-        <div class="c-pill-val" data-sr>Rp 0</div>
-      </div>
-      <div class="c-pill">
-        <div class="c-pill-label">Books</div>
-        <div class="c-pill-val" data-sq>0</div>
-      </div>
-    </div>
-  </div>
+  <hr class="section-divider" />
 
-  <!-- MAIN -->
-  <main class="main">
-    <!-- TABS -->
-    <div class="tabs">
-      <button class="tab active" type="button" data-tab="active">Active Orders</button>
-      <button class="tab" type="button" data-tab="sent">Delivered</button>
-      <button class="tab" type="button" data-tab="info">Overview</button>
-    </div>
+  <!-- FEATURE CARDS -->
+  <section class="features">
+    <div class="features-grid">
 
-    <div class="list-meta">
-      <div class="list-info" data-ri>Enter your Customer ID to begin.</div>
-      <div class="list-actions">
-        <div class="search-local-wrap">
-          <input type="text" data-lsearch placeholder="Search book title...">
-        </div>
-        <div class="size-wrap">
-          <label>Show</label>
-          <select data-size>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="all">All</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Active Orders -->
-    <div class="view active" data-view="active">
-      <div class="book-list" data-list1>
-        <div class="empty">
-          <div class="empty-img">📬</div>
-          <p>Search your Customer ID to see your active orders.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Delivered -->
-    <div class="view" data-view="sent">
-      <div class="book-list" data-list2>
-        <div class="empty">
-          <div class="empty-img">📦</div>
-          <p>Search your Customer ID to see your delivered books.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Overview -->
-    <div class="view" data-view="info">
-      <div data-info>
-        <div class="empty">
-          <div class="empty-img">📊</div>
-          <p>Search your Customer ID to see your payment overview.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGINATION -->
-    <div class="pagination">
-      <button class="btn-page" type="button" data-prev>← Prev</button>
-      <div class="page-info" data-pi>Page 1 of 1</div>
-      <button class="btn-page" type="button" data-next>Next →</button>
-    </div>
-  </main>
-
-  <div class="footer">Books Journey Tracker · Connected to Google Spreadsheet</div>
-
-  <script>
-    (() => {
-      // =============================================
-      // GANTI URL INI dengan Web App URL dari Apps Script
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfuOAIvfZAUIg3joNa0lDEi75QK9sxlPUQnn5NQptC5Xy24zajbyXnbLMwiq8WYwA0/exec";
-      // =============================================
-
-      const E = {
-        form: document.querySelector("[data-form]"),
-        input: document.querySelector("[data-input]"),
-        reset: document.querySelector("[data-reset]"),
-        submit: document.querySelector("[data-submit]"),
-        sync: document.querySelector("[data-sync]"),
-        banner: document.querySelector("[data-banner]"),
-        cname: document.querySelector("[data-cname]"),
-        cid: document.querySelector("[data-cid]"),
-        sb: document.querySelector("[data-sb]"),
-        sd: document.querySelector("[data-sd]"),
-        sr: document.querySelector("[data-sr]"),
-        sq: document.querySelector("[data-sq]"),
-        tabs: [...document.querySelectorAll("[data-tab]")],
-        views: [...document.querySelectorAll("[data-view]")],
-        size: document.querySelector("[data-size]"),
-        ri: document.querySelector("[data-ri]"),
-        list1: document.querySelector("[data-list1]"),
-        list2: document.querySelector("[data-list2]"),
-        info: document.querySelector("[data-info]"),
-        prev: document.querySelector("[data-prev]"),
-        next: document.querySelector("[data-next]"),
-        pi: document.querySelector("[data-pi]"),
-        lsearch: document.querySelector("[data-lsearch]"),
-      };
-
-      const S = { tab: "active", size: 10, page: { active: 1, sent: 1 }, search: "", data: null };
-
-      const fc = v => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(v || 0);
-      const fn = v => new Intl.NumberFormat("id-ID").format(v || 0);
-      function toNum(v) { const c = String(v || "").replace(/Rp/gi, "").replace(/[^\d,-]/g, "").replace(/\./g, "").replace(",", "."); const n = parseFloat(c); return isFinite(n) ? n : 0; }
-      function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-      function formatDt(d) {
-        if (!d) return "";
-        const s = String(d);
-        if (/^\d+$/.test(s)) return s;
-        const dt = new Date(s);
-        if (isNaN(dt.getTime())) return s;
-        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-        const day = String(dt.getDate()).padStart(2, "0");
-        return `${day} ${months[dt.getMonth()]} ${dt.getFullYear()}`;
-      }
-
-      const iconCheck = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-      const iconSpin = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 11-3.2-6.9"/></svg>`;
-      const iconWarn = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
-
-      function setLoading(on) {
-        E.submit.disabled = on;
-        E.submit.textContent = on ? "Searching..." : "Search";
-        E.sync.innerHTML = on ? iconSpin : iconCheck;
-      }
-
-      // Ambil nilai kolom dengan fallback case-insensitive
-      function col(r, ...keys) {
-        for (const k of keys) {
-          if (r[k] !== undefined && String(r[k]).trim() != "") return r[k];
-          const low = k.toLowerCase();
-          const found = Object.keys(r).find(rk => rk.toLowerCase() === low);
-          if (found && String(r[found]).trim() != "") return r[found];
-        }
-        return "";
-      }
-
-      function bookCard(r, isSent) {
-        const title = col(r, "JUDUL", "Judul", "judul", "Title") || "—";
-        const pub = col(r, "PENERBIT", "Penerbit", "penerbit");
-        const fmt = col(r, "Format", "FORMAT", "format");
-        const qty = col(r, "Qty", "QTY", "qty");
-        const statusRaw = col(r, "Status", "STATUS", "status") || "—";
-        const srLow = statusRaw.toLowerCase();
-        const isReady = srLow.includes("ready") || srLow.includes("terkirim");
-        const status = `${isReady ? "✔️" : "⏳"} ${statusRaw}`;
-        const harga = toNum(col(r, "Harga Total", "harga total", "HARGA TOTAL"));
-        const dp = toNum(col(r, "DP", "dp"));
-        const tglDp = formatDt(col(r, "Tanggal TF", "Tanggal DP", "tanggal tf", "tanggal dp", "Tgl TF", "Tgl DP"));
-        const tglFix = formatDt(col(r, "Tanggal", "Tanggal Fix", "tanggal", "tanggal fix", "Tgl Fix"));
-        const eta = col(r, "ETA", "eta");
-        const shipmentDate = formatDt(col(r, "Shipment Date", "shipment date", "SHIPMENT DATE"));
-        const meta1 = [pub, fmt, qty ? "Qty: " + qty : ""].filter(Boolean).join(" · ");
-        let meta2;
-        if (isSent) {
-          meta2 = shipmentDate ? "Tanggal Terkirim: " + shipmentDate : "";
-        } else {
-          meta2 = [tglFix ? "Tanggal Fix: " + tglFix : "", eta ? "ETA: " + eta : ""].filter(Boolean).join(" · ");
-        }
-        const dpStr = dp ? fc(dp) + (tglDp ? " (" + tglDp + ")" : "") : "";
-        const isCanceled = (qty !== "" && qty !== undefined && toNum(qty) === 0);
-        return `<div class="book-card ${isCanceled ? 'canceled' : ''}">
-      <div class="book-icon">📘</div>
-      <div class="book-body">
-        <div class="book-title">${esc(title)}</div>
-        ${meta1 ? '<div class="book-meta">' + esc(meta1) + '</div>' : ""}
-        ${meta2 ? '<div class="book-meta book-meta-dim">' + esc(meta2) + '</div>' : ""}
-      </div>
-      <div class="book-right">
-        <div class="book-status">${esc(status)}</div>
-        <div class="book-price">${fc(harga)}</div>
-        ${dpStr ? '<div class="book-dp-row">DP ' + esc(dpStr) + '</div>' : ""}
-      </div>
-    </div>`;
-      }
-
-      function renderList(el, rows, isSent) {
-        if (!rows.length) {
-          el.innerHTML = '<div class="empty"><div class="empty-img">📭</div><p>No books found for this Customer ID in this tab.</p></div>';
-          return;
-        }
-        el.innerHTML = rows.map(r => bookCard(r, isSent)).join("");
-      }
-
-      function rowsBy(tab) {
-        if (!S.data) return [];
-        let rows = [];
-        if (tab === "active") rows = S.data.orders || [];
-        if (tab === "sent") rows = S.data.sent || [];
-
-        if (S.search) {
-          const q = S.search.toLowerCase();
-          rows = rows.filter(r => {
-            const title = col(r, "JUDUL", "Judul", "judul", "Title") || "";
-            return String(title).toLowerCase().includes(q);
-          });
-        }
-        return rows;
-      }
-
-      function page(rows, key) {
-        if (S.size === "all") { S.page[key] = 1; return { rows, total: 1, cur: 1, s: rows.length ? 1 : 0, e: rows.length }; }
-        const z = Number(S.size), total = Math.max(Math.ceil(rows.length / z), 1);
-        S.page[key] = Math.min(S.page[key], total);
-        const cur = Math.max(S.page[key], 1), st = (cur - 1) * z, part = rows.slice(st, st + z);
-        return { rows: part, total, cur, s: rows.length ? st + 1 : 0, e: Math.min(st + part.length, rows.length) };
-      }
-
-      function renderOverview() {
-        if (!S.data) {
-          E.info.innerHTML = '<div class="empty"><div class="empty-img">📊</div><p>Search your Customer ID to see your payment overview.</p></div>';
-          return;
-        }
-        const d = S.data;
-        const pr = d.totalBelanja > 0 ? Math.min(d.totalDeposit / d.totalBelanja * 100, 100) : 0;
-
-        let actBelanja = 0;
-        const monthly = {};
-        if (d.orders) {
-          d.orders.forEach(r => {
-            const h = toNum(col(r, "Harga Total", "harga total", "HARGA TOTAL"));
-            const dp = toNum(col(r, "DP", "dp"));
-            const qs = col(r, "Qty", "QTY", "qty");
-            const qty = (qs === "" || qs === undefined) ? 1 : toNum(qs);
-            actBelanja += h;
-            let rDate = col(r, "ETA", "eta") || col(r, "Tanggal Fix", "tanggal");
-            let mStr = "Others";
-            if (rDate) {
-              if (/^\d{4}$/.test(String(rDate).trim())) {
-                mStr = String(rDate).trim();
-              } else {
-                const dt = new Date(rDate);
-                if (!isNaN(dt.getTime())) {
-                  mStr = dt.toLocaleString('en-US', { month: 'short', year: '2-digit' });
-                } else {
-                  mStr = String(rDate).trim();
-                }
-              }
-            }
-            if (!monthly[mStr]) monthly[mStr] = { harga: 0, dp: 0, qty: 0 };
-            monthly[mStr].harga += h;
-            monthly[mStr].dp += dp;
-            monthly[mStr].qty += qty;
-          });
-        }
-
-        let breakdownHtml = `<div class="chart-container" style="display:flex; align-items:flex-end; gap:16px; padding:10px 0; margin-top:0; overflow-x:auto;">`;
-        const maxHarga = Math.max(1, ...Object.values(monthly).map(v => v.harga));
-        const monthKeys = Object.keys(monthly);
-
-        if (monthKeys.length === 0) {
-          breakdownHtml = '<div class="ov-sub">No active orders found.</div>';
-        } else {
-          const shortNum = (v) => {
-            if (v >= 1000000) return (v / 1000000).toFixed(1).replace(/\.0$/, "") + "jt";
-            if (v >= 1000) return (v / 1000).toFixed(0) + "rb";
-            return v;
-          };
-
-          monthKeys.forEach(m => {
-            const data = monthly[m];
-            const hRatio = (data.harga / maxHarga) * 85;
-            const dpPercent = data.harga > 0 ? (data.dp / data.harga) * 100 : 0;
-            const remPercent = 100 - dpPercent;
-            const kurang = Math.max(data.harga - data.dp, 0);
-            const tooltip = `Total: ${fc(data.harga)}&#10;DP: ${fc(data.dp)}&#10;Kurang: ${fc(kurang)}`;
-
-            breakdownHtml += `
-                 <div style="display:flex; flex-direction:column; align-items:center; min-width:48px; gap:8px; height:150px;">
-                   <div style="flex:1; width:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center;">
-                      <div style="font-size:10px; font-weight:600; color:var(--ink); margin-bottom:6px;" title="${fc(data.harga)}">${shortNum(data.harga)}</div>
-                      <div title="${tooltip}" style="height:${Math.max(2, hRatio)}%; width:28px; margin:0 auto; border-radius:6px; overflow:hidden; display:flex; flex-direction:column; background:var(--dr-pale); box-shadow:0 4px 10px rgba(0,0,0,0.05); transition:transform 0.2s; cursor:pointer;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                         <div style="height:${remPercent}%; width:100%; background:var(--dr-light); opacity:0.6;"></div>
-                         <div style="height:${dpPercent}%; width:100%; background:var(--dr);"></div>
-                      </div>
-                   </div>
-                   <div style="font-size:10px; font-weight:600; color:var(--ink-mid); text-transform:uppercase;">${esc(m)}</div>
-                 </div>
-               `;
-          });
-          breakdownHtml += `</div>
-            <div style="display:flex; gap:12px; margin-top:8px; justify-content:center; font-size:11px; color:var(--ink-soft); font-weight:500;">
-               <div style="display:flex; align-items:center; gap:4px;"><div style="width:10px; height:10px; border-radius:3px; background:var(--dr);"></div> Sudah DP</div>
-               <div style="display:flex; align-items:center; gap:4px;"><div style="width:10px; height:10px; border-radius:3px; background:var(--dr-light); opacity:0.6;"></div> Kurang</div>
-            </div>`;
-        }
-
-        let qtyBreakdownHtml = monthKeys.map(m => `<div style="display:flex; justify-content:space-between; margin-top:10px; border-bottom:1px solid var(--dr-muted); padding-bottom:6px;"><span class="ov-sub" style="margin:0;">${esc(m)}</span><span class="ov-label" style="margin:0; color:var(--ink); font-size:12px;">${fn(monthly[m].qty)}</span></div>`).join("");
-        if (!qtyBreakdownHtml) qtyBreakdownHtml = '<div class="ov-sub">No active orders found.</div>';
-
-        E.info.innerHTML = `<div class="overview-grid">
-      <div style="display:grid;gap:14px">
-        <div class="ov-card">
-          <div class="ov-label">Payment Progress</div>
-          <div class="ov-big">${fc(d.totalDeposit)}</div>
-          <div class="ov-sub">Total payments recorded for your account.</div>
-          <div class="prog-bar"><div class="prog-fill" style="width:${pr}%"></div></div>
-          <div class="prog-labels"><span>Paid: ${fc(d.totalDeposit)}</span><span>Remaining: ${fc(d.sisaTanggungan)}</span></div>
-        </div>
-        <div class="ov-card">
-          <div class="ov-label">Account Snapshot</div>
-          <div class="ov-big" style="margin-top: 8px; font-size: clamp(24px, 3.5vw, 32px);">${fc(d.totalBelanja)}</div>
-          <div class="ov-sub">Total spent across all records (active + delivered).</div>
-          <div class="prog-labels" style="margin-top:14px; padding-top:14px; border-top:1px solid var(--dr-muted);">
-            <span>Active Orders Total: ${fc(actBelanja)}</span>
-            <span>ID: ${esc(d.id)}</span>
+      <!-- Readystock -->
+      <a href="/readystock.html" style="text-decoration:none;">
+        <div class="feature-card">
+          <div class="feature-card-image">
+            <!-- <img src="assets/readystock-preview.jpg" alt="Readystock" /> -->
+            <div class="feature-card-image-placeholder">Foto koleksi readystock</div>
+          </div>
+          <div class="feature-card-body">
+            <div class="feature-card-meta">
+              <span class="feature-card-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+              </span>
+              <span class="feature-badge">1.240+ Judul Tersedia</span>
+            </div>
+            <h2 class="feature-card-title">Koleksi Readystock</h2>
+            <p class="feature-card-desc">Buku-buku pilihan yang siap nemenin waktu santaimu. Tinggal pilih, bayar, terus langsung kirim!</p>
+            <span class="feature-card-link">Belanja Sekarang →</span>
           </div>
         </div>
-      </div>
-      <div class="ov-stats">
-        <div class="ov-card">
-          <div class="ov-label">Active Orders Breakdown</div>
-          ${breakdownHtml}
+      </a>
+
+      <!-- Preorder -->
+      <a href="/preorder.html" style="text-decoration:none;">
+        <div class="feature-card">
+          <div class="feature-card-image">
+            <!-- <img src="assets/preorder-preview.jpg" alt="Preorder" /> -->
+            <div class="feature-card-image-placeholder">Foto preorder berlangsung</div>
+          </div>
+          <div class="feature-card-body">
+            <div class="feature-card-meta">
+              <span class="feature-card-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </span>
+              <span class="feature-badge">3 Kepo Berlangsung</span>
+            </div>
+            <h2 class="feature-card-title">Pre-order Berlangsung</h2>
+            <p class="feature-card-desc">Buku incaranmu nggak ada di Readystock? Tenang, langsung ikutan Pre-Order di sini aja!</p>
+            <span class="feature-card-link">Lihat Jadwal →</span>
+          </div>
         </div>
-        <div class="ov-card"><div class="ov-label">Total Books</div><div class="ov-big">${fn(d.totalQty)}</div><div class="ov-sub">Total quantity across all orders</div></div>
-        <div class="ov-card" style="max-height: 200px; overflow-y: auto;">
-          <div class="ov-label">Incoming Books (Qty)</div>
-          ${qtyBreakdownHtml}
+      </a>
+
+      <!-- Tracking -->
+      <a href="/tracking.html" style="text-decoration:none;">
+        <div class="feature-card">
+          <div class="feature-card-image">
+            <!-- <img src="assets/tracking-preview.jpg" alt="Tracking" /> -->
+            <div class="feature-card-image-placeholder">Foto lacak pesanan</div>
+          </div>
+          <div class="feature-card-body">
+            <div class="feature-card-meta">
+              <span class="feature-card-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
+              </span>
+            </div>
+            <h2 class="feature-card-title">Lacak Pesanan</h2>
+            <p class="feature-card-desc">Cek posisi bukumu jadi makin gampang. Kita kabarin terus update-nya biar kamu nggak penasaran!</p>
+            <span class="feature-card-link">Cek Status →</span>
+          </div>
         </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- CONNECT / SOCIAL -->
+  <section class="connect">
+    <div class="connect-inner">
+      <h2 class="connect-heading">Terhubung dengan Berkabar Books</h2>
+      <p class="connect-sub">Ikuti update terbaru dan belanja koleksi kami melalui kanal resmi berikut.</p>
+
+      <div class="connect-grid">
+        <!-- WAG Pre-order -->
+        <a href="#" class="connect-card">
+          <div class="connect-card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="connect-card-info">
+            <div class="connect-card-name">WAG Pre-order</div>
+            <div class="connect-card-desc">Update info buku PO terbaru</div>
+          </div>
+        </a>
+
+        <!-- WAG Readystock -->
+        <a href="#" class="connect-card">
+          <div class="connect-card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div class="connect-card-info">
+            <div class="connect-card-name">WAG Readystock</div>
+            <div class="connect-card-desc">Koleksi buku siap kirim</div>
+          </div>
+        </a>
+
+        <!-- Shopee -->
+        <a href="#" class="connect-card">
+          <div class="connect-card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <div class="connect-card-info">
+            <div class="connect-card-name">Shopee</div>
+            <div class="connect-card-desc">Official Store Berkabar Books</div>
+          </div>
+        </a>
+
+        <!-- Instagram -->
+        <a href="#" class="connect-card">
+          <div class="connect-card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+          </div>
+          <div class="connect-card-info">
+            <div class="connect-card-name">Instagram</div>
+            <div class="connect-card-desc">Katalog dan inspirasi literasi</div>
+          </div>
+        </a>
+
+        <!-- Threads -->
+        <a href="#" class="connect-card">
+          <div class="connect-card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 12a3 3 0 1 0 6 0 6 6 0 0 0-6-8c-3 0-5.4 2-6 5"/><path d="M12 12v6a3 3 0 0 0 6 0v-1"/>
+            </svg>
+          </div>
+          <div class="connect-card-info">
+            <div class="connect-card-name">Threads</div>
+            <div class="connect-card-desc">Diskusi buku santai</div>
+          </div>
+        </a>
+
+        <!-- TikTok -->
+        <a href="#" class="connect-card">
+          <div class="soon-badge">Soon</div>
+          <div class="connect-card-icon" style="opacity:0.5;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+            </svg>
+          </div>
+          <div class="connect-card-info" style="opacity:0.5;">
+            <div class="connect-card-name">TikTok</div>
+            <div class="connect-card-desc">Review buku singkat</div>
+          </div>
+        </a>
       </div>
-    </div>`;
-      }
+    </div>
+  </section>
 
-      function render() {
-        E.tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === S.tab));
-        E.views.forEach(v => v.classList.toggle("active", v.dataset.view === S.tab));
-        const a = rowsBy("active"), s = rowsBy("sent");
-        const pa = page(a, "active"), ps = page(s, "sent");
-        renderList(E.list1, pa.rows, false);
-        renderList(E.list2, ps.rows, true);
-        renderOverview();
-        if (S.tab === "info") {
-          E.prev.disabled = !0; E.next.disabled = !0;
-          E.pi.textContent = "Overview";
-          E.ri.textContent = S.data ? "Payment overview active" : "Enter your Customer ID to begin.";
-          return;
-        }
-        const ar = S.tab === "sent" ? s : a, ap = S.tab === "sent" ? ps : pa;
-        E.prev.disabled = !S.data || ap.cur <= 1 || !ar.length;
-        E.next.disabled = !S.data || ap.cur >= ap.total || !ar.length;
-        E.pi.textContent = `Page ${ap.cur} of ${ap.total}`;
-        E.ri.textContent = !S.data ? "Enter your Customer ID to begin." : !ar.length ? "No books found." : "Showing " + ap.s + "–" + ap.e + " of " + ar.length + " books";
-      }
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">Berkabarbooks</div>
+    <ul class="footer-links">
+      <li><a href="#">About Us</a></li>
+      <li><a href="#">Shipping Policy</a></li>
+      <li><a href="#">Terms of Service</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 Berkabar Books. Curating literary journeys.</p>
+  </footer>
 
-      function reset() {
-        S.data = null; S.page.active = 1; S.page.sent = 1; S.search = "";
-        E.input.value = "";
-        if (E.lsearch) E.lsearch.value = "";
-        E.banner.classList.remove("show");
-        E.sync.innerHTML = iconCheck;
-        E.sync.title = "";
-        render();
-      }
-
-      async function search(raw) {
-        const id = raw.trim().toLowerCase();
-        if (!id) { reset(); return; }
-        if (SCRIPT_URL === "GANTI_DENGAN_URL_APPS_SCRIPT_KAMU") {
-          E.sync.innerHTML = iconWarn; E.sync.title = "Apps Script URL not set"; return;
-        }
-        setLoading(true);
-        S.page.active = 1; S.page.sent = 1;
-        try {
-          const res = await fetch(SCRIPT_URL + "?id=" + encodeURIComponent(id));
-          const json = await res.json();
-          if (json.error) throw new Error(json.error);
-          S.data = json;
-          E.banner.classList.add("show");
-          E.cname.textContent = json.nama || "Unknown Customer";
-          E.cid.textContent = "Customer ID: " + id;
-          let actBelanja = 0, actDeposit = 0, actQty = 0;
-          if (json.orders) {
-            json.orders.forEach(r => {
-              actBelanja += toNum(col(r, "Harga Total", "harga total", "HARGA TOTAL"));
-              actDeposit += toNum(col(r, "DP", "dp"));
-              const qs = col(r, "Qty", "QTY", "qty");
-              actQty += (qs === "" || qs === undefined) ? 1 : toNum(qs);
-            });
-          }
-          const actSisa = Math.max(actBelanja - actDeposit, 0);
-
-          E.sb.textContent = fc(actBelanja);
-          E.sd.textContent = fc(actDeposit);
-          E.sr.textContent = fc(actSisa);
-          E.sq.textContent = fn(actQty);
-          const total = (json.orders?.length || 0) + (json.sent?.length || 0);
-          E.sync.innerHTML = iconCheck;
-          E.sync.title = fn(total) + " books loaded";
-        } catch (err) {
-          E.sync.innerHTML = iconWarn;
-          E.sync.title = "Error: " + err.message;
-          S.data = null;
-          E.banner.classList.remove("show");
-          const errMsg = `<div class="empty"><div class="empty-img">⚠️</div><p style="color:#d15b5b;font-weight:500;">Gagal mengambil data.<br><span style="font-size:12px;font-weight:300;color:var(--ink-soft);">${esc(err.message)}</span></p></div>`;
-          E.list1.innerHTML = errMsg;
-          E.list2.innerHTML = errMsg;
-        }
-        setLoading(false);
-        render();
-      }
-
-      E.form.addEventListener("submit", e => { e.preventDefault(); search(E.input.value); });
-      if (E.lsearch) E.lsearch.addEventListener("input", e => { S.search = e.target.value; S.page.active = 1; S.page.sent = 1; render(); });
-      E.reset.addEventListener("click", reset);
-      E.tabs.forEach(t => t.addEventListener("click", () => { S.tab = t.dataset.tab; render(); }));
-      E.size.addEventListener("change", e => { S.size = e.target.value === "all" ? "all" : Number(e.target.value); S.page.active = 1; S.page.sent = 1; render(); });
-      E.prev.addEventListener("click", () => { if (S.tab === "info") return; S.page[S.tab] = Math.max(S.page[S.tab] - 1, 1); render(); });
-      E.next.addEventListener("click", () => { if (S.tab === "info") return; S.page[S.tab] += 1; render(); });
-      render();
-    })();
-  </script>
 </body>
-
 </html>
