@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Berkabarbooks</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       --cream: #F5F0E8;
@@ -20,11 +29,13 @@
       --text-mid: #5C3D3D;
       --text-muted: #9A7B7B;
       --white: #FFFFFF;
-      --border: rgba(122,46,46,0.12);
-      --card-shadow: 0 2px 20px rgba(44,26,26,0.07);
+      --border: rgba(122, 46, 46, 0.12);
+      --card-shadow: 0 2px 20px rgba(44, 26, 26, 0.07);
     }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       font-family: 'DM Sans', sans-serif;
@@ -74,7 +85,9 @@
       transition: color 0.2s;
     }
 
-    .nav-links a:hover { color: var(--burgundy); }
+    .nav-links a:hover {
+      color: var(--burgundy);
+    }
 
     .nav-icons {
       display: flex;
@@ -93,107 +106,105 @@
       transition: color 0.2s;
     }
 
-    .nav-icon-btn:hover { color: var(--burgundy); }
-
-    /* HERO */
-    .hero {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 64px 40px 80px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: center;
-      min-height: calc(100vh - 60px - 80px);
-    }
-
-    .hero-content { padding-right: 24px; }
-
-    .hero-heading {
-      font-family: 'Lora', serif;
-      font-size: clamp(32px, 4vw, 52px);
-      font-weight: 600;
-      line-height: 1.15;
+    .nav-icon-btn:hover {
       color: var(--burgundy);
-      margin-bottom: 32px;
-      letter-spacing: -0.02em;
     }
 
-    .hero-buttons {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .btn-primary {
-      background: var(--burgundy);
-      color: var(--white);
-      border: 1.5px solid var(--burgundy);
-      padding: 11px 24px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      border-radius: 4px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: background 0.2s, transform 0.15s;
-    }
-
-    .btn-primary:hover {
-      background: var(--burgundy-light);
-      border-color: var(--burgundy-light);
-      transform: translateY(-1px);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--burgundy);
-      border: 1.5px solid var(--burgundy);
-      padding: 11px 24px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      border-radius: 4px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: background 0.2s, transform 0.15s;
-    }
-
-    .btn-outline:hover {
-      background: rgba(122,46,46,0.06);
-      transform: translateY(-1px);
-    }
-
-    .hero-image {
-      border-radius: 12px;
-      overflow: hidden;
-      aspect-ratio: 4/3.2;
-      background: var(--cream-dark);
+    /* HERO SLIDER */
+    .hero-slider {
       position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: var(--cream-dark);
+      max-height: 560px;
     }
 
-    .hero-image img {
+    .slider-track {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    .slide {
+      min-width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide img {
       width: 100%;
-      height: 100%;
+      height: 560px;
       object-fit: cover;
+      object-position: center;
       display: block;
     }
 
-    .hero-image-placeholder {
-      width: 100%;
-      height: 100%;
+    /* Arrow buttons */
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.75);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #E8DDD0 0%, #D4C5B0 100%);
-      color: var(--text-muted);
-      font-family: 'Lora', serif;
-      font-style: italic;
-      font-size: 14px;
-      text-align: center;
-      padding: 24px;
+      cursor: pointer;
+      color: var(--burgundy);
+      transition: background 0.2s, transform 0.2s;
+      backdrop-filter: blur(4px);
+    }
+
+    .slider-btn:hover {
+      background: rgba(255, 255, 255, 0.95);
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    .slider-btn-prev { left: 16px; }
+    .slider-btn-next { right: 16px; }
+
+    /* Dot indicators */
+    .slider-dots {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .slider-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .slider-dot.active {
+      background: var(--white);
+      transform: scale(1.3);
+    }
+
+    @media (max-width: 768px) {
+      .slide img {
+        height: 220px;
+      }
+      .hero-slider {
+        max-height: 220px;
+      }
+      .slider-btn {
+        width: 30px;
+        height: 30px;
+      }
     }
 
     /* SECTION DIVIDER */
@@ -229,7 +240,7 @@
 
     .feature-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 32px rgba(44,26,26,0.12);
+      box-shadow: 0 8px 32px rgba(44, 26, 26, 0.12);
     }
 
     .feature-card-image {
@@ -274,7 +285,7 @@
     }
 
     .feature-badge {
-      background: rgba(122,46,46,0.1);
+      background: rgba(122, 46, 46, 0.1);
       color: var(--burgundy);
       font-size: 11px;
       font-weight: 500;
@@ -308,7 +319,9 @@
       transition: color 0.2s;
     }
 
-    .feature-card-link:hover { color: var(--burgundy); }
+    .feature-card-link:hover {
+      color: var(--burgundy);
+    }
 
     /* SOCIAL / CONNECT SECTION */
     .connect {
@@ -360,14 +373,14 @@
 
     .connect-card:hover {
       border-color: var(--burgundy-pale);
-      box-shadow: 0 4px 16px rgba(122,46,46,0.1);
+      box-shadow: 0 4px 16px rgba(122, 46, 46, 0.1);
       transform: translateY(-2px);
     }
 
     .connect-card-icon {
       width: 36px;
       height: 36px;
-      background: rgba(122,46,46,0.08);
+      background: rgba(122, 46, 46, 0.08);
       border-radius: 8px;
       display: flex;
       align-items: center;
@@ -432,7 +445,9 @@
       transition: color 0.2s;
     }
 
-    .footer-links a:hover { color: var(--burgundy); }
+    .footer-links a:hover {
+      color: var(--burgundy);
+    }
 
     .footer-copy {
       font-size: 12px;
@@ -441,8 +456,13 @@
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
-      nav { padding: 0 20px; }
-      .nav-links { display: none; }
+      nav {
+        padding: 0 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
 
       .hero {
         grid-template-columns: 1fr;
@@ -451,36 +471,81 @@
         min-height: unset;
       }
 
-      .hero-content { padding-right: 0; }
-      .hero-image { order: -1; }
+      .hero-content {
+        padding-right: 0;
+      }
 
-      .features { padding: 48px 20px; }
-      .features-grid { grid-template-columns: 1fr; }
+      .hero-image {
+        order: -1;
+      }
 
-      .connect { padding: 48px 20px; }
-      .connect-grid { grid-template-columns: 1fr 1fr; }
+      .features {
+        padding: 48px 20px;
+      }
 
-      footer { padding: 36px 20px 24px; }
-      .footer-links { gap: 16px; flex-wrap: wrap; }
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .connect {
+        padding: 48px 20px;
+      }
+
+      .connect-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      footer {
+        padding: 36px 20px 24px;
+      }
+
+      .footer-links {
+        gap: 16px;
+        flex-wrap: wrap;
+      }
     }
 
     @media (max-width: 480px) {
-      .connect-grid { grid-template-columns: 1fr; }
+      .connect-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Page load animation */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .hero-content { animation: fadeUp 0.6s ease both; }
-    .hero-image { animation: fadeUp 0.6s ease 0.15s both; }
-    .feature-card:nth-child(1) { animation: fadeUp 0.5s ease 0.1s both; }
-    .feature-card:nth-child(2) { animation: fadeUp 0.5s ease 0.2s both; }
-    .feature-card:nth-child(3) { animation: fadeUp 0.5s ease 0.3s both; }
+    .hero-content {
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-image {
+      animation: fadeUp 0.6s ease 0.15s both;
+    }
+
+    .feature-card:nth-child(1) {
+      animation: fadeUp 0.5s ease 0.1s both;
+    }
+
+    .feature-card:nth-child(2) {
+      animation: fadeUp 0.5s ease 0.2s both;
+    }
+
+    .feature-card:nth-child(3) {
+      animation: fadeUp 0.5s ease 0.3s both;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- NAV -->
@@ -493,33 +558,54 @@
     </ul>
     <div class="nav-icons">
       <button class="nav-icon-btn" aria-label="Cari">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
         </svg>
       </button>
       <button class="nav-icon-btn" aria-label="Keranjang">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <path d="M16 10a4 4 0 0 1-8 0" />
         </svg>
       </button>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1 class="hero-heading">Discover an exciting<br>world in every page.</h1>
-      <div class="hero-buttons">
-        <a href="/readystock.html" class="btn-primary">Jelajahi Readystock</a>
-        <a href="/preorder.html" class="btn-outline">Lihat Pre-order</a>
+  <!-- HERO SLIDER -->
+  <section class="hero-slider" id="heroSlider">
+    <div class="slider-track" id="sliderTrack">
+      <div class="slide">
+        <img src="assets/hero.jpg" alt="Berkabarbooks" />
+      </div>
+      <div class="slide">
+        <img src="assets/IMG_8611.jpg" alt="Berkabarbooks koleksi" />
+      </div>
+      <div class="slide">
+        <img src="assets/IMG_9761.jpg" alt="Berkabarbooks buku" />
       </div>
     </div>
-    <div class="hero-image">
-      <img src="assets/hero.jpg" alt="Berkabarbooks" />
-    </div>
-  </section>
 
-  <hr class="section-divider" />
+    <!-- Arrows -->
+    <button class="slider-btn slider-btn-prev" id="sliderPrev" aria-label="Sebelumnya">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+    </button>
+    <button class="slider-btn slider-btn-next" id="sliderNext" aria-label="Berikutnya">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </button>
+
+    <!-- Dots -->
+    <div class="slider-dots" id="sliderDots"></div>
+  </section>
 
   <!-- FEATURE CARDS -->
   <section class="features">
@@ -534,14 +620,17 @@
           <div class="feature-card-body">
             <div class="feature-card-meta">
               <span class="feature-card-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                 </svg>
               </span>
               <span class="feature-badge">1.240+ Judul Tersedia</span>
             </div>
             <h2 class="feature-card-title">Koleksi Readystock</h2>
-            <p class="feature-card-desc">Buku-buku pilihan yang siap nemenin waktu santaimu. Tinggal pilih, bayar, terus langsung kirim!</p>
+            <p class="feature-card-desc">Buku-buku pilihan yang siap nemenin waktu santaimu. Tinggal pilih, bayar, terus
+              langsung kirim!</p>
             <span class="feature-card-link">Belanja Sekarang →</span>
           </div>
         </div>
@@ -556,21 +645,24 @@
           <div class="feature-card-body">
             <div class="feature-card-meta">
               <span class="feature-card-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
                 </svg>
               </span>
-              <span class="feature-badge">3 Kepo Berlangsung</span>
+              <span class="feature-badge">3 PO Berlangsung</span>
             </div>
             <h2 class="feature-card-title">Pre-order Berlangsung</h2>
-            <p class="feature-card-desc">Buku incaranmu nggak ada di Readystock? Tenang, langsung ikutan Pre-Order di sini aja!</p>
+            <p class="feature-card-desc">Buku incaranmu nggak ada di Readystock? Tenang, langsung ikutan Pre-Order di
+              sini aja!</p>
             <span class="feature-card-link">Lihat Jadwal →</span>
           </div>
         </div>
       </a>
 
       <!-- Tracking -->
-      <a href="/tracking.html" style="text-decoration:none;">
+      <a href="/tracking.berkabarbooks.com" style="text-decoration:none;">
         <div class="feature-card">
           <div class="feature-card-image">
             <img src="assets/tracking-preview.jpg" alt="Tracking" />
@@ -578,13 +670,18 @@
           <div class="feature-card-body">
             <div class="feature-card-meta">
               <span class="feature-card-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="3" width="15" height="13" />
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                  <circle cx="5.5" cy="18.5" r="2.5" />
+                  <circle cx="18.5" cy="18.5" r="2.5" />
                 </svg>
               </span>
             </div>
             <h2 class="feature-card-title">Lacak Pesanan</h2>
-            <p class="feature-card-desc">Cek posisi bukumu jadi makin gampang. Kita kabarin terus update-nya biar kamu nggak penasaran!</p>
+            <p class="feature-card-desc">Cek posisi bukumu jadi makin gampang. Kita kabarin terus update-nya biar kamu
+              nggak penasaran!</p>
             <span class="feature-card-link">Cek Status →</span>
           </div>
         </div>
@@ -601,10 +698,14 @@
 
       <div class="connect-grid">
         <!-- WAG Pre-order -->
-        <a href="#" class="connect-card">
+        <a href="https://chat.whatsapp.com/F0I1qBJPZntCEQ93KM8zy9" class="connect-card">
           <div class="connect-card-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
           </div>
           <div class="connect-card-info">
@@ -614,10 +715,11 @@
         </a>
 
         <!-- WAG Readystock -->
-        <a href="#" class="connect-card">
+        <a href="https://chat.whatsapp.com/GwWSNeheP9NKL4NL0KJLQF" class="connect-card">
           <div class="connect-card-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
           </div>
           <div class="connect-card-info">
@@ -627,10 +729,13 @@
         </a>
 
         <!-- Shopee -->
-        <a href="#" class="connect-card">
+        <a href="https://shopee.co.id/berkabarbooks" class="connect-card">
           <div class="connect-card-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
           </div>
           <div class="connect-card-info">
@@ -640,10 +745,13 @@
         </a>
 
         <!-- Instagram -->
-        <a href="#" class="connect-card">
+        <a href="https://www.instagram.com/berkabarbooks/" class="connect-card">
           <div class="connect-card-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
             </svg>
           </div>
           <div class="connect-card-info">
@@ -653,10 +761,12 @@
         </a>
 
         <!-- Threads -->
-        <a href="#" class="connect-card">
+        <a href="https://www.threads.com/@berkabarbooks" class="connect-card">
           <div class="connect-card-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 12a3 3 0 1 0 6 0 6 6 0 0 0-6-8c-3 0-5.4 2-6 5"/><path d="M12 12v6a3 3 0 0 0 6 0v-1"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 12a3 3 0 1 0 6 0 6 6 0 0 0-6-8c-3 0-5.4 2-6 5" />
+              <path d="M12 12v6a3 3 0 0 0 6 0v-1" />
             </svg>
           </div>
           <div class="connect-card-info">
@@ -666,11 +776,12 @@
         </a>
 
         <!-- TikTok -->
-        <a href="#" class="connect-card">
+        <a href="https://www.tiktok.com/@berkabar.books" class="connect-card">
           <div class="soon-badge">Soon</div>
           <div class="connect-card-icon" style="opacity:0.5;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
             </svg>
           </div>
           <div class="connect-card-info" style="opacity:0.5;">
@@ -694,5 +805,44 @@
     <p class="footer-copy">© 2026 Berkabar Books. Curating literary journeys.</p>
   </footer>
 
+  <script>
+    (function () {
+      const track = document.getElementById('sliderTrack');
+      const dotsContainer = document.getElementById('sliderDots');
+      const slides = track.querySelectorAll('.slide');
+      const total = slides.length;
+      let current = 0;
+      let timer;
+
+      // Build dots
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+      });
+
+      function goTo(index) {
+        current = (index + total) % total;
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        dotsContainer.querySelectorAll('.slider-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === current);
+        });
+        resetTimer();
+      }
+
+      function resetTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => goTo(current + 1), 4000);
+      }
+
+      document.getElementById('sliderPrev').addEventListener('click', () => goTo(current - 1));
+      document.getElementById('sliderNext').addEventListener('click', () => goTo(current + 1));
+
+      resetTimer();
+    })();
+  </script>
 </body>
+
 </html>
