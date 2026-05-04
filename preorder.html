@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pre-order Berlangsung — Berkabarbooks</title>
+  <meta name="description" content="Daftar pre-order buku yang sedang berlangsung di Berkabarbooks. Pesan sekarang sebelum tutup!" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F5F0E8;
+      --cream-dark: #EDE6D8;
+      --burgundy: #7A2E2E;
+      --burgundy-light: #9B4040;
+      --burgundy-pale: #C97070;
+      --text-dark: #2C1A1A;
+      --text-mid: #5C3D3D;
+      --text-muted: #9A7B7B;
+      --white: #FFFFFF;
+      --border: rgba(122,46,46,0.12);
+      --card-shadow: 0 2px 20px rgba(44,26,26,0.07);
+      --green: #2e7d32;
+      --green-bg: #e8f5e9;
+      --orange: #e65100;
+      --orange-bg: #fff3e0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px; height: 60px;
+      display: flex; align-items: center; gap: 32px;
+    }
+    .nav-brand {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 20px; color: var(--burgundy);
+      text-decoration: none; margin-right: auto;
+    }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 14px; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--burgundy); }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: var(--cream-dark);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 40px 40px;
+      text-align: center;
+    }
+    .page-header h1 {
+      font-family: 'Lora', serif;
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 600; color: var(--burgundy);
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 14px; color: var(--text-muted);
+      max-width: 480px; margin: 0 auto;
+    }
+
+    /* FILTER BAR */
+    .filter-bar {
+      max-width: 1100px; margin: 0 auto;
+      padding: 24px 40px 0;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 13px; color: var(--text-muted); font-weight: 500;
+    }
+    .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      border: 1px solid var(--border); border-radius: 99px;
+      padding: 5px 14px; font-size: 13px; font-weight: 400;
+      background: transparent; color: var(--text-mid);
+      cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+    }
+    .chip:hover { border-color: var(--burgundy-pale); color: var(--burgundy); }
+    .chip.active { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
+
+    /* MAIN */
+    .main {
+      max-width: 1100px; margin: 0 auto;
+      padding: 28px 40px 80px;
+    }
+    .list-meta {
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap;
+      gap: 8px; margin-bottom: 20px;
+    }
+    .list-count { font-size: 13px; color: var(--text-muted); }
+
+    /* PO GRID */
+    .po-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* PO CARD */
+    .po-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      display: flex; flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .po-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(44,26,26,0.12);
+    }
+
+    .po-card-photos {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: var(--cream-dark);
+      overflow: hidden;
+    }
+    .po-card-photos img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    .po-card-photos .no-photo {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: var(--text-muted);
+      font-family: 'Lora', serif; font-style: italic;
+    }
+
+    .po-status-badge {
+      position: absolute; top: 10px; left: 10px;
+      font-size: 10px; font-weight: 600;
+      padding: 3px 10px; border-radius: 99px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .po-status-badge.open {
+      background: var(--green-bg); color: var(--green);
+    }
+    .po-status-badge.closing {
+      background: var(--orange-bg); color: var(--orange);
+    }
+
+    .po-card-body { padding: 18px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+
+    .po-publisher {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--burgundy); margin-bottom: 6px;
+    }
+    .po-title {
+      font-family: 'Lora', serif; font-size: 17px; font-weight: 500;
+      color: var(--text-dark); line-height: 1.4; margin-bottom: 12px;
+    }
+    .po-desc {
+      font-size: 13px; color: var(--text-muted);
+      line-height: 1.6; margin-bottom: 14px;
+    }
+
+    .po-meta {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .po-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .po-meta-label {
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: var(--text-muted);
+    }
+    .po-meta-value {
+      font-size: 13px; font-weight: 500; color: var(--text-dark);
+    }
+    .po-meta-value.urgent { color: var(--orange); }
+
+    /* Catalog links */
+    .po-catalogs {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .catalog-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 12px; border-radius: 6px; font-size: 12px;
+      font-weight: 500; text-decoration: none; transition: all 0.15s;
+      border: 1px solid var(--border); color: var(--text-mid);
+      background: var(--cream);
+    }
+    .catalog-link:hover { border-color: var(--burgundy-pale); color: var(--burgundy); }
+    .catalog-link svg { flex-shrink: 0; }
+
+    /* WA Button */
+    .btn-wa {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 11px 20px;
+      background: #25D366; color: #fff;
+      border: none; border-radius: 8px; font-size: 14px;
+      font-weight: 500; text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s, transform 0.15s;
+      margin-top: auto;
+    }
+    .btn-wa:hover { background: #1ebe5a; transform: translateY(-1px); }
+
+    /* LOADING / EMPTY */
+    .state-box {
+      text-align: center; padding: 80px 20px;
+      color: var(--text-muted);
+    }
+    .state-box .icon { font-size: 48px; margin-bottom: 16px; }
+    .state-box p { font-size: 14px; max-width: 320px; margin: 0 auto; line-height: 1.7; }
+    .spinner {
+      width: 36px; height: 36px; margin: 0 auto 16px;
+      border: 3px solid var(--border);
+      border-top-color: var(--burgundy);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* FOOTER */
+    footer { padding: 40px; text-align: center; }
+    .footer-brand {
+      font-family: 'Lora', serif; font-weight: 600;
+      font-size: 16px; color: var(--burgundy); margin-bottom: 12px;
+    }
+    .footer-copy { font-size: 12px; color: var(--text-muted); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .page-header { padding: 36px 20px 28px; }
+      .filter-bar { padding: 20px 20px 0; }
+      .main { padding: 20px 20px 60px; }
+      footer { padding: 28px 20px; }
+    }
+    @media (max-width: 480px) {
+      .po-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-brand">Berkabarbooks</a>
+    <ul class="nav-links">
+      <li><a href="/readystock.html">Readystock</a></li>
+      <li><a href="/preorder.html" class="active">Pre-order</a></li>
+      <li><a href="https://tracking.berkabarbooks.com" target="_blank">Tracking</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>Pre-order Berlangsung</h1>
+    <p>Pesan buku incaranmu sebelum PO ditutup. Klik kartu untuk lihat katalog lengkap.</p>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <span class="filter-label">Publisher:</span>
+    <div class="filter-chips" id="filterChips">
+      <button class="chip active" data-publisher="all">Semua</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="list-meta">
+      <span class="list-count" id="listCount">Memuat data...</span>
+    </div>
+    <div class="po-grid" id="poGrid">
+      <div class="state-box">
+        <div class="spinner"></div>
+        <p>Sedang memuat daftar pre-order...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">Berkabarbooks</div>
+    <p class="footer-copy">© 2026 Berkabar Books. Curating literary journeys.</p>
+  </footer>
+
+  <script>
+    const API = 'https://berkabarbooks-api.khusnulfitrianinund.workers.dev/preorders';
+    const grid = document.getElementById('poGrid');
+    const countEl = document.getElementById('listCount');
+    const chipsEl = document.getElementById('filterChips');
+
+    let allData = [];
+    let activePublisher = 'all';
+
+    // ── Helpers ──────────────────────────────────────────────
+    function daysLeft(tgl) {
+      if (!tgl) return null;
+      // Try parse "15 Mei 2026" style
+      const months = { jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11 };
+      const parts = tgl.trim().split(/\s+/);
+      if (parts.length === 3) {
+        const d = parseInt(parts[0]);
+        const m = months[parts[1].toLowerCase().slice(0,3)];
+        const y = parseInt(parts[2]);
+        if (!isNaN(d) && m !== undefined && !isNaN(y)) {
+          const deadline = new Date(y, m, d);
+          const diff = Math.ceil((deadline - new Date()) / 86400000);
+          return diff;
+        }
+      }
+      return null;
+    }
+
+    function statusLabel(po) {
+      const days = daysLeft(po.tgl_tutup);
+      if (days !== null && days <= 7 && days >= 0) return { text: `Tutup ${days} hari lagi`, cls: 'closing' };
+      return { text: 'Open', cls: 'open' };
+    }
+
+    function catalogLinks(po) {
+      const links = [];
+      const pdf = [po.katalog_pdf, po.katalog_pdf2].filter(Boolean);
+      const canva = [po.katalog_canva, po.katalog_canva2, po.katalog_canva3].filter(Boolean);
+      pdf.forEach((url, i) => links.push({ url, label: pdf.length > 1 ? `PDF ${i+1}` : 'Katalog PDF', icon: 'pdf' }));
+      canva.forEach((url, i) => links.push({ url, label: canva.length > 1 ? `Katalog ${i+1}` : 'Katalog', icon: 'canva' }));
+      return links;
+    }
+
+    function firstPhoto(po) {
+      return po.foto_1 || po.foto_2 || po.foto_3 || po.foto_4 || po.foto_5 || '';
+    }
+
+    function iconPDF() {
+      return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+    }
+    function iconLink() {
+      return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`;
+    }
+    function iconWA() {
+      return `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>`;
+    }
+
+    // ── Render ───────────────────────────────────────────────
+    function renderCard(po) {
+      const { text: stLabel, cls: stCls } = statusLabel(po);
+      const photo = firstPhoto(po);
+      const cats = catalogLinks(po);
+      const desc = po.deskripsi && po.deskripsi !== '-' ? `<p class="po-desc">${po.deskripsi}</p>` : '';
+      const days = daysLeft(po.tgl_tutup);
+
+      const catHtml = cats.length ? `<div class="po-catalogs">
+        ${cats.map(c => `<a href="${c.url}" target="_blank" rel="noopener" class="catalog-link">
+          ${c.icon === 'pdf' ? iconPDF() : iconLink()} ${c.label}
+        </a>`).join('')}
+      </div>` : '';
+
+      const photoHtml = photo
+        ? `<img src="${photo}" alt="${po.kategori}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=no-photo>Foto tidak tersedia</div>'" />`
+        : `<div class="no-photo">Belum ada foto</div>`;
+
+      return `
+        <div class="po-card">
+          <div class="po-card-photos">
+            ${photoHtml}
+            <span class="po-status-badge ${stCls}">${stLabel}</span>
+          </div>
+          <div class="po-card-body">
+            <div class="po-publisher">${po.publisher || po.kategori || '—'}</div>
+            <div class="po-title">${po.kategori}</div>
+            ${desc}
+            <div class="po-meta">
+              ${po.tgl_tutup ? `<div class="po-meta-item">
+                <span class="po-meta-label">Tutup</span>
+                <span class="po-meta-value ${days !== null && days <= 7 ? 'urgent' : ''}">${po.tgl_tutup}</span>
+              </div>` : ''}
+              ${po.eta ? `<div class="po-meta-item">
+                <span class="po-meta-label">ETA</span>
+                <span class="po-meta-value">${po.eta}</span>
+              </div>` : ''}
+            </div>
+            ${catHtml}
+            ${po.wa_link ? `<a href="${po.wa_link}" target="_blank" rel="noopener" class="btn-wa">
+              ${iconWA()} Order via WhatsApp
+            </a>` : ''}
+          </div>
+        </div>`;
+    }
+
+    function render(data) {
+      if (!data.length) {
+        grid.innerHTML = `<div class="state-box" style="grid-column:1/-1">
+          <div class="icon">📚</div>
+          <p>Tidak ada pre-order yang cocok dengan filter ini.</p>
+        </div>`;
+        countEl.textContent = '0 pre-order';
+        return;
+      }
+      grid.innerHTML = data.map(renderCard).join('');
+      countEl.textContent = `${data.length} pre-order berlangsung`;
+    }
+
+    function applyFilter() {
+      const filtered = activePublisher === 'all'
+        ? allData
+        : allData.filter(po => (po.publisher || po.kategori || '').toLowerCase().includes(activePublisher.toLowerCase()));
+      render(filtered);
+    }
+
+    function buildChips(data) {
+      const publishers = [...new Set(data.map(po => po.publisher).filter(Boolean))].sort();
+      publishers.forEach(pub => {
+        const btn = document.createElement('button');
+        btn.className = 'chip';
+        btn.dataset.publisher = pub;
+        btn.textContent = pub;
+        btn.addEventListener('click', () => {
+          activePublisher = pub;
+          document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          applyFilter();
+        });
+        chipsEl.appendChild(btn);
+      });
+      chipsEl.querySelector('[data-publisher="all"]').addEventListener('click', () => {
+        activePublisher = 'all';
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chipsEl.querySelector('[data-publisher="all"]').classList.add('active');
+        applyFilter();
+      });
+    }
+
+    // ── Fetch ────────────────────────────────────────────────
+    async function loadPO() {
+      try {
+        const res = await fetch(API);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        allData = await res.json();
+        if (!Array.isArray(allData)) throw new Error('Format data tidak valid');
+        buildChips(allData);
+        applyFilter();
+      } catch (err) {
+        grid.innerHTML = `<div class="state-box" style="grid-column:1/-1">
+          <div class="icon">⚠️</div>
+          <p>Gagal memuat data pre-order.<br><small>${err.message}</small></p>
+        </div>`;
+        countEl.textContent = '';
+      }
+    }
+
+    loadPO();
+  </script>
+</body>
+</html>
