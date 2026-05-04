@@ -1131,7 +1131,7 @@
     (() => {
       // =============================================
       // GANTI URL INI dengan Web App URL dari Apps Script
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfuOAIvfZAUIg3joNa0lDEi75QK9sxlPUQnn5NQptC5Xy24zajbyXnbLMwiq8WYwA0/exec";
+      const SCRIPT_URL = "https://berkabarbooks-api.khusnulfitrianinund.workers.dev";
       // =============================================
 
       const E = {
@@ -1630,7 +1630,7 @@
       async function search(raw) {
         const id = raw.trim().toLowerCase();
         if (!id) { reset(); return; }
-        if (SCRIPT_URL === "GANTI_DENGAN_URL_APPS_SCRIPT_KAMU") {
+        if (SCRIPT_URL === "https://berkabarbooks-api.khusnulfitrianinund.workers.dev") {
           E.sync.innerHTML = iconWarn; E.sync.title = "Apps Script URL not set"; return;
         }
         setLoading(true);
