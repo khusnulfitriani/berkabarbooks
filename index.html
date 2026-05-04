@@ -1630,7 +1630,7 @@
       async function search(raw) {
         const id = raw.trim().toLowerCase();
         if (!id) { reset(); return; }
-        if (SCRIPT_URL === "https://berkabarbooks-api.khusnulfitrianinund.workers.dev") {
+        if (SCRIPT_URL === "GANTI_DENGAN_URL_WORKER") {
           E.sync.innerHTML = iconWarn; E.sync.title = "Apps Script URL not set"; return;
         }
         setLoading(true);
