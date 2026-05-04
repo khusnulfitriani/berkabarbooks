@@ -4,258 +4,132 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pre-order Berlangsung — Berkabarbooks</title>
-  <meta name="description" content="Daftar pre-order buku yang sedang berlangsung di Berkabarbooks. Pesan sekarang sebelum tutup!" />
+  <meta name="description" content="Katalog pre-order buku yang sedang berlangsung di Berkabarbooks." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --cream: #F5F0E8;
-      --cream-dark: #EDE6D8;
-      --burgundy: #7A2E2E;
-      --burgundy-light: #9B4040;
-      --burgundy-pale: #C97070;
-      --text-dark: #2C1A1A;
-      --text-mid: #5C3D3D;
-      --text-muted: #9A7B7B;
-      --white: #FFFFFF;
-      --border: rgba(122,46,46,0.12);
-      --card-shadow: 0 2px 20px rgba(44,26,26,0.07);
-      --green: #2e7d32;
-      --green-bg: #e8f5e9;
-      --orange: #e65100;
-      --orange-bg: #fff3e0;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#FDF5F5;
+      --cream-dark:#F5E8E8;
+      --burgundy:#7A2E2E;
+      --burgundy-light:#9B4040;
+      --burgundy-pale:#C97070;
+      --text-dark:#2C1A1A;
+      --text-mid:#5C3D3D;
+      --text-muted:#9A7B7B;
+      --white:#fff;
+      --border:rgba(122,46,46,0.12);
+      --shadow:0 2px 20px rgba(44,26,26,0.07);
+      --orange:#C84B00;
+      --orange-bg:#FFF3EC;
+      --green:#2A7D4F;
+      --green-bg:#EDFAF3;
     }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--cream);
-      color: var(--text-dark);
-      font-size: 15px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
     /* NAV */
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--cream);
-      border-bottom: 1px solid var(--border);
-      padding: 0 40px; height: 60px;
-      display: flex; align-items: center; gap: 32px;
-    }
-    .nav-brand {
-      font-family: 'Lora', serif; font-style: italic;
-      font-size: 20px; color: var(--burgundy);
-      text-decoration: none; margin-right: auto;
-    }
-    .nav-links { display: flex; gap: 28px; list-style: none; }
-    .nav-links a {
-      font-family: 'Lora', serif; font-style: italic;
-      font-size: 14px; color: var(--text-mid);
-      text-decoration: none; transition: color 0.2s;
-    }
-    .nav-links a:hover, .nav-links a.active { color: var(--burgundy); }
+    nav{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border);padding:0 48px;height:58px;display:flex;align-items:center;gap:40px}
+    .nav-brand{font-family:'Lora',serif;font-style:italic;font-size:19px;color:var(--burgundy);text-decoration:none;margin-right:auto}
+    .nav-links{display:flex;gap:32px;list-style:none}
+    .nav-links a{font-size:14px;color:var(--text-mid);text-decoration:none;transition:color .18s}
+    .nav-links a:hover,.nav-links a.active{color:var(--burgundy)}
+    .nav-icons{display:flex;gap:14px;align-items:center}
+    .nav-icon{background:none;border:none;cursor:pointer;color:var(--text-mid);display:flex;padding:4px;transition:color .18s}
+    .nav-icon:hover{color:var(--burgundy)}
 
     /* PAGE HEADER */
-    .page-header {
-      background: var(--cream-dark);
-      border-bottom: 1px solid var(--border);
-      padding: 48px 40px 40px;
-      text-align: center;
-    }
-    .page-header h1 {
-      font-family: 'Lora', serif;
-      font-size: clamp(26px, 4vw, 40px);
-      font-weight: 600; color: var(--burgundy);
-      margin-bottom: 10px;
-    }
-    .page-header p {
-      font-size: 14px; color: var(--text-muted);
-      max-width: 480px; margin: 0 auto;
-    }
+    .page-header{text-align:center;padding:52px 40px 36px}
+    .page-eyebrow{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--burgundy-pale);margin-bottom:12px}
+    .page-title{font-family:'Lora',serif;font-size:clamp(28px,4vw,42px);font-weight:600;color:var(--text-dark);margin-bottom:12px}
+    .page-sub{font-size:14px;color:var(--text-muted);max-width:460px;margin:0 auto;line-height:1.75}
 
-    /* FILTER BAR */
-    .filter-bar {
-      max-width: 1100px; margin: 0 auto;
-      padding: 24px 40px 0;
-      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-    }
-    .filter-label {
-      font-size: 13px; color: var(--text-muted); font-weight: 500;
-    }
-    .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-    .chip {
-      border: 1px solid var(--border); border-radius: 99px;
-      padding: 5px 14px; font-size: 13px; font-weight: 400;
-      background: transparent; color: var(--text-mid);
-      cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
-    }
-    .chip:hover { border-color: var(--burgundy-pale); color: var(--burgundy); }
-    .chip.active { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
+    /* TABS */
+    .tabs-wrap{display:flex;justify-content:center;gap:0;border-bottom:1.5px solid var(--border);margin:0 48px 32px}
+    .tab-btn{border:none;background:none;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-muted);padding:12px 28px;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;transition:color .18s;white-space:nowrap}
+    .tab-btn:hover{color:var(--text-mid)}
+    .tab-btn.active{color:var(--burgundy);border-bottom-color:var(--burgundy);font-weight:500}
 
     /* MAIN */
-    .main {
-      max-width: 1100px; margin: 0 auto;
-      padding: 28px 40px 80px;
-    }
-    .list-meta {
-      display: flex; align-items: center;
-      justify-content: space-between; flex-wrap: wrap;
-      gap: 8px; margin-bottom: 20px;
-    }
-    .list-count { font-size: 13px; color: var(--text-muted); }
+    .main{max-width:860px;margin:0 auto;padding:0 40px 80px}
 
-    /* PO GRID */
-    .po-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
+    .list-count{font-size:13px;color:var(--text-muted);margin-bottom:20px}
 
     /* PO CARD */
-    .po-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: var(--card-shadow);
-      display: flex; flex-direction: column;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .po-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 32px rgba(44,26,26,0.12);
-    }
+    .po-list{display:flex;flex-direction:column;gap:24px}
 
-    .po-card-photos {
-      position: relative;
-      aspect-ratio: 16/9;
-      background: var(--cream-dark);
-      overflow: hidden;
-    }
-    .po-card-photos img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-    }
-    .po-card-photos .no-photo {
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; color: var(--text-muted);
-      font-family: 'Lora', serif; font-style: italic;
-    }
+    .po-card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:grid;grid-template-columns:280px 1fr;transition:box-shadow .2s,transform .2s}
+    .po-card:hover{box-shadow:0 8px 32px rgba(44,26,26,0.13);transform:translateY(-2px)}
 
-    .po-status-badge {
-      position: absolute; top: 10px; left: 10px;
-      font-size: 10px; font-weight: 600;
-      padding: 3px 10px; border-radius: 99px;
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
-    .po-status-badge.open {
-      background: var(--green-bg); color: var(--green);
-    }
-    .po-status-badge.closing {
-      background: var(--orange-bg); color: var(--orange);
-    }
+    /* Card left — preview */
+    .po-preview{background:linear-gradient(145deg,#F0E4E4,#E8D5D5);position:relative;min-height:240px;display:flex;flex-direction:column;overflow:hidden}
+    .po-preview-photos{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:16px 16px 0}
+    .po-preview-photos.single{grid-template-columns:1fr}
+    .po-preview-photos img{width:100%;height:100px;object-fit:cover;border-radius:6px;display:block}
+    .po-preview-no-photo{flex:1;display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-style:italic;font-size:13px;color:var(--text-muted)}
 
-    .po-card-body { padding: 18px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+    .po-preview-footer{padding:10px 14px;background:rgba(255,255,255,0.6);backdrop-filter:blur(4px);margin:8px;border-radius:8px}
+    .po-preview-footer-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted)}
+    .po-preview-footer-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+    .cat-mini{font-size:11px;color:var(--burgundy);background:rgba(122,46,46,0.08);border-radius:4px;padding:2px 8px;text-decoration:none;white-space:nowrap;transition:background .15s}
+    .cat-mini:hover{background:rgba(122,46,46,0.16)}
 
-    .po-publisher {
-      font-size: 11px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.08em;
-      color: var(--burgundy); margin-bottom: 6px;
-    }
-    .po-title {
-      font-family: 'Lora', serif; font-size: 17px; font-weight: 500;
-      color: var(--text-dark); line-height: 1.4; margin-bottom: 12px;
-    }
-    .po-desc {
-      font-size: 13px; color: var(--text-muted);
-      line-height: 1.6; margin-bottom: 14px;
-    }
+    .po-status-badge{position:absolute;top:12px;left:12px;font-size:10px;font-weight:600;padding:3px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
+    .badge-open{background:var(--green-bg);color:var(--green)}
+    .badge-closing{background:var(--orange-bg);color:var(--orange)}
 
-    .po-meta {
-      display: flex; gap: 16px; flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-    .po-meta-item { display: flex; flex-direction: column; gap: 2px; }
-    .po-meta-label {
-      font-size: 10px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.07em;
-      color: var(--text-muted);
-    }
-    .po-meta-value {
-      font-size: 13px; font-weight: 500; color: var(--text-dark);
-    }
-    .po-meta-value.urgent { color: var(--orange); }
+    /* Card right — details */
+    .po-body{padding:24px 28px;display:flex;flex-direction:column}
+    .po-publisher-tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--burgundy-pale);margin-bottom:6px}
+    .po-name{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--text-dark);line-height:1.3;margin-bottom:10px}
+    .po-desc{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:16px}
 
-    /* Catalog links */
-    .po-catalogs {
-      display: flex; gap: 8px; flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-    .catalog-link {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 5px 12px; border-radius: 6px; font-size: 12px;
-      font-weight: 500; text-decoration: none; transition: all 0.15s;
-      border: 1px solid var(--border); color: var(--text-mid);
-      background: var(--cream);
-    }
-    .catalog-link:hover { border-color: var(--burgundy-pale); color: var(--burgundy); }
-    .catalog-link svg { flex-shrink: 0; }
+    .po-dates{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+    .po-date-row{display:flex;justify-content:space-between;align-items:baseline}
+    .po-date-label{font-size:13px;color:var(--text-muted)}
+    .po-date-value{font-size:13px;font-weight:500;color:var(--text-dark)}
+    .po-date-value.urgent{color:var(--orange);font-weight:600}
 
-    /* WA Button */
-    .btn-wa {
-      display: flex; align-items: center; justify-content: center;
-      gap: 8px; padding: 11px 20px;
-      background: #25D366; color: #fff;
-      border: none; border-radius: 8px; font-size: 14px;
-      font-weight: 500; text-decoration: none;
-      font-family: 'DM Sans', sans-serif;
-      transition: background 0.2s, transform 0.15s;
-      margin-top: auto;
-    }
-    .btn-wa:hover { background: #1ebe5a; transform: translateY(-1px); }
+    .po-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+    .btn-catalog{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;border:1.5px solid var(--burgundy);color:var(--burgundy);background:transparent;transition:all .18s;font-family:'DM Sans',sans-serif;cursor:pointer}
+    .btn-catalog:hover{background:rgba(122,46,46,0.06)}
+    .btn-wa{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;background:var(--burgundy);color:#fff;border:1.5px solid var(--burgundy);transition:all .18s;font-family:'DM Sans',sans-serif}
+    .btn-wa:hover{background:var(--burgundy-light)}
 
-    /* LOADING / EMPTY */
-    .state-box {
-      text-align: center; padding: 80px 20px;
-      color: var(--text-muted);
-    }
-    .state-box .icon { font-size: 48px; margin-bottom: 16px; }
-    .state-box p { font-size: 14px; max-width: 320px; margin: 0 auto; line-height: 1.7; }
-    .spinner {
-      width: 36px; height: 36px; margin: 0 auto 16px;
-      border: 3px solid var(--border);
-      border-top-color: var(--burgundy);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    /* INFO BOX */
+    .info-box{max-width:860px;margin:8px auto 0;padding:0 40px}
+    .info-card{background:var(--cream-dark);border-radius:14px;padding:28px;text-align:center}
+    .info-icon{font-size:22px;margin-bottom:10px}
+    .info-title{font-family:'Lora',serif;font-size:16px;font-weight:500;color:var(--text-dark);margin-bottom:8px}
+    .info-text{font-size:13px;color:var(--text-muted);line-height:1.75;max-width:440px;margin:0 auto}
+
+    /* STATE */
+    .state-box{text-align:center;padding:80px 20px;color:var(--text-muted)}
+    .spinner{width:34px;height:34px;margin:0 auto 14px;border:3px solid var(--border);border-top-color:var(--burgundy);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
     /* FOOTER */
-    footer { padding: 40px; text-align: center; }
-    .footer-brand {
-      font-family: 'Lora', serif; font-weight: 600;
-      font-size: 16px; color: var(--burgundy); margin-bottom: 12px;
-    }
-    .footer-copy { font-size: 12px; color: var(--text-muted); }
+    footer{padding:48px 40px 28px;text-align:center}
+    .footer-brand{font-family:'Lora',serif;font-style:italic;font-size:17px;color:var(--burgundy);margin-bottom:14px}
+    .footer-links{display:flex;justify-content:center;gap:24px;list-style:none;margin-bottom:14px}
+    .footer-links a{font-size:13px;color:var(--text-muted);text-decoration:none;transition:color .18s}
+    .footer-links a:hover{color:var(--burgundy)}
+    .footer-copy{font-size:12px;color:var(--text-muted)}
 
     /* RESPONSIVE */
-    @media (max-width: 768px) {
-      nav { padding: 0 20px; }
-      .nav-links { display: none; }
-      .page-header { padding: 36px 20px 28px; }
-      .filter-bar { padding: 20px 20px 0; }
-      .main { padding: 20px 20px 60px; }
-      footer { padding: 28px 20px; }
-    }
-    @media (max-width: 480px) {
-      .po-grid { grid-template-columns: 1fr; }
+    @media(max-width:768px){
+      nav{padding:0 20px;gap:24px}
+      .nav-links{display:none}
+      .tabs-wrap{margin:0 20px 24px;overflow-x:auto;justify-content:flex-start}
+      .tab-btn{padding:10px 18px}
+      .page-header{padding:36px 20px 24px}
+      .main{padding:0 20px 60px}
+      .info-box{padding:0 20px}
+      .po-card{grid-template-columns:1fr;grid-template-rows:auto auto}
+      .po-preview{min-height:180px}
+      footer{padding:36px 20px 20px}
     }
   </style>
 </head>
@@ -263,34 +137,40 @@
 
   <!-- NAV -->
   <nav>
-    <a href="/" class="nav-brand">Berkabarbooks</a>
+    <a href="/" class="nav-brand">Berkabar Books</a>
     <ul class="nav-links">
       <li><a href="/readystock.html">Readystock</a></li>
       <li><a href="/preorder.html" class="active">Pre-order</a></li>
       <li><a href="https://tracking.berkabarbooks.com" target="_blank">Tracking</a></li>
     </ul>
+    <div class="nav-icons">
+      <button class="nav-icon" aria-label="Keranjang">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </button>
+      <button class="nav-icon" aria-label="Akun">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+    </div>
   </nav>
 
   <!-- PAGE HEADER -->
   <div class="page-header">
-    <h1>Pre-order Berlangsung</h1>
-    <p>Pesan buku incaranmu sebelum PO ditutup. Klik kartu untuk lihat katalog lengkap.</p>
+    <p class="page-eyebrow">Katalog PO Terbaru</p>
+    <h1 class="page-title">Pre-order Berlangsung</h1>
+    <p class="page-sub">Jelajahi kurasi buku-buku istimewa yang sedang dalam masa pemesanan.<br>Amankan salinan Anda sebelum kuota terpenuhi.</p>
   </div>
 
-  <!-- FILTER -->
-  <div class="filter-bar">
-    <span class="filter-label">Publisher:</span>
-    <div class="filter-chips" id="filterChips">
-      <button class="chip active" data-publisher="all">Semua</button>
-    </div>
+  <!-- TABS -->
+  <div class="tabs-wrap" id="tabsWrap">
+    <button class="tab-btn active" data-tab="all">Semua PO</button>
+    <button class="tab-btn" data-tab="lokal">PO Lokal</button>
+    <button class="tab-btn" data-tab="impor">PO Publisher Impor</button>
   </div>
 
   <!-- MAIN -->
   <main class="main">
-    <div class="list-meta">
-      <span class="list-count" id="listCount">Memuat data...</span>
-    </div>
-    <div class="po-grid" id="poGrid">
+    <p class="list-count" id="listCount"></p>
+    <div class="po-list" id="poList">
       <div class="state-box">
         <div class="spinner"></div>
         <p>Sedang memuat daftar pre-order...</p>
@@ -298,190 +178,175 @@
     </div>
   </main>
 
+  <!-- INFO BOX -->
+  <div class="info-box">
+    <div class="info-card">
+      <div class="info-icon">ℹ️</div>
+      <h3 class="info-title">Informasi Pre-order</h3>
+      <p class="info-text">Estimasi kedatangan buku dihitung sejak tanggal penutupan PO, bukan tanggal pemesanan. Keterlambatan pengiriman internasional terkadang dapat terjadi; kami akan selalu memberikan update status secara berkala melalui grup WhatsApp dan halaman Tracking.</p>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer>
-    <div class="footer-brand">Berkabarbooks</div>
-    <p class="footer-copy">© 2026 Berkabar Books. Curating literary journeys.</p>
+    <div class="footer-brand">Berkabar Books</div>
+    <ul class="footer-links">
+      <li><a href="#">About Us</a></li>
+      <li><a href="#">Shipping Policy</a></li>
+      <li><a href="#">FAQs</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <p class="footer-copy">© 2024 Berkabar Books. Curating contemplative literary journeys.</p>
   </footer>
 
   <script>
     const API = 'https://berkabarbooks-api.khusnulfitrianinund.workers.dev/preorders';
-    const grid = document.getElementById('poGrid');
-    const countEl = document.getElementById('listCount');
-    const chipsEl = document.getElementById('filterChips');
-
     let allData = [];
-    let activePublisher = 'all';
+    let activeTab = 'all';
 
-    // ── Helpers ──────────────────────────────────────────────
+    // ── Date helpers ──────────────────────────────────────────
     function parseDate(tgl) {
       if (!tgl) return null;
-      // ISO format: 2026-05-14T17:00:00.000Z
-      if (tgl.includes('T') || tgl.match(/^\d{4}-\d{2}-\d{2}/)) {
-        const d = new Date(tgl);
-        return isNaN(d) ? null : d;
+      if (tgl.includes('T') || /^\d{4}-\d{2}-\d{2}/.test(tgl)) {
+        const d = new Date(tgl); return isNaN(d) ? null : d;
       }
-      // Indonesian text: "15 Mei 2026"
-      const months = { jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11 };
-      const parts = tgl.trim().split(/\s+/);
-      if (parts.length === 3) {
-        const d = parseInt(parts[0]);
-        const m = months[parts[1].toLowerCase().slice(0,3)];
-        const y = parseInt(parts[2]);
-        if (!isNaN(d) && m !== undefined && !isNaN(y)) return new Date(y, m, d);
-      }
+      const months = {jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11};
+      const [dd, mm, yy] = tgl.trim().split(/\s+/);
+      const m = months[mm?.toLowerCase().slice(0,3)];
+      if (dd && m !== undefined && yy) return new Date(+yy, m, +dd);
       return null;
     }
-
     function daysLeft(tgl) {
-      const d = parseDate(tgl);
-      if (!d) return null;
+      const d = parseDate(tgl); if (!d) return null;
       return Math.ceil((d - new Date()) / 86400000);
     }
-
     function formatDate(tgl) {
-      const d = parseDate(tgl);
-      if (!d) return tgl || '—';
-      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+      const d = parseDate(tgl); if (!d) return tgl || '—';
+      return d.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
     }
 
-    function statusLabel(po) {
-      const days = daysLeft(po.tgl_tutup);
-      if (days !== null && days <= 7 && days >= 0) return { text: `Tutup ${days} hari lagi`, cls: 'closing' };
-      return { text: 'Open', cls: 'open' };
-    }
+    // ── Icons ─────────────────────────────────────────────────
+    const iconPDF = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+    const iconLink = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`;
+    const iconWA = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>`;
 
-    function catalogLinks(po) {
-      const links = [];
-      const pdf = [po.katalog_pdf, po.katalog_pdf2].filter(Boolean);
-      const canva = [po.katalog_canva, po.katalog_canva2, po.katalog_canva3].filter(Boolean);
-      pdf.forEach((url, i) => links.push({ url, label: pdf.length > 1 ? `PDF ${i+1}` : 'Katalog PDF', icon: 'pdf' }));
-      canva.forEach((url, i) => links.push({ url, label: canva.length > 1 ? `Katalog ${i+1}` : 'Katalog', icon: 'canva' }));
-      return links;
-    }
-
-    function firstPhoto(po) {
-      return po.foto_1 || po.foto_2 || po.foto_3 || po.foto_4 || po.foto_5 || '';
-    }
-
-    function iconPDF() {
-      return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
-    }
-    function iconLink() {
-      return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`;
-    }
-    function iconWA() {
-      return `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>`;
-    }
-
-    // ── Render ───────────────────────────────────────────────
+    // ── Card renderer ─────────────────────────────────────────
     function renderCard(po) {
-      const { text: stLabel, cls: stCls } = statusLabel(po);
-      const photo = firstPhoto(po);
-      const cats = catalogLinks(po);
-      const desc = po.deskripsi && po.deskripsi !== '-' ? `<p class="po-desc">${po.deskripsi}</p>` : '';
       const days = daysLeft(po.tgl_tutup);
+      const isClosing = days !== null && days <= 7 && days >= 0;
+      const badgeHtml = `<span class="po-status-badge ${isClosing ? 'badge-closing' : 'badge-open'}">${isClosing ? `Sisa Waktu PO · ${days} Hari Lagi` : 'PO Sedang Berjalan'}</span>`;
 
-      const catHtml = cats.length ? `<div class="po-catalogs">
-        ${cats.map(c => `<a href="${c.url}" target="_blank" rel="noopener" class="catalog-link">
-          ${c.icon === 'pdf' ? iconPDF() : iconLink()} ${c.label}
-        </a>`).join('')}
+      // Photos
+      const photos = [po.foto_1, po.foto_2, po.foto_3, po.foto_4, po.foto_5].filter(Boolean);
+      let photoHtml = '';
+      if (photos.length) {
+        const show = photos.slice(0, 2);
+        photoHtml = `<div class="po-preview-photos${show.length === 1 ? ' single' : ''}">
+          ${show.map(src => `<img src="${src}" alt="${po.kategori}" loading="lazy" onerror="this.style.display='none'">`).join('')}
+        </div>`;
+      } else {
+        photoHtml = `<div class="po-preview-no-photo">Belum ada foto preview</div>`;
+      }
+
+      // Catalog mini links
+      const cats = [
+        po.katalog_pdf  ? {url: po.katalog_pdf,  label: 'Katalog PDF'}  : null,
+        po.katalog_pdf2 ? {url: po.katalog_pdf2, label: 'PDF 2'}        : null,
+        po.katalog_canva  ? {url: po.katalog_canva,  label: 'Katalog'}  : null,
+        po.katalog_canva2 ? {url: po.katalog_canva2, label: 'Katalog 2'}: null,
+        po.katalog_canva3 ? {url: po.katalog_canva3, label: 'Katalog 3'}: null,
+      ].filter(Boolean);
+
+      const previewFooter = cats.length ? `<div class="po-preview-footer">
+        <div class="po-preview-footer-label">Lihat katalog lengkap di sini 👇</div>
+        <div class="po-preview-footer-links">
+          ${cats.map(c => `<a href="${c.url}" target="_blank" rel="noopener" class="cat-mini">${c.label}</a>`).join('')}
+        </div>
       </div>` : '';
 
-      const photoHtml = photo
-        ? `<img src="${photo}" alt="${po.kategori}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=no-photo>Foto tidak tersedia</div>'" />`
-        : `<div class="no-photo">Belum ada foto</div>`;
+      // Action buttons
+      const pdfBtns = [
+        po.katalog_pdf   ? `<a href="${po.katalog_pdf}"  target="_blank" class="btn-catalog">${iconPDF} Buka Katalog PDF</a>`  : '',
+        po.katalog_canva ? `<a href="${po.katalog_canva}" target="_blank" class="btn-catalog">${iconLink} Buka Katalog Canva</a>` : '',
+      ].filter(Boolean).join('');
 
-      return `
-        <div class="po-card">
-          <div class="po-card-photos">
-            ${photoHtml}
-            <span class="po-status-badge ${stCls}">${stLabel}</span>
+      const waBtn = po.wa_link ? `<a href="${po.wa_link}" target="_blank" rel="noopener" class="btn-wa">${iconWA} Order via WhatsApp</a>` : '';
+
+      const desc = po.deskripsi && po.deskripsi !== '-' ? `<p class="po-desc">${po.deskripsi}</p>` : '';
+
+      return `<div class="po-card">
+        <div class="po-preview">
+          ${badgeHtml}
+          ${photoHtml}
+          ${previewFooter}
+        </div>
+        <div class="po-body">
+          <div class="po-publisher-tag">${po.publisher || '—'}</div>
+          <div class="po-name">${po.kategori}</div>
+          ${desc}
+          <div class="po-dates">
+            ${po.tgl_tutup ? `<div class="po-date-row">
+              <span class="po-date-label">Tutup PO</span>
+              <span class="po-date-value${isClosing ? ' urgent' : ''}">${formatDate(po.tgl_tutup)}</span>
+            </div>` : ''}
+            ${po.eta ? `<div class="po-date-row">
+              <span class="po-date-label">Estimasi Tiba</span>
+              <span class="po-date-value">${po.eta}</span>
+            </div>` : ''}
           </div>
-          <div class="po-card-body">
-            <div class="po-publisher">${po.publisher || po.kategori || '—'}</div>
-            <div class="po-title">${po.kategori}</div>
-            ${desc}
-            <div class="po-meta">
-              ${po.tgl_tutup ? `<div class="po-meta-item">
-                <span class="po-meta-label">Tutup</span>
-                <span class="po-meta-value ${days !== null && days <= 7 ? 'urgent' : ''}">${formatDate(po.tgl_tutup)}</span>
-              </div>` : ''}
-              ${po.eta ? `<div class="po-meta-item">
-                <span class="po-meta-label">ETA</span>
-                <span class="po-meta-value">${po.eta}</span>
-              </div>` : ''}
-            </div>
-            ${catHtml}
-            ${po.wa_link ? `<a href="${po.wa_link}" target="_blank" rel="noopener" class="btn-wa">
-              ${iconWA()} Order via WhatsApp
-            </a>` : ''}
-          </div>
-        </div>`;
+          <div class="po-actions">${pdfBtns}${waBtn}</div>
+        </div>
+      </div>`;
     }
 
-    function render(data) {
+    // ── Filter & Render ───────────────────────────────────────
+    // Lokal = publisher kosong atau publisher tidak mengandung kata asing umum
+    const importKeywords = ['usborne','quarto','folio','bloomsbury','penguin','random house','macmillan','hachette','scholastic','sourcebooks','PRH','chronicle'];
+    function isImpor(po) {
+      const pub = (po.publisher || po.kategori || '').toLowerCase();
+      return importKeywords.some(k => pub.includes(k.toLowerCase()));
+    }
+
+    function applyTab() {
+      let data = allData;
+      if (activeTab === 'lokal')  data = allData.filter(po => !isImpor(po));
+      if (activeTab === 'impor')  data = allData.filter(po => isImpor(po));
+
+      const listEl = document.getElementById('poList');
+      const countEl = document.getElementById('listCount');
+
       if (!data.length) {
-        grid.innerHTML = `<div class="state-box" style="grid-column:1/-1">
-          <div class="icon">📚</div>
-          <p>Tidak ada pre-order yang cocok dengan filter ini.</p>
-        </div>`;
-        countEl.textContent = '0 pre-order';
+        listEl.innerHTML = `<div class="state-box"><div style="font-size:40px;margin-bottom:12px">📚</div><p>Tidak ada pre-order pada kategori ini.</p></div>`;
+        countEl.textContent = '';
         return;
       }
-      grid.innerHTML = data.map(renderCard).join('');
+      listEl.innerHTML = data.map(renderCard).join('');
       countEl.textContent = `${data.length} pre-order berlangsung`;
     }
 
-    function applyFilter() {
-      const filtered = activePublisher === 'all'
-        ? allData
-        : allData.filter(po => (po.publisher || po.kategori || '').toLowerCase().includes(activePublisher.toLowerCase()));
-      render(filtered);
-    }
-
-    function buildChips(data) {
-      const publishers = [...new Set(data.map(po => po.publisher).filter(Boolean))].sort();
-      publishers.forEach(pub => {
-        const btn = document.createElement('button');
-        btn.className = 'chip';
-        btn.dataset.publisher = pub;
-        btn.textContent = pub;
-        btn.addEventListener('click', () => {
-          activePublisher = pub;
-          document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-          btn.classList.add('active');
-          applyFilter();
-        });
-        chipsEl.appendChild(btn);
+    // ── Tabs ──────────────────────────────────────────────────
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeTab = btn.dataset.tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyTab();
       });
-      chipsEl.querySelector('[data-publisher="all"]').addEventListener('click', () => {
-        activePublisher = 'all';
-        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        chipsEl.querySelector('[data-publisher="all"]').classList.add('active');
-        applyFilter();
-      });
-    }
+    });
 
-    // ── Fetch ────────────────────────────────────────────────
-    async function loadPO() {
+    // ── Fetch ─────────────────────────────────────────────────
+    async function load() {
       try {
         const res = await fetch(API);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         allData = await res.json();
-        if (!Array.isArray(allData)) throw new Error('Format data tidak valid');
-        buildChips(allData);
-        applyFilter();
+        if (!Array.isArray(allData)) throw new Error('Format tidak valid');
+        applyTab();
       } catch (err) {
-        grid.innerHTML = `<div class="state-box" style="grid-column:1/-1">
-          <div class="icon">⚠️</div>
-          <p>Gagal memuat data pre-order.<br><small>${err.message}</small></p>
-        </div>`;
-        countEl.textContent = '';
+        document.getElementById('poList').innerHTML = `<div class="state-box"><div style="font-size:40px;margin-bottom:12px">⚠️</div><p>Gagal memuat data.<br><small>${err.message}</small></p></div>`;
       }
     }
-
-    loadPO();
+    load();
   </script>
 </body>
 </html>
