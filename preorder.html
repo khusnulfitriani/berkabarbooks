@@ -314,22 +314,35 @@
     let activePublisher = 'all';
 
     // ── Helpers ──────────────────────────────────────────────
-    function daysLeft(tgl) {
+    function parseDate(tgl) {
       if (!tgl) return null;
-      // Try parse "15 Mei 2026" style
+      // ISO format: 2026-05-14T17:00:00.000Z
+      if (tgl.includes('T') || tgl.match(/^\d{4}-\d{2}-\d{2}/)) {
+        const d = new Date(tgl);
+        return isNaN(d) ? null : d;
+      }
+      // Indonesian text: "15 Mei 2026"
       const months = { jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11 };
       const parts = tgl.trim().split(/\s+/);
       if (parts.length === 3) {
         const d = parseInt(parts[0]);
         const m = months[parts[1].toLowerCase().slice(0,3)];
         const y = parseInt(parts[2]);
-        if (!isNaN(d) && m !== undefined && !isNaN(y)) {
-          const deadline = new Date(y, m, d);
-          const diff = Math.ceil((deadline - new Date()) / 86400000);
-          return diff;
-        }
+        if (!isNaN(d) && m !== undefined && !isNaN(y)) return new Date(y, m, d);
       }
       return null;
+    }
+
+    function daysLeft(tgl) {
+      const d = parseDate(tgl);
+      if (!d) return null;
+      return Math.ceil((d - new Date()) / 86400000);
+    }
+
+    function formatDate(tgl) {
+      const d = parseDate(tgl);
+      if (!d) return tgl || '—';
+      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
     function statusLabel(po) {
@@ -392,7 +405,7 @@
             <div class="po-meta">
               ${po.tgl_tutup ? `<div class="po-meta-item">
                 <span class="po-meta-label">Tutup</span>
-                <span class="po-meta-value ${days !== null && days <= 7 ? 'urgent' : ''}">${po.tgl_tutup}</span>
+                <span class="po-meta-value ${days !== null && days <= 7 ? 'urgent' : ''}">${formatDate(po.tgl_tutup)}</span>
               </div>` : ''}
               ${po.eta ? `<div class="po-meta-item">
                 <span class="po-meta-label">ETA</span>
