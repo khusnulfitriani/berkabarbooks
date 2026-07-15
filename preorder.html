@@ -313,6 +313,39 @@
       color: var(--orange)
     }
 
+    .badge-urgent {
+      background: #FFEBEB;
+      color: #E63946;
+      border: 1px solid rgba(230, 57, 70, 0.2);
+    }
+
+    /* Tab Badge */
+    .tab-btn {
+      position: relative;
+      border: none;
+      background: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text-muted);
+      padding: 12px 28px;
+      cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      margin-bottom: -1.5px;
+      transition: color .18s;
+      white-space: nowrap
+    }
+
+    .tab-urgent-dot {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      width: 6px;
+      height: 6px;
+      background: #E63946;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px var(--white);
+    }
+
     /* Card right — details */
     .po-body {
       padding: 24px 28px;
@@ -623,7 +656,7 @@
   <div class="tabs-wrap" id="tabsWrap">
     <button class="tab-btn active" data-tab="all">Semua PO</button>
     <button class="tab-btn" data-tab="lokal">PO Lokal</button>
-    <button class="tab-btn" data-tab="impor">PO Publisher Impor</button>
+    <button class="tab-btn" data-tab="impor">PO Impor</button>
   </div>
 
   <!-- MAIN -->
@@ -695,8 +728,21 @@
     // ── Card renderer ─────────────────────────────────────────
     function renderCard(po) {
       const days = daysLeft(po.tgl_tutup);
+      const isUrgent = days !== null && days <= 3 && days >= 1;
       const isClosing = days !== null && days <= 7 && days >= 0;
-      const badgeHtml = `<span class="po-status-badge ${isClosing ? 'badge-closing' : 'badge-open'}">${isClosing ? `Sisa Waktu PO · ${days} Hari Lagi` : 'PO Sedang Berjalan'}</span>`;
+
+      let statusText = 'PO Sedang Berjalan';
+      let badgeClass = 'badge-open';
+
+      if (isUrgent) {
+        statusText = `⚡️ Tutup ${days} Hari Lagi`;
+        badgeClass = 'badge-urgent';
+      } else if (isClosing) {
+        statusText = days === 0 ? 'Tutup HARI INI' : `Sisa Waktu PO · ${days} Hari Lagi`;
+        badgeClass = 'badge-closing';
+      }
+
+      const badgeHtml = `<span class="po-status-badge ${badgeClass}">${statusText}</span>`;
 
       // Photos
       const photos = [po.foto_1, po.foto_2, po.foto_3, po.foto_4, po.foto_5].filter(Boolean);
@@ -716,7 +762,7 @@
         po.katalog_pdf2 ? `<a href="${po.katalog_pdf2}"  target="_blank" rel="noopener" class="btn-catalog">${iconPDF} Katalog PDF 2</a>` : '',
         po.katalog_canva ? `<a href="${po.katalog_canva}" target="_blank" rel="noopener" class="btn-catalog">${iconLink} Canva</a>` : '',
         po.katalog_canva2 ? `<a href="${po.katalog_canva2}" target="_blank" rel="noopener" class="btn-catalog">${iconLink} Canva 2</a>` : '',
-        po.katalog_canva3 ? `<a href="${po.katalog_canva3}" target="_blank" rel="noopener" class="btn-catalog">${iconLink} Canva3</a>` : '',
+        po.katalog_canva3 ? `<a href="${po.katalog_canva3}" target="_blank" rel="noopener" class="btn-catalog">${iconLink} Canva 3</a>` : '',
       ].filter(Boolean);
 
       const waBtn = po.wa_link ? `<a href="${po.wa_link}" target="_blank" rel="noopener" class="btn-wa">${iconWA} Order via WhatsApp</a>` : '';
@@ -729,7 +775,6 @@
           ${photoHtml}
         </div>
         <div class="po-body">
-          <div class="po-publisher-label">Penerbit</div>
           <div class="po-publisher-name">${po.publisher || '—'}</div>
           ${desc}
           <div class="po-dates">
@@ -751,10 +796,38 @@
     }
 
     // ── Filter & Render ───────────────────────────────────────
+    function updateTabBadges() {
+      ['all', 'lokal', 'impor'].forEach(tab => {
+        let data = allData;
+        if (tab === 'lokal') data = allData.filter(po => (po.tipe || '').toLowerCase() === 'lokal');
+        if (tab === 'impor') data = allData.filter(po => (po.tipe || '').toLowerCase() === 'impor');
+
+        const hasUrgent = data.some(po => {
+          const dl = daysLeft(po.tgl_tutup);
+          return dl !== null && dl <= 3 && dl >= 1;
+        });
+
+        const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+        if (btn) {
+          const existingDot = btn.querySelector('.tab-urgent-dot');
+          if (hasUrgent && !existingDot) {
+            const dot = document.createElement('div');
+            dot.className = 'tab-urgent-dot';
+            dot.title = 'Ada PO yang segera tutup!';
+            btn.appendChild(dot);
+          } else if (!hasUrgent && existingDot) {
+            existingDot.remove();
+          }
+        }
+      });
+    }
+
     function applyTab() {
       let data = allData;
       if (activeTab === 'lokal') data = allData.filter(po => (po.tipe || '').toLowerCase() === 'lokal');
       if (activeTab === 'impor') data = allData.filter(po => (po.tipe || '').toLowerCase() === 'impor');
+
+      updateTabBadges();
 
       const listEl = document.getElementById('poList');
       const countEl = document.getElementById('listCount');
@@ -783,8 +856,12 @@
       try {
         const res = await fetch(API);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        allData = await res.json();
-        if (!Array.isArray(allData)) throw new Error('Format tidak valid');
+        const rawData = await res.json();
+        if (!Array.isArray(rawData)) throw new Error('Format tidak valid');
+
+        // ── SINKRONISASI LOGIKA: Hanya tampilkan yang berstatus "Open" ───────
+        allData = rawData.filter(po => (po.status_po || '').toLowerCase() === 'open');
+
         applyTab();
       } catch (err) {
         document.getElementById('poList').innerHTML = `<div class="state-box"><div style="font-size:40px;margin-bottom:12px">⚠️</div><p>Gagal memuat data.<br><small>${err.message}</small></p></div>`;

@@ -918,6 +918,162 @@
       text-align: center;
     }
 
+    /* ─── RESI CARDS ─── */
+    .resi-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .resi-card {
+      background: var(--white);
+      border: 1px solid var(--dr-muted);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: box-shadow .18s, transform .15s;
+    }
+
+    .resi-card:hover {
+      box-shadow: 0 6px 24px rgba(100, 50, 50, .10);
+      transform: translateY(-1px);
+    }
+
+    .resi-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      background: var(--dr-pale);
+      border-bottom: 1px solid var(--dr-muted);
+      flex-wrap: wrap;
+    }
+
+    .resi-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .resi-kurir {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-mid);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .resi-number {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--dr);
+      letter-spacing: .03em;
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px dashed var(--dr-muted);
+      background: var(--white);
+      transition: background .15s, color .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .resi-number:hover {
+      background: var(--dr);
+      color: #fff;
+      border-color: var(--dr);
+    }
+
+    .resi-status-badge {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+      color: #2e7d32;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+
+    .resi-status-badge.packing {
+      background: #fff8e1;
+      border-color: #ffe082;
+      color: #f57f17;
+    }
+
+    .resi-status-badge.diprint {
+      background: #e3f2fd;
+      border-color: #90caf9;
+      color: #1565c0;
+    }
+
+    .resi-books {
+      padding: 12px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .resi-book-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .resi-book-item::before {
+      content: '📘';
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .resi-book-pub {
+      color: var(--ink-soft);
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    .resi-no-books {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-soft);
+      font-style: italic;
+      padding: 8px 20px;
+    }
+
+    /* Badge resi di Delivered cards */
+    .resi-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: var(--dr-pale);
+      border-radius: 8px;
+      border: 1px dashed var(--dr-muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-mid);
+    }
+
+    .resi-badge strong {
+      color: var(--dr);
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
     /* ─── FOOTER ─── */
     .footer {
       text-align: center;
@@ -1052,6 +1208,7 @@
       <div class="tabs">
         <button class="tab active" type="button" data-tab="active">Active Orders</button>
         <button class="tab" type="button" data-tab="sent">Delivered</button>
+        <button class="tab" type="button" data-tab="resi">📦 Resi</button>
         <button class="tab" type="button" data-tab="info">Overview</button>
       </div>
 
@@ -1113,6 +1270,16 @@
         </div>
       </div>
 
+      <!-- Resi -->
+      <div class="view" data-view="resi">
+        <div class="resi-list" data-resi-list>
+          <div class="empty">
+            <div class="empty-img">📮</div>
+            <p>Search your Customer ID to see your shipment records.</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Overview -->
       <div class="view" data-view="info">
         <div data-info>
@@ -1162,6 +1329,7 @@
         ri: document.querySelector("[data-ri]"),
         list1: document.querySelector("[data-list1]"),
         list2: document.querySelector("[data-list2]"),
+        resiList: document.querySelector("[data-resi-list]"),
         info: document.querySelector("[data-info]"),
         prev: document.querySelector("[data-prev]"),
         next: document.querySelector("[data-next]"),
@@ -1175,7 +1343,7 @@
         activeFilter: document.querySelector("[data-active-filter]"),
       };
 
-      const S = { tab: "active", size: 10, page: { active: 1, sent: 1 }, search: "", data: null, sentMonth: "", sentSort: "newest", activeFilter: "" };
+      const S = { tab: "active", size: 10, page: { active: 1, sent: 1 }, search: "", data: null, resi: null, sentMonth: "", sentSort: "newest", activeFilter: "" };
 
       const fc = v => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(v || 0);
       const fn = v => new Intl.NumberFormat("id-ID").format(v || 0);
@@ -1212,7 +1380,7 @@
         return "";
       }
 
-      function bookCard(r, isSent) {
+      function bookCard(r, isSent, resiMap) {
         const title = col(r, "JUDUL", "Judul", "judul", "Title") || "—";
         const pub = col(r, "PENERBIT", "Penerbit", "penerbit");
         const fmt = col(r, "Format", "FORMAT", "format");
@@ -1226,11 +1394,12 @@
         const tglDp = formatDt(col(r, "Tanggal TF", "Tanggal DP", "tanggal tf", "tanggal dp", "Tgl TF", "Tgl DP"));
         const tglFix = formatDt(col(r, "Tanggal", "Tanggal Fix", "tanggal", "tanggal fix", "Tgl Fix"));
         const eta = col(r, "ETA", "eta");
-        const shipmentDate = formatDt(col(r, "Shipment Date", "shipment date", "SHIPMENT DATE"));
+        const shipmentDate = col(r, "Shipment Date", "shipment date", "SHIPMENT DATE");
+        const shipmentDateFmt = formatDt(shipmentDate);
         const meta1 = [pub, fmt, qty ? "Qty: " + qty : ""].filter(Boolean).join(" · ");
         let meta2;
         if (isSent) {
-          meta2 = shipmentDate ? "Tanggal Terkirim: " + shipmentDate : "";
+          meta2 = shipmentDateFmt ? "Tanggal Terkirim: " + shipmentDateFmt : "";
         } else {
           meta2 = [tglFix ? "Tanggal Fix: " + tglFix : "", eta ? "ETA: " + eta : ""].filter(Boolean).join(" · ");
         }
@@ -1240,6 +1409,18 @@
         const srLowStatus = statusRaw.toLowerCase();
         const statusClass = srLowStatus.includes("ready") || srLowStatus.includes("terkirim") ? "status-ready" :
           srLowStatus.includes("cancel") ? "status-canceled" : "status-ordered";
+
+        // Resi badge untuk tab Delivered
+        let resiBadgeHtml = "";
+        if (isSent && resiMap && shipmentDate) {
+          const dateKey = String(shipmentDate).trim();
+          const resiObj = resiMap[dateKey];
+          if (resiObj && resiObj.resi) {
+            const iconCopy = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+            resiBadgeHtml = `<div class="resi-badge">🚚 <span style="color:var(--ink-soft);">${esc(resiObj.ekspedisi || "")}</span>&nbsp;<strong onclick="navigator.clipboard.writeText('${esc(resiObj.resi)}');this.textContent='✔ Copied!';setTimeout(()=>this.textContent='${esc(resiObj.resi)}',1500);" title="Klik untuk copy" style="cursor:pointer;">${esc(resiObj.resi)}</strong>${iconCopy}</div>`;
+          }
+        }
+
         return `<div class="book-card ${isCanceled ? 'canceled' : ''}">
       <div class="book-card-top">
         <div class="book-icon">📘</div>
@@ -1252,6 +1433,7 @@
           <div class="book-status ${statusClass}">${esc(statusRaw)}</div>
         </div>
       </div>
+      ${resiBadgeHtml}
       <div class="book-card-bottom">
         <div class="book-fin-col">
           <div class="book-fin-label">Price</div>
@@ -1269,12 +1451,66 @@
     </div>`;
       }
 
-      function renderList(el, rows, isSent) {
+      function renderList(el, rows, isSent, resiMap) {
         if (!rows.length) {
           el.innerHTML = '<div class="empty"><div class="empty-img">📭</div><p>No books found for this Customer ID in this tab.</p></div>';
           return;
         }
-        el.innerHTML = rows.map(r => bookCard(r, isSent)).join("");
+        el.innerHTML = rows.map(r => bookCard(r, isSent, resiMap)).join("");
+      }
+
+      // Build lookup map: shipment_date → resi object
+      function buildResiMap(resiArr) {
+        const map = {};
+        (resiArr || []).forEach(r => { if (r.tanggal_print) map[r.tanggal_print] = r; });
+        return map;
+      }
+
+      function renderResiTab() {
+        if (!E.resiList) return;
+        const resiArr = S.resi || [];
+        if (!S.data) {
+          E.resiList.innerHTML = '<div class="empty"><div class="empty-img">📮</div><p>Search your Customer ID to see your shipment records.</p></div>';
+          return;
+        }
+        if (!resiArr.length) {
+          E.resiList.innerHTML = '<div class="empty"><div class="empty-img">📮</div><p>Tidak ada data resi ditemukan untuk ID ini.</p></div>';
+          return;
+        }
+        const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        function fmtDate(s) {
+          if (!s) return "";
+          const d = new Date(s);
+          if (isNaN(d.getTime())) return s;
+          return `${String(d.getDate()).padStart(2,"0")} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+        }
+        function statusCls(st) {
+          const s = (st||"text").toLowerCase();
+          if (s.includes("packing")) return "packing";
+          if (s.includes("diprint") || s.includes("print")) return "diprint";
+          return "";
+        }
+        E.resiList.innerHTML = resiArr.map(r => {
+          const books = (r.books || []);
+          const booksHtml = books.length
+            ? books.map(b => `<div class="resi-book-item">${esc(b.judul || "—")}${b.penerbit ? '<span class="resi-book-pub">· ' + esc(b.penerbit) + '</span>' : ''}</div>`).join("")
+            : '<div class="resi-no-books">Tidak ada buku ditemukan di tanggal ini (nama mungkin berbeda)</div>';
+          const iconCopy = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+          const resiNum = r.resi ? `<span class="resi-number" onclick="navigator.clipboard.writeText('${esc(r.resi)}');this.innerHTML='✔ Copied! ${iconCopy}';setTimeout(()=>this.innerHTML='${esc(r.resi)} ${iconCopy}',1600);" title="Klik untuk copy">${esc(r.resi)} ${iconCopy}</span>` : '<span style="color:var(--ink-soft);font-size:12px;">No Resi</span>';
+          return `<div class="resi-card">
+  <div class="resi-card-header">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div class="resi-date">📦 ${fmtDate(r.tanggal_print)}</div>
+      ${r.ekspedisi ? '<div class="resi-kurir">' + esc(r.ekspedisi) + '</div>' : ''}
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      ${resiNum}
+      ${r.status ? '<span class="resi-status-badge ' + statusCls(r.status) + '">' + esc(r.status) + '</span>' : ''}
+    </div>
+  </div>
+  <div class="resi-books">${booksHtml}</div>
+</div>`;
+        }).join("");
       }
 
       function parseShipDate(r) {
@@ -1605,14 +1841,18 @@
         if (E.sentFilters) E.sentFilters.classList.toggle("show", S.tab === "sent");
         const a = rowsBy("active"), s = rowsBy("sent");
         const pa = page(a, "active"), ps = page(s, "sent");
-        renderList(E.list1, pa.rows, false);
-        renderList(E.list2, ps.rows, true);
+        const resiMap = buildResiMap(S.resi);
+        renderList(E.list1, pa.rows, false, null);
+        renderList(E.list2, ps.rows, true, resiMap);
+        renderResiTab();
         if (S.tab === "active" && S.data) updateBannerFromRows(a);
         renderOverview();
-        if (S.tab === "info") {
+        if (S.tab === "info" || S.tab === "resi") {
           E.prev.disabled = !0; E.next.disabled = !0;
-          E.pi.textContent = "Overview";
-          E.ri.textContent = S.data ? "Payment overview active" : "Enter your Customer ID to begin.";
+          E.pi.textContent = S.tab === "resi" ? "Resi" : "Overview";
+          E.ri.textContent = S.data
+            ? (S.tab === "resi" ? (S.resi?.length || 0) + " shipment records" : "Payment overview active")
+            : "Enter your Customer ID to begin.";
           return;
         }
         const ar = S.tab === "sent" ? s : a, ap = S.tab === "sent" ? ps : pa;
@@ -1623,7 +1863,8 @@
       }
 
       function reset() {
-        S.data = null; S.page.active = 1; S.page.sent = 1; S.search = "";
+        S.data = null; S.resi = null;
+        S.page.active = 1; S.page.sent = 1; S.search = "";
         S.activeFilter = "";
         if (E.mainContent) E.mainContent.classList.remove("show");
         if (E.activeFilter) E.activeFilter.value = "";
@@ -1644,10 +1885,16 @@
         setLoading(true);
         S.page.active = 1; S.page.sent = 1;
         try {
-          const res = await fetch(SCRIPT_URL + "?id=" + encodeURIComponent(id));
-          const json = await res.json();
+          // Fetch data customer + resi secara parallel
+          const [res, resiRes] = await Promise.all([
+            fetch(SCRIPT_URL + "?id=" + encodeURIComponent(id)),
+            fetch(SCRIPT_URL + "/resi?id=" + encodeURIComponent(id)),
+          ]);
+          const json     = await res.json();
+          const resiJson = await resiRes.json().catch(() => ({ ok: false, resi: [] }));
           if (json.error) throw new Error(json.error);
           S.data = json;
+          S.resi = resiJson.ok ? (resiJson.resi || []) : [];
           populateSentMonths();
           populateActiveFilter();
           E.banner.classList.add("show");
