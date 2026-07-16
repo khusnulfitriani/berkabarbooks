@@ -1589,7 +1589,9 @@
             ? `<span class="resi-number" onclick="navigator.clipboard.writeText('${esc(r.resi)}');const span=this;const orig=span.innerHTML;span.innerHTML='✔ Copied!';setTimeout(()=>span.innerHTML=orig,1500);" title="Klik untuk copy">${esc(r.resi)}${iconCopy}</span>`
             : (isTerkirim ? '<span style="color:var(--dr-pale);font-size:12px;">(belum terisi)</span>' : '');
           let statusText = r.status || "";
-          if (statusText.toLowerCase().includes("packing") && r.no_antrian && r.no_antrian !== 0 && r.no_antrian !== "0") {
+          const lowerStatus = statusText.toLowerCase();
+          const isPendingStatus = lowerStatus.includes("packing") || lowerStatus.includes("diprint") || lowerStatus.includes("print");
+          if (isPendingStatus && r.no_antrian && r.no_antrian !== 0 && r.no_antrian !== "0") {
             statusText += ` (Antrean #${r.no_antrian})`;
           }
           const cardClass = statusCls(r.status);
