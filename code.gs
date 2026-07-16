@@ -182,12 +182,27 @@ const SHEET_RESI = "5. LIST PENGIRIMAN";
 
 function syncResi() {
   const ss   = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_RESI);
+  if (!sheet) {
+    Logger.log("⚠️ Sheet resi tidak ditemukan: " + SHEET_RESI);
+    return;
+  }
   const rows = readSheet(ss, SHEET_RESI);
 
   if (!rows.length) {
-    Logger.log("⚠️ Sheet resi kosong atau tidak ditemukan: " + SHEET_RESI);
+    Logger.log("⚠️ Sheet resi kosong: " + SHEET_RESI);
     return;
   }
+
+  // Ambil nama kolom pertama (kolom A)
+  const dataRange = sheet.getDataRange().getValues();
+  const headers = dataRange[0].map(h => String(h).trim());
+  const colAHeader = headers[0];
+
+  // Tambahkan property "no_antrian" ke setiap row
+  rows.forEach(r => {
+    r["no_antrian"] = r[colAHeader] || "";
+  });
 
   Logger.log("📖 Membaca resi: " + rows.length + " baris → " + Math.ceil(rows.length / CHUNK_SIZE) + " batch");
 
