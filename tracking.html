@@ -252,7 +252,7 @@
     }
 
     .cust-name {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
       font-weight: 600;
       color: var(--ink);
@@ -1208,7 +1208,7 @@
       <div class="tabs">
         <button class="tab active" type="button" data-tab="active">Active Orders</button>
         <button class="tab" type="button" data-tab="sent">Delivered</button>
-        <button class="tab" type="button" data-tab="resi">📦 Resi</button>
+        <button class="tab" type="button" data-tab="resi">Resi</button>
         <button class="tab" type="button" data-tab="info">Overview</button>
       </div>
 
@@ -1477,15 +1477,15 @@
           E.resiList.innerHTML = '<div class="empty"><div class="empty-img">📮</div><p>Tidak ada data resi ditemukan untuk ID ini.</p></div>';
           return;
         }
-        const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         function fmtDate(s) {
           if (!s) return "";
           const d = new Date(s);
           if (isNaN(d.getTime())) return s;
-          return `${String(d.getDate()).padStart(2,"0")} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+          return `${String(d.getDate()).padStart(2, "0")} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
         }
         function statusCls(st) {
-          const s = (st||"text").toLowerCase();
+          const s = (st || "text").toLowerCase();
           if (s.includes("packing")) return "packing";
           if (s.includes("diprint") || s.includes("print")) return "diprint";
           return "";
@@ -1496,7 +1496,7 @@
             ? books.map(b => `<div class="resi-book-item">${esc(b.judul || "—")}${b.penerbit ? '<span class="resi-book-pub">· ' + esc(b.penerbit) + '</span>' : ''}</div>`).join("")
             : '<div class="resi-no-books">Tidak ada buku ditemukan di tanggal ini (nama mungkin berbeda)</div>';
           const iconCopy = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
-          const resiNum = r.resi ? `<span class="resi-number" onclick="navigator.clipboard.writeText('${esc(r.resi)}');this.innerHTML='✔ Copied! ${iconCopy}';setTimeout(()=>this.innerHTML='${esc(r.resi)} ${iconCopy}',1600);" title="Klik untuk copy">${esc(r.resi)} ${iconCopy}</span>` : '<span style="color:var(--ink-soft);font-size:12px;">No Resi</span>';
+          const resiNum = r.resi ? `<span class="resi-number">${esc(r.resi)}</span>` : '<span style="color:var(--ink-soft);font-size:12px;">(belum terisi)</span>';
           return `<div class="resi-card">
   <div class="resi-card-header">
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
@@ -1890,7 +1890,7 @@
             fetch(SCRIPT_URL + "?id=" + encodeURIComponent(id)),
             fetch(SCRIPT_URL + "/resi?id=" + encodeURIComponent(id)),
           ]);
-          const json     = await res.json();
+          const json = await res.json();
           const resiJson = await resiRes.json().catch(() => ({ ok: false, resi: [] }));
           if (json.error) throw new Error(json.error);
           S.data = json;
@@ -1898,7 +1898,7 @@
           populateSentMonths();
           populateActiveFilter();
           E.banner.classList.add("show");
-          E.cname.textContent = json.nama || "Unknown Customer";
+          E.cname.textContent = "Hai, " + json.nama || "Unknown Customer";
           E.cid.textContent = "Customer ID: " + id;
           let actBelanja = 0, actDeposit = 0, actQty = 0;
           if (json.orders) {
