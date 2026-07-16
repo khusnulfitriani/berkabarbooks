@@ -931,9 +931,40 @@
     .resi-card {
       background: var(--white);
       border: 1px solid var(--dr-muted);
+      border-left: 4px solid #b07878;
       border-radius: 14px;
       overflow: hidden;
-      transition: box-shadow .18s, transform .15s;
+      transition: box-shadow .18s, transform .15s, border-color .18s;
+    }
+
+    /* Resi Card Status-specific modifiers */
+    .resi-card--packing {
+      border-left-color: #c99090;
+      animation: border-pulse-pink 3s infinite ease-in-out;
+    }
+    .resi-card--packing .resi-card-header {
+      background: #fdf5f5;
+      border-bottom-color: #eedada;
+    }
+    .resi-card--packing .resi-date {
+      color: var(--dr);
+    }
+    .resi-card--packing .resi-kurir {
+      color: var(--ink-soft);
+    }
+
+    .resi-card--diprint {
+      border-left-color: #2980b9;
+      box-shadow: 0 4px 15px rgba(41, 128, 185, 0.08);
+    }
+    .resi-card--diprint .resi-card-header {
+      background: #6c8c9c;
+    }
+
+    @keyframes border-pulse-pink {
+      0% { border-left-color: #c99090; box-shadow: 0 4px 15px rgba(201, 144, 144, 0.1); }
+      50% { border-left-color: #eedede; box-shadow: 0 6px 22px rgba(238, 222, 222, 0.22); }
+      100% { border-left-color: #c99090; box-shadow: 0 4px 15px rgba(201, 144, 144, 0.1); }
     }
 
     .resi-card:hover {
@@ -1553,14 +1584,16 @@
           const booksHtml = books.length
             ? books.map(b => `<div class="resi-book-item">${esc(b.judul || "—")}${b.penerbit ? '<span class="resi-book-pub">· ' + esc(b.penerbit) + '</span>' : ''}</div>`).join("")
             : '<div class="resi-no-books">Tidak ada buku ditemukan di tanggal ini (nama mungkin berbeda)</div>';
+          const isTerkirim = r.status && String(r.status).toLowerCase().includes("terkirim");
           const resiNum = r.resi
             ? `<span class="resi-number" onclick="navigator.clipboard.writeText('${esc(r.resi)}');const span=this;const orig=span.innerHTML;span.innerHTML='✔ Copied!';setTimeout(()=>span.innerHTML=orig,1500);" title="Klik untuk copy">${esc(r.resi)}${iconCopy}</span>`
-            : '<span style="color:var(--dr-pale);font-size:12px;">(belum terisi)</span>';
+            : (isTerkirim ? '<span style="color:var(--dr-pale);font-size:12px;">(belum terisi)</span>' : '');
           let statusText = r.status || "";
           if (statusText.toLowerCase().includes("packing") && r.no_antrian && r.no_antrian !== 0 && r.no_antrian !== "0") {
             statusText += ` (Antrean #${r.no_antrian})`;
           }
-          return `<div class="resi-card">
+          const cardClass = statusCls(r.status);
+          return `<div class="resi-card ${cardClass ? 'resi-card--' + cardClass : ''}">
   <div class="resi-card-header">
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
       <div class="resi-date">📦 ${fmtDate(r.tanggal_print)}</div>
