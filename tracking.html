@@ -1171,7 +1171,6 @@
   <div class="customer-strip" data-banner>
     <div class="cust-header">
       <div class="cust-name" data-cname>—</div>
-      <div class="cust-id" data-cid></div>
     </div>
     <div class="stat-cards">
       <!-- Card 1: Total Price (dark primary) -->
@@ -1211,7 +1210,7 @@
       <div class="tabs">
         <button class="tab active" type="button" data-tab="active">Active Orders</button>
         <button class="tab" type="button" data-tab="sent">Delivered</button>
-        <button class="tab" type="button" data-tab="resi">Resi</button>
+        <button class="tab" type="button" data-tab="resi">Shipments</button>
         <button class="tab" type="button" data-tab="info">Overview</button>
       </div>
 
@@ -1322,7 +1321,6 @@
         sync: document.querySelector("[data-sync]"),
         banner: document.querySelector("[data-banner]"),
         cname: document.querySelector("[data-cname]"),
-        cid: document.querySelector("[data-cid]"),
         sb: document.querySelector("[data-sb]"),
         sd: document.querySelector("[data-sd]"),
         sr: document.querySelector("[data-sr]"),
@@ -1352,6 +1350,13 @@
 
       const fc = v => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(v || 0);
       const fn = v => new Intl.NumberFormat("id-ID").format(v || 0);
+      const getGreeting = () => {
+        const hr = new Date().getHours();
+        if (hr >= 5 && hr < 12) return "Good morning";
+        if (hr >= 12 && hr < 17) return "Good afternoon";
+        if (hr >= 17 && hr < 21) return "Good evening";
+        return "Good night";
+      };
       function toNum(v) { const c = String(v || "").replace(/Rp/gi, "").replace(/[^\d,-]/g, "").replace(/\./g, "").replace(",", "."); const n = parseFloat(c); return isFinite(n) ? n : 0; }
       function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
       function formatDt(d) {
@@ -1926,7 +1931,7 @@
         renderOverview();
         if (S.tab === "info" || S.tab === "resi") {
           E.prev.disabled = !0; E.next.disabled = !0;
-          E.pi.textContent = S.tab === "resi" ? "Resi" : "Overview";
+          E.pi.textContent = S.tab === "resi" ? "Shipments" : "Overview";
           E.ri.textContent = S.data
             ? (S.tab === "resi" ? (S.resi?.length || 0) + " shipment records" : "Payment overview active")
             : "Enter your Customer ID to begin.";
@@ -1975,8 +1980,7 @@
           populateSentMonths();
           populateActiveFilter();
           E.banner.classList.add("show");
-          E.cname.textContent = "Hai, " + json.nama || "Unknown Customer";
-          E.cid.textContent = "Customer ID: " + id;
+          E.cname.textContent = `${getGreeting()}, ${json.nama || "Customer"}`;
           let actBelanja = 0, actDeposit = 0, actQty = 0;
           if (json.orders) {
             json.orders.forEach(r => {
