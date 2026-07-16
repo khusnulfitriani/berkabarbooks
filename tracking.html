@@ -491,6 +491,8 @@
 
     .book-card.canceled {
       opacity: 0.75;
+      background: #fdf5f5;
+      border-color: #eedada;
     }
 
     .book-card.canceled .book-title {
@@ -499,7 +501,8 @@
       font-style: italic;
     }
 
-    .book-card.canceled .book-price {
+    .book-card.canceled .book-price,
+    .book-card.canceled .book-fin-val {
       text-decoration: line-through;
       color: var(--ink-soft);
     }
@@ -944,7 +947,7 @@
       justify-content: space-between;
       gap: 12px;
       padding: 16px 20px;
-      background: var(--dr-pale);
+      background: #b07878;
       border-bottom: 1px solid var(--dr-muted);
       flex-wrap: wrap;
     }
@@ -953,7 +956,7 @@
       font-family: 'Inter', sans-serif;
       font-size: 13px;
       font-weight: 700;
-      color: var(--ink);
+      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -962,7 +965,7 @@
     .resi-kurir {
       font-family: 'Inter', sans-serif;
       font-size: 12px;
-      color: var(--ink-mid);
+      color: rgba(255, 255, 255, 0.85);
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: .04em;
@@ -987,9 +990,9 @@
     }
 
     .resi-number:hover {
-      background: var(--dr);
-      color: #fff;
-      border-color: var(--dr);
+      background: var(--dr-pale);
+      color: var(--dr);
+      border-color: var(--dr-pale);
     }
 
     .resi-status-badge {
@@ -1223,6 +1226,20 @@
               <option value="">All ETA</option>
             </select>
           </div>
+          <!-- Delivered-tab Month & Sort filters (hidden on other tabs) -->
+          <div class="sent-tab-controls" data-sent-filters style="display:none; align-items:center; gap:8px;">
+            <label style="font-size:12px; color:var(--ink-soft); white-space:nowrap;">Month</label>
+            <select data-sent-month
+              style="padding:7px 10px; border:1px solid var(--dr-muted); border-radius:8px; background:var(--white); color:var(--ink); font-size:13px; outline:none; cursor:pointer; min-width:120px;">
+              <option value="">All Months</option>
+            </select>
+            <label style="font-size:12px; color:var(--ink-soft); white-space:nowrap; margin-left:4px;">Sort</label>
+            <select data-sent-sort
+              style="padding:7px 10px; border:1px solid var(--dr-muted); border-radius:8px; background:var(--white); color:var(--ink); font-size:13px; outline:none; cursor:pointer; min-width:120px;">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
           <div class="search-local-wrap">
             <input type="text" data-lsearch placeholder="Search title or publisher...">
           </div>
@@ -1250,18 +1267,6 @@
 
       <!-- Delivered -->
       <div class="view" data-view="sent">
-        <!-- Delivered filter bar -->
-        <div class="tab-filters" data-sent-filters>
-          <label>📅 Month:</label>
-          <select data-sent-month>
-            <option value="">All Months</option>
-          </select>
-          <label style="margin-left:8px;">⇅ Sort:</label>
-          <select data-sent-sort>
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-          </select>
-        </div>
         <div class="book-list" data-list2>
           <div class="empty">
             <div class="empty-img">📦</div>
@@ -1396,7 +1401,7 @@
         const eta = col(r, "ETA", "eta");
         const shipmentDate = col(r, "Shipment Date", "shipment date", "SHIPMENT DATE");
         const shipmentDateFmt = formatDt(shipmentDate);
-        const meta1 = [pub, fmt, qty ? "Qty: " + qty : ""].filter(Boolean).join(" · ");
+        const meta1 = [pub, fmt, (qty !== "" && qty !== undefined && qty !== null) ? "Qty: " + qty : ""].filter(Boolean).join(" · ");
         let meta2;
         if (isSent) {
           meta2 = shipmentDateFmt ? "Tanggal Terkirim: " + shipmentDateFmt : "";
@@ -1404,7 +1409,7 @@
           meta2 = [tglFix ? "Tanggal Fix: " + tglFix : "", eta ? "ETA: " + eta : ""].filter(Boolean).join(" · ");
         }
         const dpStr = dp ? fc(dp) + (tglDp ? " (" + tglDp + ")" : "") : "";
-        const isCanceled = (qty !== "" && qty !== undefined && toNum(qty) === 0);
+        const isCanceled = (qty !== "" && qty !== undefined && toNum(qty) === 0) || srLow.includes("cancel");
         const remaining = Math.max(harga - dp, 0);
         const srLowStatus = statusRaw.toLowerCase();
         const statusClass = srLowStatus.includes("ready") || srLowStatus.includes("terkirim") ? "status-ready" :
@@ -1545,7 +1550,7 @@
             : '<div class="resi-no-books">Tidak ada buku ditemukan di tanggal ini (nama mungkin berbeda)</div>';
           const resiNum = r.resi
             ? `<span class="resi-number" onclick="navigator.clipboard.writeText('${esc(r.resi)}');const span=this;const orig=span.innerHTML;span.innerHTML='✔ Copied!';setTimeout(()=>span.innerHTML=orig,1500);" title="Klik untuk copy">${esc(r.resi)}${iconCopy}</span>`
-            : '<span style="color:var(--ink-soft);font-size:12px;">(belum terisi)</span>';
+            : '<span style="color:var(--dr-pale);font-size:12px;">(belum terisi)</span>';
           let statusText = r.status || "";
           if (statusText.toLowerCase().includes("packing") && r.no_antrian && r.no_antrian !== 0 && r.no_antrian !== "0") {
             statusText += ` (Antrean #${r.no_antrian})`;
@@ -1891,7 +1896,7 @@
         E.views.forEach(v => v.classList.toggle("active", v.dataset.view === S.tab));
         if (E.mainContent) E.mainContent.classList.toggle("show", !!S.data);
         if (E.activeTabControls) E.activeTabControls.style.display = (S.tab === "active" && S.data) ? "flex" : "none";
-        if (E.sentFilters) E.sentFilters.classList.toggle("show", S.tab === "sent");
+        if (E.sentFilters) E.sentFilters.style.display = (S.tab === "sent" && S.data) ? "flex" : "none";
 
         if (E.lsearch) {
           const wrap = E.lsearch.closest(".search-local-wrap");
