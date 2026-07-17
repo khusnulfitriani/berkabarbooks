@@ -155,21 +155,18 @@ function syncOrdersAndCustomers() {
   const customers = readSheet(ss, SHEET_CUSTOMER);
   Logger.log("✔ orders: " + orders.length + ", customers: " + customers.length);
 
-  const maxLen = Math.max(orders.length, customers.length, 1);
+  const payload  = {
+    secret:         WORKER_SECRET,
+    clearOrders:    true,
+    clearCustomers: true,
+    clearSent:      false,
+    orders:         orders,
+    sent:           [],
+    customers:      customers,
+  };
 
-  for (let i = 0; i < maxLen; i += CHUNK_SIZE) {
-    const batchNum = Math.floor(i / CHUNK_SIZE) + 1;
-    const payload  = {
-      secret:         WORKER_SECRET,
-      clearOrders:    (i === 0),
-      clearCustomers: (i === 0),
-      clearSent:      false,
-      orders:         orders.slice(i, i + CHUNK_SIZE),
-      sent:           [],
-      customers:      customers.slice(i, i + CHUNK_SIZE),
-    };
-    if (!_doSyncRequest(payload, "orders/cust #" + batchNum)) return;
-  }
+  Logger.log("📤 Mengirim " + orders.length + " orders dan " + customers.length + " customers...");
+  if (!_doSyncRequest(payload, "orders/cust")) return;
 
   Logger.log("✅ Sync orders & customers selesai!");
 

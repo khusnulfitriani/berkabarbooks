@@ -1962,7 +1962,24 @@
         renderList(E.list1, pa.rows, false, null);
         renderList(E.list2, ps.rows, true, resiMap);
         renderResiTab();
-        if (S.tab === "active" && S.data) updateBannerFromRows(a);
+        if (S.data) {
+          if (S.tab === "active") {
+            updateBannerFromRows(a);
+          } else if (S.tab === "sent") {
+            updateBannerFromRows(s);
+          } else {
+            const totalBelanja = S.data.totalBelanja;
+            const totalDeposit = S.data.totalDeposit;
+            const sisaTanggungan = S.data.sisaTanggungan;
+            const totalQty = S.data.totalQty;
+            const pct = totalBelanja > 0 ? Math.round(totalDeposit / totalBelanja * 100) : 0;
+            E.sb.textContent = fc(totalBelanja);
+            E.sd.textContent = fc(totalDeposit);
+            E.sr.textContent = fc(sisaTanggungan);
+            E.sq.textContent = fn(totalQty);
+            if (E.pctPaid) E.pctPaid.textContent = pct + "% Paid";
+          }
+        }
         renderOverview();
         if (S.tab === "info" || S.tab === "resi") {
           E.prev.disabled = !0; E.next.disabled = !0;
