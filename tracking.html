@@ -247,8 +247,10 @@
 
     .cust-header {
       display: flex;
-      align-items: baseline;
+      align-items: center;
+      justify-content: space-between;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .cust-name {
@@ -262,6 +264,48 @@
       font-size: 12px;
       color: var(--ink-soft);
       letter-spacing: .04em;
+    }
+
+    .btn-invoice {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: var(--dr);
+      color: var(--white);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .18s, transform .15s;
+    }
+
+    .btn-invoice:hover:not(:disabled) {
+      background: var(--dr-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-invoice:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-invoice:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-invoice--sec {
+      background: var(--white);
+      color: var(--dr);
+      border: 1px solid var(--dr-muted);
+    }
+
+    .btn-invoice--sec:hover:not(:disabled) {
+      background: var(--dr-pale);
+      color: var(--dr);
+      border-color: var(--dr-light);
     }
 
     /* 4-card stat row */
@@ -1202,6 +1246,24 @@
   <div class="customer-strip" data-banner>
     <div class="cust-header">
       <div class="cust-name" data-cname>—</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="btn-invoice" type="button" data-btn-invoice>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Invoice Pelunasan
+        </button>
+        <button class="btn-invoice btn-invoice--sec" type="button" data-btn-deposit>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Invoice Deposit
+        </button>
+      </div>
     </div>
     <div class="stat-cards">
       <!-- Card 1: Total Price (dark primary) -->
@@ -1375,9 +1437,28 @@
         sentMonth: document.querySelector("[data-sent-month]"),
         sentSort: document.querySelector("[data-sent-sort]"),
         activeFilter: document.querySelector("[data-active-filter]"),
+        btnInvoice: document.querySelector("[data-btn-invoice]"),
+        btnDeposit: document.querySelector("[data-btn-deposit]"),
       };
 
       const S = { tab: "active", size: 10, page: { active: 1, sent: 1 }, search: "", data: null, resi: null, sentMonth: "", sentSort: "newest", activeFilter: "" };
+
+      // ==============================================================
+      // DAFTAR PENERBIT LOKAL INDONESIA (Pengecualian DP 20%)
+      // ==============================================================
+      const PENERBIT_LOKAL = [
+        "gramedia", "mizan", "haru", "mighty jungle", "little quokka", 
+        "gts", "grow the seed", "yaumi", "ilmi.yi", "rintik", 
+        "guru bumi", "folxtale", "surau kecil", "tgof", "kita muslim", 
+        "haum", "brilliant books", "bookana", "atlas indonesiaku", "naura", 
+        "tentang anak", "buku aku", "gep", "good enough parent", "knk", 
+        "kareem khaleel", "lingkar antarnusa", "humi", "hujan dan bumi"
+      ];
+
+      function isLocalBook(r) {
+        const pub = String(col(r, "PENERBIT", "Penerbit", "penerbit") || "").trim().toLowerCase();
+        return PENERBIT_LOKAL.some(localPub => pub.includes(localPub));
+      }
 
       const fc = v => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(v || 0);
       const fn = v => new Intl.NumberFormat("id-ID").format(v || 0);
@@ -1399,6 +1480,657 @@
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const day = String(dt.getDate()).padStart(2, "0");
         return `${day} ${months[dt.getMonth()]} ${dt.getFullYear()}`;
+      }
+
+      const formatInvoiceDate = (date) => {
+        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+      };
+
+      function generateInvoiceHtml(customerName, customerId, readyBooks) {
+        const today = formatInvoiceDate(new Date());
+        let totalQty = 0;
+        let totalBelanja = 0;
+        let totalDeposit = 0;
+
+        const itemsHtml = readyBooks.map((r, idx) => {
+          const title = col(r, "JUDUL", "Judul", "judul", "Title") || "—";
+          const fmt = col(r, "Format", "FORMAT", "format") || "—";
+          const qty = toNum(col(r, "Qty", "QTY", "qty")) || 1;
+          const totalHarga = toNum(col(r, "Harga Total", "harga total", "HARGA TOTAL"));
+          const unitPrice = qty > 0 ? (totalHarga / qty) : totalHarga;
+          const dp = toNum(col(r, "DP", "dp"));
+          const tglDp = formatDt(col(r, "Tanggal TF", "Tanggal DP", "tanggal tf", "tanggal dp", "Tgl TF", "Tgl DP")) || "—";
+
+          totalQty += qty;
+          totalBelanja += totalHarga;
+          totalDeposit += dp;
+
+          return `
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: center;">${idx + 1}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede;">
+                <strong style="color: #2e2020;">${esc(title)}</strong>
+              </td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: center;">${esc(fmt)}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: right;">${fc(unitPrice)}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: center;">${qty}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: right;">${fc(totalHarga)}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: right;">${fc(dp)}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: center; font-size: 11px; color: #6b4f4f;">${esc(tglDp)}</td>
+            </tr>
+          `;
+        }).join("");
+
+        const sisaTagihan = Math.max(totalBelanja - totalDeposit, 0);
+
+        return `
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice - ${esc(customerName)}</title>
+  <base href="${window.location.href}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Jost', 'Inter', sans-serif;
+      color: #2e2020;
+      background: #ffffff;
+      padding: 40px;
+      line-height: 1.5;
+    }
+    .invoice-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    .logo-container {
+      width: 50%;
+      vertical-align: middle;
+    }
+    .logo-img {
+      max-height: 65px;
+      width: auto;
+    }
+    .invoice-title-container {
+      width: 50%;
+      text-align: right;
+      vertical-align: middle;
+    }
+    .invoice-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: #b07878;
+      letter-spacing: 0.05em;
+      margin-bottom: 5px;
+    }
+    .invoice-date {
+      font-size: 13px;
+      color: #a08080;
+    }
+    .meta-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding: 15px;
+      background: #f5e8e8;
+      border-radius: 12px;
+      border: 1px solid #e2cece;
+    }
+    .meta-col {
+      flex: 1;
+    }
+    .meta-col h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #a08080;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .meta-col p {
+      font-size: 14px;
+      font-weight: 500;
+      color: #2e2020;
+    }
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    .items-table th {
+      background: #b07878;
+      color: #ffffff;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      padding: 10px;
+      border: 1px solid #b07878;
+    }
+    .summary-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 40px;
+      gap: 20px;
+    }
+    .payment-info {
+      flex: 1.2;
+      background: #faf9f9;
+      border: 1px solid #e2cece;
+      border-radius: 12px;
+      padding: 15px;
+    }
+    .payment-info h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #b07878;
+      margin-bottom: 8px;
+      border-bottom: 1px dashed #e2cece;
+      padding-bottom: 4px;
+    }
+    .payment-info p {
+      font-size: 12px;
+      color: #6b4f4f;
+      line-height: 1.6;
+    }
+    .qris-box {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .qris-img {
+      max-width: 140px;
+      height: auto;
+      border: 1px solid #e2cece;
+      border-radius: 6px;
+      padding: 4px;
+      background: white;
+    }
+    .summary-box {
+      flex: 0.8;
+      background: #faf9f9;
+      border: 1px solid #e2cece;
+      border-radius: 12px;
+      padding: 15px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #6b4f4f;
+    }
+    .summary-row.total {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2e2020;
+      border-top: 1px dashed #e2cece;
+      margin-top: 12px;
+      padding-top: 10px;
+    }
+    .summary-row.total .val {
+      color: #c0392b;
+    }
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: #a08080;
+      border-top: 1px solid #eedede;
+      padding-top: 20px;
+      margin-top: 40px;
+    }
+    @media print {
+      body {
+        padding: 0;
+        background: #ffffff;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .payment-info, .summary-box, .meta-section {
+        border: 1px solid #e2cece !important;
+        background: #faf9f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .meta-section {
+        background: #f5e8e8 !important;
+      }
+      .items-table th {
+        background: #b07878 !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-container">
+    <table class="header-table">
+      <tr>
+        <td class="logo-container">
+          <img src="Logo only.png" class="logo-img" alt="Berkabarbooks Logo">
+        </td>
+        <td class="invoice-title-container">
+          <div class="invoice-title">INVOICE</div>
+          <div class="invoice-date">Tanggal Unduh: ${esc(today)}</div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="meta-section">
+      <div class="meta-col">
+        <h3>Ditagihkan Kepada</h3>
+        <p style="font-size: 16px; font-weight: 600; color: #2e2020;">${esc(customerName)}</p>
+        <p style="color: #6b4f4f; font-size: 13px; margin-top: 2px;">Customer ID: ${esc(customerId)}</p>
+      </div>
+    </div>
+
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th style="width: 5%; text-align: center;">No</th>
+          <th style="width: 40%; text-align: left;">Judul Buku</th>
+          <th style="width: 10%; text-align: center;">Format</th>
+          <th style="width: 15%; text-align: right;">Harga Satuan</th>
+          <th style="width: 8%; text-align: center;">Qty</th>
+          <th style="width: 15%; text-align: right;">Total IDR</th>
+          <th style="width: 15%; text-align: right;">Deposit</th>
+          <th style="width: 12%; text-align: center;">Tgl Transfer</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${itemsHtml}
+      </tbody>
+    </table>
+
+    <div class="summary-section">
+      <div class="payment-info">
+        <h4>Informasi Pembayaran</h4>
+        <p>Silakan melakukan pelunasan sisa tagihan melalui rekening berikut:</p>
+        <p style="margin-top: 8px; font-weight: 600; color: #2e2020; font-size: 13px;">
+          Bank BCA: 4560852521<br>
+          a.n Khusnul Fitriani
+        </p>
+        <div class="qris-box">
+          <p style="font-size: 11px; font-weight: 600; color: #a08080; text-transform: uppercase;">Pembayaran QRIS:</p>
+          <img src="assets/qris.png" class="qris-img" alt="QRIS Berkabarbooks" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div style="display:none; font-size:11px; color:#a08080; font-style:italic;">
+            (Scan QRIS resmi Berkabarbooks yang tersedia)
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-row">
+          <span>Total Buku:</span>
+          <span class="val" style="font-weight: 600; color: #2e2020;">${totalQty}</span>
+        </div>
+        <div class="summary-row">
+          <span>Total Belanja:</span>
+          <span class="val">${fc(totalBelanja)}</span>
+        </div>
+        <div class="summary-row">
+          <span>Total Deposit (DP):</span>
+          <span class="val">${fc(totalDeposit)}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Sisa Tagihan:</span>
+          <span class="val">${fc(sisaTagihan)}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <p style="font-weight: 500; margin-bottom: 4px;">Terima kasih atas pesananmu di Berkabarbooks!</p>
+      <p style="font-size: 11px; color: #a08080;">Jika ada pertanyaan mengenai pesanan, hubungi admin melalui kontak WhatsApp kami.</p>
+    </div>
+  </div>
+
+</body>
+</html>
+        `;
+      }
+
+      function generateDepositInvoiceHtml(customerName, customerId, poBooks) {
+        const today = formatInvoiceDate(new Date());
+        let totalQty = 0;
+        let totalBelanja = 0;
+        let totalDepositPaid = 0;
+        let totalDepositDue = 0;
+
+        const itemsHtml = poBooks.map((r, idx) => {
+          const title = col(r, "JUDUL", "Judul", "judul", "Title") || "—";
+          const pub = col(r, "PENERBIT", "Penerbit", "penerbit") || "—";
+          const fmt = col(r, "Format", "FORMAT", "format") || "—";
+          const eta = col(r, "ETA", "eta") || "—";
+          const qty = toNum(col(r, "Qty", "QTY", "qty")) || 1;
+          const totalHarga = toNum(col(r, "Harga Total", "harga total", "HARGA TOTAL"));
+          const dp = toNum(col(r, "DP", "dp"));
+
+          const minDeposit = Math.round(totalHarga * 0.2);
+          const depositDue = Math.max(minDeposit - dp, 0);
+
+          totalQty += qty;
+          totalBelanja += totalHarga;
+          totalDepositPaid += dp;
+          totalDepositDue += depositDue;
+
+          return `
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: center;">${idx + 1}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede;">
+                <strong style="color: #2e2020;">${esc(title)}</strong>
+              </td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: center;">${esc(pub)}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: center;">${esc(fmt)}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: center; font-size: 12px;">${esc(eta)}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: right;">${fc(totalHarga)}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: center;">${qty}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: right;">${fc(minDeposit)}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: right;">${fc(dp)}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eedede; text-align: right; font-weight: 600; color: #c0392b;">${fc(depositDue)}</td>
+            </tr>
+          `;
+        }).join("");
+
+        return `
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice Deposit - ${esc(customerName)}</title>
+  <base href="${window.location.href}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Jost', 'Inter', sans-serif;
+      color: #2e2020;
+      background: #ffffff;
+      padding: 40px;
+      line-height: 1.5;
+    }
+    .invoice-container {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    .logo-container {
+      width: 50%;
+      vertical-align: middle;
+    }
+    .logo-img {
+      max-height: 65px;
+      width: auto;
+    }
+    .invoice-title-container {
+      width: 50%;
+      text-align: right;
+      vertical-align: middle;
+    }
+    .invoice-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #b07878;
+      letter-spacing: 0.05em;
+      margin-bottom: 5px;
+    }
+    .invoice-date {
+      font-size: 13px;
+      color: #a08080;
+    }
+    .meta-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding: 15px;
+      background: #f5e8e8;
+      border-radius: 12px;
+      border: 1px solid #e2cece;
+    }
+    .meta-col {
+      flex: 1;
+    }
+    .meta-col h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #a08080;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .meta-col p {
+      font-size: 14px;
+      font-weight: 500;
+      color: #2e2020;
+    }
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    .items-table th {
+      background: #b07878;
+      color: #ffffff;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      padding: 10px;
+      border: 1px solid #b07878;
+    }
+    .summary-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 40px;
+      gap: 20px;
+    }
+    .payment-info {
+      flex: 1.2;
+      background: #faf9f9;
+      border: 1px solid #e2cece;
+      border-radius: 12px;
+      padding: 15px;
+    }
+    .payment-info h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #b07878;
+      margin-bottom: 8px;
+      border-bottom: 1px dashed #e2cece;
+      padding-bottom: 4px;
+    }
+    .payment-info p {
+      font-size: 12px;
+      color: #6b4f4f;
+      line-height: 1.6;
+    }
+    .qris-box {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .qris-img {
+      max-width: 140px;
+      height: auto;
+      border: 1px solid #e2cece;
+      border-radius: 6px;
+      padding: 4px;
+      background: white;
+    }
+    .summary-box {
+      flex: 0.8;
+      background: #faf9f9;
+      border: 1px solid #e2cece;
+      border-radius: 12px;
+      padding: 15px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #6b4f4f;
+    }
+    .summary-row.total {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2e2020;
+      border-top: 1px dashed #e2cece;
+      margin-top: 12px;
+      padding-top: 10px;
+    }
+    .summary-row.total .val {
+      color: #c0392b;
+    }
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: #a08080;
+      border-top: 1px solid #eedede;
+      padding-top: 20px;
+      margin-top: 40px;
+    }
+    @media print {
+      body {
+        padding: 0;
+        background: #ffffff;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .payment-info, .summary-box, .meta-section {
+        border: 1px solid #e2cece !important;
+        background: #faf9f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .meta-section {
+        background: #f5e8e8 !important;
+      }
+      .items-table th {
+        background: #b07878 !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-container">
+    <table class="header-table">
+      <tr>
+        <td class="logo-container">
+          <img src="Logo only.png" class="logo-img" alt="Berkabarbooks Logo">
+        </td>
+        <td class="invoice-title-container">
+          <div class="invoice-title">INVOICE DEPOSIT (DP 20%)</div>
+          <div class="invoice-date">Tanggal Unduh: ${esc(today)}</div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="meta-section">
+      <div class="meta-col">
+        <h3>Ditagihkan Kepada</h3>
+        <p style="font-size: 16px; font-weight: 600; color: #2e2020;">${esc(customerName)}</p>
+        <p style="color: #6b4f4f; font-size: 13px; margin-top: 2px;">Customer ID: ${esc(customerId)}</p>
+      </div>
+    </div>
+
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th style="width: 4%; text-align: center;">No</th>
+          <th style="width: 32%; text-align: left;">Judul Buku</th>
+          <th style="width: 12%; text-align: center;">Penerbit</th>
+          <th style="width: 8%; text-align: center;">Format</th>
+          <th style="width: 8%; text-align: center;">ETA</th>
+          <th style="width: 11%; text-align: right;">Harga Total</th>
+          <th style="width: 5%; text-align: center;">Qty</th>
+          <th style="width: 10%; text-align: right;">Min. DP (20%)</th>
+          <th style="width: 10%; text-align: right;">DP Terbayar</th>
+          <th style="width: 10%; text-align: right;">Tagihan DP</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${itemsHtml}
+      </tbody>
+    </table>
+
+    <div class="summary-section">
+      <div class="payment-info">
+        <h4>Informasi Pembayaran</h4>
+        <p>Silakan melakukan pembayaran deposit (DP) melalui rekening berikut:</p>
+        <p style="margin-top: 8px; font-weight: 600; color: #2e2020; font-size: 13px;">
+          Bank BCA: 4560852521<br>
+          a.n Khusnul Fitriani
+        </p>
+        <div class="qris-box">
+          <p style="font-size: 11px; font-weight: 600; color: #a08080; text-transform: uppercase;">Pembayaran QRIS:</p>
+          <img src="assets/qris.png" class="qris-img" alt="QRIS Berkabarbooks" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div style="display:none; font-size:11px; color:#a08080; font-style:italic;">
+            (Scan QRIS resmi Berkabarbooks yang tersedia)
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-row">
+          <span>Total Buku (PO):</span>
+          <span class="val" style="font-weight: 600; color: #2e2020;">${totalQty}</span>
+        </div>
+        <div class="summary-row">
+          <span>Total Belanja PO:</span>
+          <span class="val">${fc(totalBelanja)}</span>
+        </div>
+        <div class="summary-row">
+          <span>Total DP Terbayar:</span>
+          <span class="val">${fc(totalDepositPaid)}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Tagihan DP:</span>
+          <span class="val">${fc(totalDepositDue)}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <p style="font-weight: 500; margin-bottom: 4px;">Terima kasih atas pesananmu di Berkabarbooks!</p>
+      <p style="font-size: 11px; color: #a08080;">Ini adalah tagihan deposit awal 20%. Pelunasan 80% akan ditagihkan saat buku berstatus Ready.</p>
+    </div>
+  </div>
+</body>
+</html>
+        `;
       }
 
       const iconCheck = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
@@ -1935,6 +2667,33 @@
         E.tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === S.tab));
         E.views.forEach(v => v.classList.toggle("active", v.dataset.view === S.tab));
         if (E.mainContent) E.mainContent.classList.toggle("show", !!S.data);
+
+        let hasReadyBooks = false;
+        let hasDepositDue = false;
+        if (S.data && S.data.orders) {
+          hasReadyBooks = S.data.orders.some(r => {
+            const st = (col(r, "Status", "STATUS", "status") || "").toLowerCase();
+            return st.includes("ready");
+          });
+          hasDepositDue = S.data.orders.some(r => {
+            const st = (col(r, "Status", "STATUS", "status") || "").toLowerCase();
+            const isPO = !st.includes("ready") && !st.includes("cancel") && !st.includes("terkirim");
+            if (isPO && !isLocalBook(r)) {
+              const totalHarga = toNum(col(r, "Harga Total", "harga total", "HARGA TOTAL"));
+              const dp = toNum(col(r, "DP", "dp"));
+              const minDeposit = Math.round(totalHarga * 0.2);
+              return minDeposit > dp;
+            }
+            return false;
+          });
+        }
+        if (E.btnInvoice) {
+          E.btnInvoice.style.display = hasReadyBooks ? "inline-flex" : "none";
+        }
+        if (E.btnDeposit) {
+          E.btnDeposit.style.display = hasDepositDue ? "inline-flex" : "none";
+        }
+
         if (E.activeTabControls) E.activeTabControls.style.display = (S.tab === "active" && S.data) ? "flex" : "none";
         if (E.sentFilters) E.sentFilters.style.display = (S.tab === "sent" && S.data) ? "flex" : "none";
 
@@ -2007,6 +2766,8 @@
         E.banner.classList.remove("show");
         E.sync.innerHTML = iconCheck;
         E.sync.title = "";
+        if (E.btnInvoice) E.btnInvoice.style.display = "none";
+        if (E.btnDeposit) E.btnDeposit.style.display = "none";
         render();
       }
 
@@ -2085,6 +2846,75 @@
       E.size.addEventListener("change", e => { S.size = e.target.value === "all" ? "all" : Number(e.target.value); S.page.active = 1; S.page.sent = 1; render(); });
       E.prev.addEventListener("click", () => { if (S.tab === "info") return; S.page[S.tab] = Math.max(S.page[S.tab] - 1, 1); render(); });
       E.next.addEventListener("click", () => { if (S.tab === "info") return; S.page[S.tab] += 1; render(); });
+      if (E.btnInvoice) {
+        E.btnInvoice.addEventListener("click", () => {
+          if (!S.data) return;
+          const readyBooks = (S.data.orders || []).filter(r => {
+            const st = (col(r, "Status", "STATUS", "status") || "").toLowerCase();
+            return st.includes("ready");
+          });
+          if (readyBooks.length === 0) {
+            alert("Belum ada pesanan dengan status 'Ready' untuk dibuatkan invoice.");
+            return;
+          }
+
+          const customerName = S.data.nama || "Customer";
+          const customerId = S.data.id || "—";
+          const invoiceHtml = generateInvoiceHtml(customerName, customerId, readyBooks);
+
+          const printWindow = window.open("", "_blank");
+          if (printWindow) {
+            printWindow.document.open();
+            printWindow.document.write(invoiceHtml);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+              printWindow.print();
+            }, 500);
+          } else {
+            alert("Gagal membuka halaman invoice. Pastikan pop-up blocker browser Anda dinonaktifkan.");
+          }
+        });
+      }
+
+      if (E.btnDeposit) {
+        E.btnDeposit.addEventListener("click", () => {
+          if (!S.data) return;
+          const poBooks = (S.data.orders || []).filter(r => {
+            const st = (col(r, "Status", "STATUS", "status") || "").toLowerCase();
+            const isPO = !st.includes("ready") && !st.includes("cancel") && !st.includes("terkirim");
+            if (isPO && !isLocalBook(r)) {
+              const totalHarga = toNum(col(r, "Harga Total", "harga total", "HARGA TOTAL"));
+              const dp = toNum(col(r, "DP", "dp"));
+              const minDeposit = Math.round(totalHarga * 0.2);
+              return minDeposit > dp;
+            }
+            return false;
+          });
+          if (poBooks.length === 0) {
+            alert("Belum ada pesanan pre-order yang memiliki tagihan deposit.");
+            return;
+          }
+
+          const customerName = S.data.nama || "Customer";
+          const customerId = S.data.id || "—";
+          const invoiceHtml = generateDepositInvoiceHtml(customerName, customerId, poBooks);
+
+          const printWindow = window.open("", "_blank");
+          if (printWindow) {
+            printWindow.document.open();
+            printWindow.document.write(invoiceHtml);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+              printWindow.print();
+            }, 500);
+          } else {
+            alert("Gagal membuka halaman invoice. Pastikan pop-up blocker browser Anda dinonaktifkan.");
+          }
+        });
+      }
+
       render();
     })();
   </script>
