@@ -70,7 +70,9 @@
     .table-header { padding: 20px; border-bottom: 1px solid var(--dr-muted); display: flex; justify-content: space-between; align-items: center; background: var(--dr-pale); }
     .table-header h3 { font-family: 'Inter', sans-serif; font-size: 16px; color: var(--ink); }
     table { width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 13px; }
-    th { text-align: left; padding: 14px 20px; font-weight: 600; color: var(--ink-mid); border-bottom: 2px solid var(--dr-muted); background: #faf9f9; }
+
+    /* FILTERS */
+    .filter-select { padding: 6px 12px; border: 1px solid var(--dr-muted); border-radius: 6px; font-size: 12px; font-family: 'Inter', sans-serif; outline: none; background: white; cursor: pointer; color: var(--ink); }    th { text-align: left; padding: 14px 20px; font-weight: 600; color: var(--ink-mid); border-bottom: 2px solid var(--dr-muted); background: #faf9f9; }
     td { padding: 14px 20px; border-bottom: 1px solid #f0eded; color: var(--ink); vertical-align: middle; }
     tr:hover td { background: #faf9f9; }
     
@@ -147,9 +149,20 @@
     </div>
 
     <div class="table-card">
-      <div class="table-header">
-        <h3>Search Results</h3>
-        <span style="font-size: 12px; color: var(--ink-soft);" id="resultCount">0 records found</span>
+      <div class="table-header" style="flex-wrap: wrap; gap: 12px;">
+        <h3 style="display:flex; align-items:center; gap:8px;">Search Results <span style="font-size: 12px; color: var(--ink-soft); font-weight:normal;" id="resultCount">(0 records)</span></h3>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <select id="filterStatus" class="filter-select">
+            <option value="all">Semua Status</option>
+            <option value="active">Hanya Active Order</option>
+            <option value="sent">Hanya Terkirim</option>
+            <option value="canceled">Hanya Dibatalkan</option>
+          </select>
+          <select id="sortOrder" class="filter-select">
+            <option value="newest">Terbaru di atas</option>
+            <option value="oldest">Terlama di atas</option>
+          </select>
+        </div>
       </div>
       <div style="overflow-x: auto;">
         <table id="dataTable">
@@ -307,49 +320,49 @@
       searchBtn.click(); // Otomatis trigger pencarian saat di-klik
     };
 
-    searchForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    window.lastSearchData = { orders: [], sent: [] };
+    
+    document.getElementById('filterStatus').addEventListener('change', renderTable);
+    document.getElementById('sortOrder').addEventListener('change', renderTable);
+
+    function renderTable() {
+      const filterVal = document.getElementById('filterStatus').value;
+      const sortVal = document.getElementById('sortOrder').value;
       const q = searchInput.value.trim();
-      if(!q) return;
 
-      searchBtn.disabled = true;
-      searchBtn.textContent = "Searching...";
+      let orders = (window.lastSearchData.orders || []).slice().map(r => ({...r, _isSent: false}));
+      let sent = (window.lastSearchData.sent || []).slice().map(r => ({...r, _isSent: true}));
 
-      try {
-        const url = `${SCRIPT_URL}?pwd=${encodeURIComponent(adminPwd)}&q=${encodeURIComponent(q)}`;
-        const res = await fetch(url);
-        const json = await res.json();
+      if (sortVal === 'newest') {
+        orders.reverse();
+        sent.reverse();
+      }
 
-        if(json.error) {
-          throw new Error(json.error);
-        }
+      const allRows = [...orders, ...sent];
+      let tQty = 0, tRev = 0, tDp = 0;
+      let finalRows = [];
+      let html = '';
 
-        // Balik urutan agar data terbaru (terbawah di GSheet) muncul di atas
-        const ordersRev = (json.orders || []).slice().reverse();
-        const sentRev = (json.sent || []).slice().reverse();
-        const allRows = [...ordersRev, ...sentRev];
-        
-        // Calculate Stats
-        let tQty = 0, tRev = 0, tDp = 0;
-        
-        const html = allRows.map(r => {
+      allRows.forEach(r => {
+          const qty = toNum(col(r, "Qty", "QTY"));
+          const actualQty = qty > 0 ? qty : 1; 
+          const statusRaw = col(r, "Status", "STATUS") || "—";
+          const isSent = r._isSent;
+          const stLow = statusRaw.toLowerCase();
+          const isCanceled = (qty === 0 && col(r, "Qty", "QTY") !== "") || stLow.includes("cancel");
+
+          if (filterVal === 'canceled' && !isCanceled) return;
+          if (filterVal === 'sent' && !isSent) return;
+          if (filterVal === 'active' && (isCanceled || isSent)) return;
+
           const cname = r._CustomerName || col(r, "Nama") || "—";
           const cid = col(r, "Customer ID", "customer id") || "—";
           const title = col(r, "Judul", "JUDUL", "Title") || "—";
           const pub = col(r, "Penerbit", "PENERBIT") || "—";
           const format = col(r, "Format", "FORMAT") || "—";
-          const qty = toNum(col(r, "Qty", "QTY"));
-          const actualQty = qty > 0 ? qty : 1; 
-          
-          // is this canceled?
-          const statusRaw = col(r, "Status", "STATUS") || "—";
-          const isSent = !!json.sent?.includes(r); // true if from sent sheet
-          const stLow = statusRaw.toLowerCase();
-          const isCanceled = (qty === 0 && col(r, "Qty", "QTY") !== "") || stLow.includes("cancel");
-
           const price = toNum(col(r, "Harga Total", "harga total"));
           const dp = toNum(col(r, "DP", "dp"));
-          
+
           if (!isCanceled) {
             tQty += actualQty;
             tRev += price;
@@ -357,10 +370,9 @@
           }
 
           const badgeClass = (stLow.includes("ready") || stLow.includes("terkirim") || isSent) ? "status-ready" : (isCanceled ? "status-cancel" : "status-po");
-
           const typeBadge = isSent ? `<span style="display:inline-block; margin-top:4px; font-size:10px; padding:2px 6px; background:var(--dr-pale); color:var(--dr); border-radius:4px;">Delivered DB</span>` : '';
 
-          return `
+          html += `
             <tr ${isCanceled ? 'style="opacity:0.6;"' : ''}>
               <td>
                 <div class="cname">${esc(cname)}</div>
@@ -377,20 +389,39 @@
               <td><span class="status-badge ${badgeClass}">${esc(isSent ? 'Terkirim' : statusRaw)}</span></td>
             </tr>
           `;
-        }).join('');
+          finalRows.push(r);
+      });
 
-        if(allRows.length === 0) {
-          tableBody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📭</div>No records found for "${esc(q)}".</div></td></tr>`;
-        } else {
-          tableBody.innerHTML = html;
-        }
+      if(finalRows.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📭</div>No records found for "${esc(q)}".</div></td></tr>`;
+      } else {
+        tableBody.innerHTML = html;
+      }
 
-        document.getElementById('resultCount').textContent = `${allRows.length} records found`;
-        document.getElementById('stQty').textContent = tQty;
-        document.getElementById('stRev').textContent = fc(tRev);
-        document.getElementById('stDp').textContent = fc(tDp);
-        document.getElementById('stRem').textContent = fc(Math.max(tRev - tDp, 0));
+      document.getElementById('resultCount').textContent = `(${finalRows.length} records)`;
+      document.getElementById('stQty').textContent = tQty;
+      document.getElementById('stRev').textContent = fc(tRev);
+      document.getElementById('stDp').textContent = fc(tDp);
+      document.getElementById('stRem').textContent = fc(Math.max(tRev - tDp, 0));
+    }
 
+    searchForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const q = searchInput.value.trim();
+      if(!q) return;
+
+      searchBtn.disabled = true;
+      searchBtn.textContent = "Searching...";
+
+      try {
+        const url = `${SCRIPT_URL}?pwd=${encodeURIComponent(adminPwd)}&q=${encodeURIComponent(q)}`;
+        const res = await fetch(url);
+        const json = await res.json();
+
+        if(json.error) throw new Error(json.error);
+
+        window.lastSearchData = json;
+        renderTable();
       } catch (err) {
         alert("Error fetching data: " + err.message);
       } finally {
