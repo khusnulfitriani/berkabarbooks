@@ -158,6 +158,11 @@
             <option value="sent">Hanya Terkirim</option>
             <option value="canceled">Hanya Dibatalkan</option>
           </select>
+          <select id="filterPayment" class="filter-select">
+            <option value="all">Semua Pembayaran</option>
+            <option value="unpaid">Belum Lunas (Ada Sisa)</option>
+            <option value="paid">Lunas</option>
+          </select>
           <select id="sortOrder" class="filter-select">
             <option value="newest">Terbaru di atas</option>
             <option value="oldest">Terlama di atas</option>
@@ -323,10 +328,12 @@
     window.lastSearchData = { orders: [], sent: [] };
     
     document.getElementById('filterStatus').addEventListener('change', renderTable);
+    document.getElementById('filterPayment').addEventListener('change', renderTable);
     document.getElementById('sortOrder').addEventListener('change', renderTable);
 
     function renderTable() {
       const filterVal = document.getElementById('filterStatus').value;
+      const paymentVal = document.getElementById('filterPayment').value;
       const sortVal = document.getElementById('sortOrder').value;
       const q = searchInput.value.trim();
 
@@ -350,18 +357,22 @@
           const isSent = r._isSent;
           const stLow = statusRaw.toLowerCase();
           const isCanceled = (qty === 0 && col(r, "Qty", "QTY") !== "") || stLow.includes("cancel");
+          const price = toNum(col(r, "Harga Total", "harga total"));
+          const dp = toNum(col(r, "DP", "dp"));
+          const remaining = Math.max(price - dp, 0);
 
           if (filterVal === 'canceled' && !isCanceled) return;
           if (filterVal === 'sent' && !isSent) return;
           if (filterVal === 'active' && (isCanceled || isSent)) return;
+
+          if (paymentVal === 'unpaid' && remaining <= 0) return;
+          if (paymentVal === 'paid' && remaining > 0) return;
 
           const cname = r._CustomerName || col(r, "Nama") || "—";
           const cid = col(r, "Customer ID", "customer id") || "—";
           const title = col(r, "Judul", "JUDUL", "Title") || "—";
           const pub = col(r, "Penerbit", "PENERBIT") || "—";
           const format = col(r, "Format", "FORMAT") || "—";
-          const price = toNum(col(r, "Harga Total", "harga total"));
-          const dp = toNum(col(r, "DP", "dp"));
 
           if (!isCanceled) {
             tQty += actualQty;
@@ -385,7 +396,10 @@
               </td>
               <td style="text-align: center; font-weight:600;">${actualQty}</td>
               <td style="text-align: right;">${fc(price)}</td>
-              <td style="text-align: right;">${fc(dp)}</td>
+              <td style="text-align: right;">
+                ${fc(dp)}
+                ${remaining > 0 && !isCanceled ? `<div style="font-size: 11px; color: #c0392b; font-weight: 600; margin-top: 4px;">Sisa: ${fc(remaining)}</div>` : ''}
+              </td>
               <td><span class="status-badge ${badgeClass}">${esc(isSent ? 'Terkirim' : statusRaw)}</span></td>
             </tr>
           `;
