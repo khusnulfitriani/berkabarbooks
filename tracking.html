@@ -2819,6 +2819,26 @@
           const json = await res.json();
           const resiJson = await resiRes.json().catch(() => ({ ok: false, resi: [] }));
           if (json.error) throw new Error(json.error);
+
+          const filterOngkir = r => {
+            const t = String(col(r, "JUDUL", "Judul", "judul", "Title") || "").toLowerCase().trim();
+            return !t.includes("ongkir");
+          };
+          if (json.orders) json.orders = json.orders.filter(filterOngkir);
+          if (json.sent) json.sent = json.sent.filter(filterOngkir);
+
+          let realBelanja = 0, realDeposit = 0, realQty = 0;
+          [...(json.orders || []), ...(json.sent || [])].forEach(r => {
+            realBelanja += toNum(col(r, "Harga Total", "harga total", "HARGA TOTAL"));
+            realDeposit += toNum(col(r, "DP", "dp"));
+            const qs = col(r, "Qty", "QTY", "qty");
+            realQty += (qs === "" || qs === undefined) ? 1 : toNum(qs);
+          });
+          json.totalBelanja = realBelanja;
+          json.totalDeposit = realDeposit;
+          json.totalQty = realQty;
+          json.sisaTanggungan = Math.max(realBelanja - realDeposit, 0);
+
           S.data = json;
           S.resi = resiJson.ok ? (resiJson.resi || []) : [];
           populateSentMonths();
