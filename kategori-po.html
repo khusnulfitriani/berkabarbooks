@@ -414,8 +414,8 @@
     // =========================================================================
     // URL WEB APP GOOGLE APPS SCRIPT
     // =========================================================================
-    // GANTI URL DI BAWAH INI SETELAH DEPLOY kategori-po.gs
-    const API_URL = "https://script.google.com/macros/s/AKfycbyawAqeowElPPbrJoqYAC3jPsYubKOPxvnXeI1J8b-_y2yVOJZGCYax9rmFpHEYNppd7A/exec";
+    // Diganti menggunakan proxy Cloudflare untuk mencegah error CORS/Login Google
+    const API_URL = "https://berkabarbooks-api.khusnulfitrianinund.workers.dev/kategori-po";
 
     // Pilihan Dropdown Position
     const POSITIONS = ["Ordered", "OntheSea", "Singapore", "Cukai", "Supplier", "OtwGudang", "Ready"];
@@ -459,6 +459,23 @@
       if (isError) toast.classList.add('error'); else toast.classList.remove('error');
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Fungsi untuk membuat query pencarian yang menggunakan angka unik Kategori PO
+    function createSearchQuery(title) {
+      // 1. Coba cari angka unik di awal (contoh: "163.")
+      const match = title.match(/^(\d+\.)/);
+      if (match) {
+        // Karena angka ini unik ribuan, gunakan saja angkanya untuk pencarian
+        // Ini akan sangat cepat dan 100% mencegah error pattern too complex
+        return encodeURIComponent(match[1]); 
+      }
+      
+      // 2. Fallback: Jika kebetulan tidak ada angkanya, pakai cara sebelumnya
+      let clean = title.replace(/^\d+\.\s*/, '').replace(/\s*ETA\s+.*$/i, '').trim();
+      let words = clean.split(/\s+/).slice(0, 4).join(' ');
+      words = words.replace(/[,.-]+$/, '').trim();
+      return encodeURIComponent(words);
     }
 
     async function fetchData() {
@@ -515,7 +532,9 @@
           <form class="po-row" id="row-${rowIdx}" data-pos="${currentPos}" onsubmit="saveData(event, ${rowIdx})" onchange="this.setAttribute('data-pos', this.querySelector('.position-select').value)" oninput="showSaveBtn(${rowIdx})">
             <div class="po-info">
               <div class="po-title">
-                ${esc(title)}
+                <a href="admin-dashboard.html?q=${createSearchQuery(title)}" target="_blank" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--dr);" onmouseover="this.style.color='var(--dr-light)'" onmouseout="this.style.color='inherit'">
+                  ${esc(title)}
+                </a>
                 ${eta ? `<span class="po-eta">${esc(eta)}</span>` : ''}
               </div>
               <div class="po-subtitle">${esc(pub)}</div>
