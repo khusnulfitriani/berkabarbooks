@@ -8,14 +8,23 @@
 // 4. Ganti SHEET_NAME jika nama sheetnya bukan "Sheet1".
 // 5. Deploy as Web App -> Access: Anyone.
 
-const SPREADSHEET_ID = "GANTI_DENGAN_SPREADSHEET_ID_KAMU"; 
-const SHEET_NAME = "Sheet1"; // Ganti jika nama sheetnya beda
+const SPREADSHEET_ID = "1wIk-qkQsuyPslcyTolo3gikRfuqs-W8Liyhr_cbKs8Y"; 
+const SHEET_NAME = "ACTIVE"; // Ganti jika nama sheetnya beda
 
 function doGet(e) {
   const output = ContentService.createTextOutput();
   output.setMimeType(ContentService.MimeType.JSON);
 
   try {
+    // 1. Cek apakah ada data di Cache
+    const cache = CacheService.getScriptCache();
+    const cachedData = cache.get("kategori_po_data");
+    
+    if (cachedData) {
+      // Jika ada, langsung kembalikan data dari Cache (SUPER CEPAT)
+      return output.setContent(cachedData);
+    }
+
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) throw new Error("Sheet tidak ditemukan!");
@@ -38,7 +47,17 @@ function doGet(e) {
       }
     }
 
-    output.setContent(JSON.stringify({ success: true, data: rows }));
+    const jsonString = JSON.stringify({ success: true, data: rows });
+    
+    // 2. Simpan hasil ke Cache selama 1 Jam (3600 detik)
+    // Jika data terlalu besar (batas cache GAS adalah 100KB), try-catch akan mengabaikannya
+    try {
+      cache.put("kategori_po_data", jsonString, 3600);
+    } catch(e) {
+      // Abaikan jika data terlalu besar untuk di-cache
+    }
+
+    output.setContent(jsonString);
   } catch (err) {
     output.setContent(JSON.stringify({ success: false, error: err.message }));
   }
@@ -52,26 +71,25 @@ function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
     
-    // Harus ada rowIndex (nomor baris) dan fields (kolom yang mau diubah)
     if (!payload.rowIndex || !payload.fields) {
       throw new Error("Missing rowIndex or fields");
     }
 
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = ss.getSheetByName(SHEET_NAME);
-    
-    // Ambil header untuk mengetahui index kolom
     const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(h => String(h).trim());
     
-    // Update setiap field yang dikirim
     for (const key in payload.fields) {
       const colIndex = headers.indexOf(key);
       if (colIndex !== -1) {
-        // Update sel (baris ke-rowIndex, kolom ke-(colIndex+1))
         sheet.getRange(payload.rowIndex, colIndex + 1).setValue(payload.fields[key]);
       }
     }
     
+    // 3. Hapus Cache karena data baru saja diubah, agar halaman menampilkan versi terbaru!
+    const cache = CacheService.getScriptCache();
+    cache.remove("kategori_po_data");
+
     output.setContent(JSON.stringify({ success: true, message: "Berhasil diupdate" }));
   } catch (err) {
     output.setContent(JSON.stringify({ success: false, error: err.message }));

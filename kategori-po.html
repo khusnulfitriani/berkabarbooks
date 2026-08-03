@@ -237,145 +237,46 @@
       }
     }
 
-    /* CARD LIST */
-    .po-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+    /* ROW LIST */
+    .po-list { display: flex; flex-direction: column; gap: 12px; }
+    
+    .po-row { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(100,50,50,0.05); border: 1px solid var(--dr-muted); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    
+    .po-info { flex: 1; min-width: 0; }
+    
+    .po-title { font-size: 15px; font-weight: 600; color: var(--dr); margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
+    
+    .po-subtitle { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ink-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; }
+    
+    .po-eta { background: var(--dr-pale); color: var(--dr); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+    
+    .po-action { display: flex; flex-direction: column; gap: 8px; min-width: 120px; }
+    
+    .position-select { width: 100%; padding: 8px 24px 8px 10px; border: 1px solid var(--dr-muted); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; outline: none; background: #faf9f9; color: var(--dr) !important; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23b07878%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat, repeat; background-position: right .5em top 50%, 0 0; background-size: .65em auto, 100%; appearance: none; -webkit-appearance: none; }
+    
+    .save-btn { width: 100%; padding: 8px; background: var(--dr); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 12px; display: none; }
+    .save-btn.show { display: block; animation: fadeIn 0.3s ease; }
+    .save-btn:active { transform: scale(0.95); }
+    .save-btn:disabled { opacity: 0.7; cursor: wait; }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .po-card {
-      background: white;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(100, 50, 50, 0.05);
-      border: 1px solid var(--dr-muted);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .po-header {
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px dashed var(--dr-muted);
-    }
-
-    .po-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--dr);
-      margin-bottom: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .po-subtitle {
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      color: var(--ink-mid);
-      line-height: 1.4;
-    }
-
-    .po-eta {
-      display: inline-block;
-      background: var(--dr-pale);
-      color: var(--dr);
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      margin-top: 8px;
-    }
-
-    /* EDIT FORM */
-    .field-group {
-      margin-bottom: 12px;
-    }
-
-    .field-group label {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--ink-soft);
-      margin-bottom: 6px;
-    }
-
-    .field-group select,
-    .field-group input {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--dr-muted);
-      border-radius: 10px;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      outline: none;
-      background: #faf9f9;
-      color: var(--ink);
-      transition: 0.2s;
-    }
-
-    .field-group select:focus,
-    .field-group input:focus {
-      border-color: var(--dr);
-      background: white;
-      box-shadow: 0 0 0 3px var(--dr-pale);
-    }
-
-    .position-select {
-      font-weight: 600;
-      color: var(--dr) !important;
-      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23b07878%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-      background-repeat: no-repeat, repeat;
-      background-position: right .7em top 50%, 0 0;
-      background-size: .65em auto, 100%;
-      appearance: none;
-      -webkit-appearance: none;
-    }
-
-    .save-btn {
-      width: 100%;
-      padding: 12px;
-      background: var(--dr);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-      font-size: 14px;
-      margin-top: 8px;
-      display: none;
-    }
-
-    .save-btn.show {
-      display: block;
-      animation: slideUp 0.3s ease;
-    }
-
-    .save-btn:active {
-      transform: scale(0.98);
-    }
-
-    .save-btn:disabled {
-      opacity: 0.7;
-      cursor: wait;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    /* WARNA POSISI */
+    .po-row[data-pos="Ordered"] { border-left: 5px solid #ff9800; }
+    .po-row[data-pos="OntheSea"] { border-left: 5px solid #00bcd4; }
+    .po-row[data-pos="Singapore"] { border-left: 5px solid #9c27b0; }
+    .po-row[data-pos="Cukai"] { border-left: 5px solid #f44336; }
+    .po-row[data-pos="Supplier"] { border-left: 5px solid #795548; }
+    .po-row[data-pos="OtwGudang"] { border-left: 5px solid #2196f3; }
+    .po-row[data-pos="Ready"] { border-left: 5px solid #4caf50; }
+    
+    .po-row[data-pos="Ordered"] .position-select { color: #e65100 !important; border-color: #ff9800; background-color: #fff3e0; }
+    .po-row[data-pos="OntheSea"] .position-select { color: #00838f !important; border-color: #00bcd4; background-color: #e0f7fa; }
+    .po-row[data-pos="Singapore"] .position-select { color: #6a1b9a !important; border-color: #9c27b0; background-color: #f3e5f5; }
+    .po-row[data-pos="Cukai"] .position-select { color: #c62828 !important; border-color: #f44336; background-color: #ffebee; }
+    .po-row[data-pos="Supplier"] .position-select { color: #4e342e !important; border-color: #795548; background-color: #efebe9; }
+    .po-row[data-pos="OtwGudang"] .position-select { color: #1565c0 !important; border-color: #2196f3; background-color: #e3f2fd; }
+    .po-row[data-pos="Ready"] .position-select { color: #2e7d32 !important; border-color: #4caf50; background-color: #e8f5e9; }
 
     /* TOAST */
     #toast {
@@ -441,7 +342,7 @@
       <span class="search-icon">🔍</span>
       <input type="text" id="searchInput" placeholder="Cari Kategori atau Publisher...">
     </div>
-    
+
     <div class="filter-bar">
       <select id="filterPosition">
         <option value="Bukan Ready">Tampilkan: Bukan Ready</option>
@@ -471,7 +372,7 @@
     // URL WEB APP GOOGLE APPS SCRIPT
     // =========================================================================
     // GANTI URL DI BAWAH INI SETELAH DEPLOY kategori-po.gs
-    const API_URL = "https://script.google.com/macros/s/AKfycbytxawK_0T5KMKVQwmSPzQURikzShe9zYZCiuoar60gRcxCAz9Mv6tj-L-CM7xZyDqVIA/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyawAqeowElPPbrJoqYAC3jPsYubKOPxvnXeI1J8b-_y2yVOJZGCYax9rmFpHEYNppd7A/exec";
 
     // Pilihan Dropdown Position
     const POSITIONS = ["Ordered", "OntheSea", "Singapore", "Cukai", "Supplier", "OtwGudang", "Ready"];
@@ -565,43 +466,24 @@
         }
 
         return `
-          <div class="po-card" id="card-${rowIdx}">
-            <div class="po-header">
+          <form class="po-row" id="row-${rowIdx}" data-pos="${currentPos}" onsubmit="saveData(event, ${rowIdx})" onchange="this.setAttribute('data-pos', this.querySelector('.position-select').value)" oninput="showSaveBtn(${rowIdx})">
+            <div class="po-info">
               <div class="po-title">
                 ${esc(title)}
                 ${eta ? `<span class="po-eta">${esc(eta)}</span>` : ''}
               </div>
               <div class="po-subtitle">${esc(pub)}</div>
             </div>
-
-            <form class="edit-form" onsubmit="saveData(event, ${rowIdx})" oninput="showSaveBtn(${rowIdx})">
-              <div class="field-group">
-                <label>Position</label>
-                <select name="Position" class="position-select">
-                  <option value="">- Kosong -</option>
-                  ${customPosOpt}
-                  ${posOptions}
-                </select>
-              </div>
-              
-              <div class="field-group">
-                <label>Status</label>
-                <input type="text" name="Status" value="${esc(r["Status"] || "")}" placeholder="Cth: Lunas">
-              </div>
-
-              <div class="field-group">
-                <label>Progres</label>
-                <input type="text" name="Progres" value="${esc(r["Progres"] || "")}" placeholder="Cth: 50%">
-              </div>
-
-              <div class="field-group">
-                <label>Keterangan</label>
-                <input type="text" name="Keterangan" value="${esc(r["Keterangan"] || "")}" placeholder="Opsional">
-              </div>
-
-              <button type="submit" class="save-btn" id="btn-${rowIdx}">Simpan Perubahan</button>
-            </form>
-          </div>
+            
+            <div class="po-action">
+              <select name="Position" class="position-select">
+                <option value="">- Posisi -</option>
+                ${customPosOpt}
+                ${posOptions}
+              </select>
+              <button type="submit" class="save-btn" id="btn-${rowIdx}">Simpan</button>
+            </div>
+          </form>
         `;
       }).join('');
     }
@@ -643,8 +525,8 @@
 
         // Update data lokal agar kalau disearch gak ilang perubahannya
         const rowData = allData.find(r => r._rowIndex === rowIdx);
-        if (rowData) { 
-          Object.assign(rowData, fields); 
+        if (rowData) {
+          Object.assign(rowData, fields);
           // Re-filter data in case position changed and it should be hidden
           filterData();
         }
