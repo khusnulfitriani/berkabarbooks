@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kategori PO Dashboard</title>
+  <link rel="icon" type="image/png" href="Logo only.png">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600&family=Jost:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --dr: #b07878;
+      --dr-light: #c99090;
+      --dr-pale: #eedede;
+      --dr-bg: #f5e8e8;
+      --dr-muted: #e2cece;
+      --white: #ffffff;
+      --ink: #2e2020;
+      --ink-mid: #6b4f4f;
+      --ink-soft: #a08080;
+    }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      color: var(--ink);
+      background: var(--dr-bg);
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--dr);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      box-shadow: 0 4px 12px rgba(100, 50, 50, 0.15);
+    }
+
+    .nav-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-brand img {
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+    }
+
+    /* LOGIN OVERLAY */
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      background: var(--dr-bg);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      padding: 32px 24px;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(100, 50, 50, .12);
+      text-align: center;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .login-box h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      color: var(--dr);
+      margin-bottom: 8px;
+    }
+
+    .login-box p {
+      font-size: 14px;
+      color: var(--ink-mid);
+      margin-bottom: 24px;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--dr-muted);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      background: #faf9f9;
+      text-align: center;
+      font-size: 18px;
+      letter-spacing: 2px;
+    }
+
+    .login-box input:focus {
+      border-color: var(--dr);
+      background: white;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 14px;
+      background: var(--dr);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 15px;
+    }
+
+    .login-box button:hover {
+      background: var(--dr-light);
+    }
+
+    /* MAIN */
+    .main {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      display: none;
+    }
+
+    .main.show {
+      display: block;
+    }
+
+    /* SEARCH */
+    .search-bar {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      border: 1px solid var(--dr-muted);
+      border-radius: 16px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      box-shadow: 0 4px 15px rgba(100, 50, 50, 0.05);
+    }
+
+    .search-bar input:focus {
+      border-color: var(--dr);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      opacity: 0.5;
+    }
+
+    .filter-bar {
+      margin-bottom: 20px;
+      display: flex;
+    }
+
+    .filter-bar select {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--dr-muted);
+      border-radius: 16px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      background: white;
+      color: var(--ink);
+      box-shadow: 0 4px 15px rgba(100, 50, 50, 0.05);
+    }
+
+    .filter-bar select:focus {
+      border-color: var(--dr);
+    }
+
+    /* LOADING & EMPTY STATE */
+    .status-msg {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--ink-soft);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border: 3px solid var(--dr-pale);
+      border-radius: 50%;
+      border-top-color: var(--dr);
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* CARD LIST */
+    .po-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .po-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(100, 50, 50, 0.05);
+      border: 1px solid var(--dr-muted);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .po-header {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--dr-muted);
+    }
+
+    .po-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--dr);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .po-subtitle {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-mid);
+      line-height: 1.4;
+    }
+
+    .po-eta {
+      display: inline-block;
+      background: var(--dr-pale);
+      color: var(--dr);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    /* EDIT FORM */
+    .field-group {
+      margin-bottom: 12px;
+    }
+
+    .field-group label {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin-bottom: 6px;
+    }
+
+    .field-group select,
+    .field-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--dr-muted);
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      background: #faf9f9;
+      color: var(--ink);
+      transition: 0.2s;
+    }
+
+    .field-group select:focus,
+    .field-group input:focus {
+      border-color: var(--dr);
+      background: white;
+      box-shadow: 0 0 0 3px var(--dr-pale);
+    }
+
+    .position-select {
+      font-weight: 600;
+      color: var(--dr) !important;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23b07878%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat, repeat;
+      background-position: right .7em top 50%, 0 0;
+      background-size: .65em auto, 100%;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--dr);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 14px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .save-btn.show {
+      display: block;
+      animation: slideUp 0.3s ease;
+    }
+
+    .save-btn:active {
+      transform: scale(0.98);
+    }
+
+    .save-btn:disabled {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #2e7d32;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #toast.error {
+      background: #c62828;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+  <div id="loginOverlay">
+    <div class="login-box">
+      <h2>Admin Access</h2>
+      <p>Kategori PO Dashboard</p>
+      <form id="loginForm">
+        <input type="password" id="pwdInput" placeholder="PIN" required autocomplete="current-password"
+          inputmode="numeric">
+        <button type="submit">Unlock Dashboard</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-brand">
+      <img src="Logo_bg.png" alt="Logo" onerror="this.src='Logo only.png'; this.onerror=null;">
+      Kategori PO
+    </div>
+    <div
+      style="font-size: 11px; opacity: 0.8; font-family: 'Inter', sans-serif; padding: 4px 8px; background: rgba(255,255,255,0.2); border-radius: 20px;">
+      Mobile Editor
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main" id="mainContent">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Cari Kategori atau Publisher...">
+    </div>
+    
+    <div class="filter-bar">
+      <select id="filterPosition">
+        <option value="Bukan Ready">Tampilkan: Bukan Ready</option>
+        <option value="Semua">Tampilkan: Semua Posisi</option>
+        <option value="Ordered">Posisi: Ordered</option>
+        <option value="OntheSea">Posisi: OntheSea</option>
+        <option value="Singapore">Posisi: Singapore</option>
+        <option value="Cukai">Posisi: Cukai</option>
+        <option value="Supplier">Posisi: Supplier</option>
+        <option value="OtwGudang">Posisi: OtwGudang</option>
+        <option value="Ready">Posisi: Ready</option>
+      </select>
+    </div>
+
+    <div id="statusMsg" class="status-msg">
+      <div class="spinner"></div>
+      <div id="statusText">Memuat data dari Google Sheets...</div>
+    </div>
+
+    <div class="po-list" id="poList"></div>
+  </main>
+
+  <div id="toast"><span id="toastIcon">✅</span> <span id="toastText">Data tersimpan!</span></div>
+
+  <script>
+    // =========================================================================
+    // URL WEB APP GOOGLE APPS SCRIPT
+    // =========================================================================
+    // GANTI URL DI BAWAH INI SETELAH DEPLOY kategori-po.gs
+    const API_URL = "https://script.google.com/macros/s/AKfycbytxawK_0T5KMKVQwmSPzQURikzShe9zYZCiuoar60gRcxCAz9Mv6tj-L-CM7xZyDqVIA/exec";
+
+    // Pilihan Dropdown Position
+    const POSITIONS = ["Ordered", "OntheSea", "Singapore", "Cukai", "Supplier", "OtwGudang", "Ready"];
+
+    let allData = [];
+    let adminPwd = "";
+
+    // DOM
+    const loginOverlay = document.getElementById('loginOverlay');
+    const loginForm = document.getElementById('loginForm');
+    const pwdInput = document.getElementById('pwdInput');
+    const mainContent = document.getElementById('mainContent');
+    const searchInput = document.getElementById('searchInput');
+    const filterPosition = document.getElementById('filterPosition');
+    const poList = document.getElementById('poList');
+    const statusMsg = document.getElementById('statusMsg');
+    const statusText = document.getElementById('statusText');
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+    const toastIcon = document.getElementById('toastIcon');
+
+    // Login
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (pwdInput.value.trim() === "0000") {
+        loginOverlay.style.display = 'none';
+        mainContent.classList.add('show');
+        fetchData();
+      } else {
+        alert("PIN salah!");
+        pwdInput.value = "";
+      }
+    });
+
+    const esc = (s) => String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+    function showToast(msg, isError = false) {
+      toastText.textContent = msg;
+      toastIcon.textContent = isError ? "❌" : "✅";
+      if (isError) toast.classList.add('error'); else toast.classList.remove('error');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    async function fetchData() {
+      if (API_URL === "GANTI_DENGAN_URL_WEB_APP_APPS_SCRIPT_KAMU") {
+        statusMsg.innerHTML = `⚠️<br><br>URL API belum diset. Buka kode HTML dan ganti API_URL dengan URL Web App dari Apps Script.`;
+        return;
+      }
+
+      statusMsg.style.display = 'block';
+      poList.style.display = 'none';
+
+      try {
+        const res = await fetch(API_URL);
+        const json = await res.json();
+
+        if (!json.success) throw new Error(json.error);
+
+        allData = json.data;
+        filterData();
+      } catch (err) {
+        statusMsg.innerHTML = `❌<br><br>Gagal memuat data: ${err.message}`;
+      }
+    }
+
+    function renderList(data) {
+      statusMsg.style.display = 'none';
+      poList.style.display = 'flex';
+
+      if (data.length === 0) {
+        poList.innerHTML = `<div class="status-msg">Kosong. Tidak ada data Kategori PO.</div>`;
+        return;
+      }
+
+      poList.innerHTML = data.map((r, i) => {
+        const title = r["KATEGORI PO"] || "Tanpa Judul";
+        const pub = r["PUBLISHER/TITLE"] || "—";
+        const eta = r["ETA"] || "";
+        const rowIdx = r._rowIndex;
+
+        // Bikin opsi dropdown
+        const posOptions = POSITIONS.map(p =>
+          `<option value="${p}" ${r["Position"] === p ? "selected" : ""}>${p}</option>`
+        ).join('');
+        // Tambahkan opsi default jika posisi saat ini tidak ada di daftar baku
+        let currentPos = String(r["Position"] || "").trim();
+        let customPosOpt = "";
+        if (currentPos && !POSITIONS.includes(currentPos)) {
+          customPosOpt = `<option value="${esc(currentPos)}" selected>${esc(currentPos)} (Custom)</option>`;
+        }
+
+        return `
+          <div class="po-card" id="card-${rowIdx}">
+            <div class="po-header">
+              <div class="po-title">
+                ${esc(title)}
+                ${eta ? `<span class="po-eta">${esc(eta)}</span>` : ''}
+              </div>
+              <div class="po-subtitle">${esc(pub)}</div>
+            </div>
+
+            <form class="edit-form" onsubmit="saveData(event, ${rowIdx})" oninput="showSaveBtn(${rowIdx})">
+              <div class="field-group">
+                <label>Position</label>
+                <select name="Position" class="position-select">
+                  <option value="">- Kosong -</option>
+                  ${customPosOpt}
+                  ${posOptions}
+                </select>
+              </div>
+              
+              <div class="field-group">
+                <label>Status</label>
+                <input type="text" name="Status" value="${esc(r["Status"] || "")}" placeholder="Cth: Lunas">
+              </div>
+
+              <div class="field-group">
+                <label>Progres</label>
+                <input type="text" name="Progres" value="${esc(r["Progres"] || "")}" placeholder="Cth: 50%">
+              </div>
+
+              <div class="field-group">
+                <label>Keterangan</label>
+                <input type="text" name="Keterangan" value="${esc(r["Keterangan"] || "")}" placeholder="Opsional">
+              </div>
+
+              <button type="submit" class="save-btn" id="btn-${rowIdx}">Simpan Perubahan</button>
+            </form>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Tampilkan tombol save saat form diubah
+    window.showSaveBtn = (rowIdx) => {
+      document.getElementById(`btn-${rowIdx}`).classList.add('show');
+    };
+
+    // Fungsi Menyimpan ke GSheet
+    window.saveData = async (e, rowIdx) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = document.getElementById(`btn-${rowIdx}`);
+
+      // Ambil nilai baru
+      const formData = new FormData(form);
+      const fields = {};
+      formData.forEach((val, key) => fields[key] = val);
+
+      btn.disabled = true;
+      btn.textContent = "Menyimpan...";
+
+      try {
+        const payload = { rowIndex: rowIdx, fields: fields };
+
+        // Gunakan POST dengan mode text/plain agar tidak memicu CORS error yang rumit di GAS
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+
+        const json = await res.json();
+        if (!json.success) throw new Error(json.error);
+
+        showToast("Berhasil disimpan!");
+        btn.classList.remove('show');
+
+        // Update data lokal agar kalau disearch gak ilang perubahannya
+        const rowData = allData.find(r => r._rowIndex === rowIdx);
+        if (rowData) { 
+          Object.assign(rowData, fields); 
+          // Re-filter data in case position changed and it should be hidden
+          filterData();
+        }
+
+      } catch (err) {
+        showToast("Gagal: " + err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Simpan Perubahan";
+      }
+    };
+
+    // Fitur Search dan Filter Lokal
+    function filterData() {
+      const q = searchInput.value.trim().toLowerCase();
+      const pos = filterPosition.value;
+
+      const filtered = allData.filter(r => {
+        // Filter Search
+        const title = (r["KATEGORI PO"] || "").toLowerCase();
+        const pub = (r["PUBLISHER/TITLE"] || "").toLowerCase();
+        const matchesSearch = !q || title.includes(q) || pub.includes(q);
+
+        // Filter Position
+        const rPos = String(r["Position"] || "").trim();
+        let matchesPos = true;
+        if (pos === "Bukan Ready") {
+          matchesPos = rPos !== "Ready";
+        } else if (pos !== "Semua") {
+          matchesPos = rPos === pos;
+        }
+
+        return matchesSearch && matchesPos;
+      });
+      renderList(filtered);
+    }
+
+    searchInput.addEventListener('input', filterData);
+    filterPosition.addEventListener('change', filterData);
+
+  </script>
+</body>
+
+</html>
