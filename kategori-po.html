@@ -192,6 +192,7 @@
     .filter-bar {
       margin-bottom: 20px;
       display: flex;
+      gap: 12px;
     }
 
     .filter-bar select {
@@ -306,6 +307,45 @@
     #toast.error {
       background: #c62828;
     }
+
+    /* DESKTOP LAYOUT */
+    @media (min-width: 768px) {
+      .main {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+      
+      .search-bar { 
+        float: left; 
+        width: 48%; 
+        margin-bottom: 24px; 
+      }
+      
+      .filter-bar { 
+        float: right; 
+        width: 48%; 
+        margin-bottom: 24px; 
+      }
+      
+      .status-msg, .po-list { 
+        clear: both; 
+      }
+      
+      .po-list { 
+        display: grid; 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 20px; 
+      }
+      
+      .po-row { 
+        align-items: flex-start; 
+      }
+      
+      .po-action { 
+        min-width: 160px; 
+      }
+    }
   </style>
 </head>
 
@@ -345,8 +385,8 @@
 
     <div class="filter-bar">
       <select id="filterPosition">
-        <option value="Bukan Ready">Tampilkan: Bukan Ready</option>
-        <option value="Semua">Tampilkan: Semua Posisi</option>
+        <option value="Bukan Ready">Posisi: Bukan Ready</option>
+        <option value="Semua">Posisi: Semua</option>
         <option value="Ordered">Posisi: Ordered</option>
         <option value="OntheSea">Posisi: OntheSea</option>
         <option value="Singapore">Posisi: Singapore</option>
@@ -354,6 +394,9 @@
         <option value="Supplier">Posisi: Supplier</option>
         <option value="OtwGudang">Posisi: OtwGudang</option>
         <option value="Ready">Posisi: Ready</option>
+      </select>
+      <select id="filterEta">
+        <option value="Semua">Bulan: Semua</option>
       </select>
     </div>
 
@@ -387,6 +430,7 @@
     const mainContent = document.getElementById('mainContent');
     const searchInput = document.getElementById('searchInput');
     const filterPosition = document.getElementById('filterPosition');
+    const filterEta = document.getElementById('filterEta');
     const poList = document.getElementById('poList');
     const statusMsg = document.getElementById('statusMsg');
     const statusText = document.getElementById('statusText');
@@ -433,6 +477,8 @@
         if (!json.success) throw new Error(json.error);
 
         allData = json.data;
+        
+        updateEtaDropdown();
         filterData();
       } catch (err) {
         statusMsg.innerHTML = `❌<br><br>Gagal memuat data: ${err.message}`;
@@ -543,6 +589,7 @@
     function filterData() {
       const q = searchInput.value.trim().toLowerCase();
       const pos = filterPosition.value;
+      const etaFilter = filterEta.value;
 
       const filtered = allData.filter(r => {
         // Filter Search
@@ -558,14 +605,56 @@
         } else if (pos !== "Semua") {
           matchesPos = rPos === pos;
         }
+        
+        // Filter Bulan/ETA
+        const rEta = String(r["ETA"] || "").trim();
+        let matchesEta = true;
+        if (etaFilter !== "Semua") {
+          matchesEta = rEta === etaFilter;
+        }
 
-        return matchesSearch && matchesPos;
+        return matchesSearch && matchesPos && matchesEta;
       });
       renderList(filtered);
     }
 
-    searchInput.addEventListener('input', filterData);
-    filterPosition.addEventListener('change', filterData);
+    // Update opsi dropdown ETA berdasarkan pencarian dan filter posisi saat ini
+    function updateEtaDropdown() {
+      const q = searchInput.value.trim().toLowerCase();
+      const pos = filterPosition.value;
+      const currentSelectedEta = filterEta.value;
+
+      const validData = allData.filter(r => {
+        const title = (r["KATEGORI PO"] || "").toLowerCase();
+        const pub = (r["PUBLISHER/TITLE"] || "").toLowerCase();
+        const matchesSearch = !q || title.includes(q) || pub.includes(q);
+
+        const rPos = String(r["Position"] || "").trim();
+        let matchesPos = true;
+        if (pos === "Bukan Ready") {
+          matchesPos = rPos !== "Ready";
+        } else if (pos !== "Semua") {
+          matchesPos = rPos === pos;
+        }
+
+        return matchesSearch && matchesPos;
+      });
+
+      const uniqueETAs = [...new Set(validData.map(r => String(r["ETA"] || "").trim()).filter(Boolean))];
+      uniqueETAs.sort();
+
+      filterEta.innerHTML = `<option value="Semua">Bulan: Semua</option>` + 
+          uniqueETAs.map(e => `<option value="${esc(e)}">${esc(e)}</option>`).join('');
+
+      // Kembalikan nilai yang dipilih jika masih ada di daftar baru
+      if (uniqueETAs.includes(currentSelectedEta)) {
+        filterEta.value = currentSelectedEta;
+      }
+    }
+
+    searchInput.addEventListener('input', () => { updateEtaDropdown(); filterData(); });
+    filterPosition.addEventListener('change', () => { updateEtaDropdown(); filterData(); });
+    filterEta.addEventListener('change', filterData);
 
   </script>
 </body>
