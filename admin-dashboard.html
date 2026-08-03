@@ -286,7 +286,8 @@
               const key = "T:" + title.toLowerCase();
               if (!seen.has(key)) {
                 seen.add(key);
-                suggestions.push({ text: title, type: 'Judul Buku' });
+                const kategori = col(r, "Kategori PO", "KATEGORI PO", "Kategori", "KATEGORI", "PO") || "—";
+                suggestions.push({ text: title, type: `Judul Buku (PO: ${kategori})` });
               }
             }
             if (cname.toLowerCase().includes(qLow)) {
@@ -373,6 +374,7 @@
           const title = col(r, "Judul", "JUDUL", "Title") || "—";
           const pub = col(r, "Penerbit", "PENERBIT") || "—";
           const format = col(r, "Format", "FORMAT") || "—";
+          const kategori = col(r, "Kategori PO", "KATEGORI PO", "Kategori", "KATEGORI", "PO") || "—";
 
           if (!isCanceled) {
             tQty += actualQty;
@@ -392,6 +394,7 @@
               </td>
               <td>
                 <span class="book-title">${isCanceled ? '<del>'+esc(title)+'</del>' : esc(title)}</span>
+                <span class="book-meta" style="color: var(--dr); font-weight: 500; display: block; margin-bottom: 2px;">Kategori PO: ${esc(kategori)}</span>
                 <span class="book-meta">${esc(pub)} · ${esc(format)}</span>
               </td>
               <td style="text-align: center; font-weight:600;">${actualQty}</td>
