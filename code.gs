@@ -172,6 +172,9 @@ function syncOrdersAndCustomers() {
 
   // Sekalian sync resi (data kecil, cepat)
   syncResi();
+
+  // Sekalian sync baris-baris BARU di sheet Terkirim (incremental, cepat)
+  syncSentIncremental();
 }
 
 // ─── Sync Resi dari "5. LIST PENGIRIMAN" ───────────────────────
@@ -219,7 +222,9 @@ function syncResi() {
   Logger.log("✅ Sync resi selesai!");
 }
 
-// ─── Sync Sent (jalankan manual atau mingguan) ─────────────────
+// ─── Sync Sent FULL (jalankan manual saja untuk rebuild baseline) ─
+// Setelah selesai, counter incremental di-reset ke total baris saat ini
+// sehingga syncSentIncremental() berikutnya hanya ambil baris BARU.
 function syncSentFull() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
@@ -227,6 +232,7 @@ function syncSentFull() {
   const sent = readSheet(ss, SHEET_SENT);
   Logger.log("✔ sent: " + sent.length + " baris → " + Math.ceil(sent.length / CHUNK_SIZE) + " batch");
 
+  let success = true;
   for (let i = 0; i < sent.length; i += CHUNK_SIZE) {
     const batchNum = Math.floor(i / CHUNK_SIZE) + 1;
     const payload  = {
@@ -236,10 +242,75 @@ function syncSentFull() {
       sent:      sent.slice(i, i + CHUNK_SIZE),
       customers: [],
     };
-    if (!_doSyncRequest(payload, "sent #" + batchNum)) return;
+    if (!_doSyncRequest(payload, "sent #" + batchNum)) { success = false; break; }
   }
 
-  Logger.log("✅ Sync sent selesai!");
+  if (success) {
+    // Simpan total baris sebagai baseline untuk incremental sync berikutnya
+    PropertiesService.getScriptProperties().setProperty("SENT_LAST_SYNCED_COUNT", String(sent.length));
+    Logger.log("✅ Sync sent full selesai! Baseline incremental diset ke " + sent.length + " baris.");
+  } else {
+    Logger.log("⚠️ Sync sent full GAGAL di salah satu batch. Baseline TIDAK diupdate.");
+  }
+}
+
+// ─── Sync Sent INCREMENTAL (otomatis tiap 30 menit bersama syncOrdersAndCustomers) ─
+// Hanya mengirim baris-baris BARU yang belum pernah di-sync ke D1.
+// Aman karena sheet Terkirim hanya append (baris lama tidak berubah).
+function syncSentIncremental() {
+  const props = PropertiesService.getScriptProperties();
+  const lastCount = parseInt(props.getProperty("SENT_LAST_SYNCED_COUNT") || "0");
+
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_SENT);
+  if (!sheet) {
+    Logger.log("⚠️ Sheet Terkirim tidak ditemukan: " + SHEET_SENT);
+    return;
+  }
+
+  const allData   = sheet.getDataRange().getValues();
+  const totalRows = allData.length - 1; // dikurangi 1 baris header
+
+  if (totalRows <= lastCount) {
+    Logger.log("📭 Incremental sent: tidak ada baris baru (total=" + totalRows + ", lastSynced=" + lastCount + ")");
+    return;
+  }
+
+  const newRowCount = totalRows - lastCount;
+  Logger.log("📦 Incremental sent: ditemukan " + newRowCount + " baris baru (baris " + (lastCount + 1) + "–" + totalRows + ")");
+
+  // Susun header dari baris pertama
+  const headers = allData[0].map(function(h) { return String(h).trim(); });
+
+  // Ambil hanya baris baru (index mulai dari lastCount+1 karena baris 0 adalah header)
+  const newRows = [];
+  for (var i = lastCount + 1; i < allData.length; i++) {
+    var obj = {};
+    headers.forEach(function(h, j) { obj[h] = formatCell(allData[i][j]); });
+    newRows.push(obj);
+  }
+
+  // Kirim ke Worker dalam chunk, TANPA clearSent (tidak hapus data lama di D1)
+  var success = true;
+  for (var c = 0; c < newRows.length; c += CHUNK_SIZE) {
+    var batchNum = Math.floor(c / CHUNK_SIZE) + 1;
+    var payload  = {
+      secret:    WORKER_SECRET,
+      clearSent: false,   // PENTING: jangan hapus data lama!
+      orders:    [],
+      sent:      newRows.slice(c, c + CHUNK_SIZE),
+      customers: [],
+    };
+    if (!_doSyncRequest(payload, "sent-incremental #" + batchNum)) { success = false; break; }
+  }
+
+  if (success) {
+    // Update counter hanya kalau semua batch berhasil
+    props.setProperty("SENT_LAST_SYNCED_COUNT", String(totalRows));
+    Logger.log("✅ Incremental sent selesai! Counter diupdate ke " + totalRows + " baris.");
+  } else {
+    Logger.log("⚠️ Incremental sent GAGAL. Counter TIDAK diupdate (akan dicoba ulang 30 menit lagi).");
+  }
 }
 
 // ─── Full sync (manual saja, tidak cocok untuk trigger otomatis) ─
