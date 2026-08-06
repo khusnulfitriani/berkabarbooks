@@ -2269,8 +2269,9 @@
         }
         const isbnRaw = col(r, "ISBN", "isbn");
         const isbn10 = getIsbn10(isbnRaw);
+        const isbnFull = String(isbnRaw || "").replace(/[^\dX]/gi, "");
         const iconHtml = isbn10 
-          ? `<img src="https://images-na.ssl-images-amazon.com/images/P/${esc(isbn10)}.01.LZZZZZZZ.jpg" alt="Cover" class="book-cover-img" onerror="this.parentNode.innerHTML='📘';">` 
+          ? `<img src="https://images-na.ssl-images-amazon.com/images/P/${esc(isbn10)}.01.LZZZZZZZ.jpg" alt="Cover" class="book-cover-img" referrerpolicy="no-referrer" onerror="this.onerror=function(){this.parentNode.innerHTML='📘';};this.src='https://books.google.com/books/content?vid=isbn:${esc(isbnFull)}&printsec=frontcover&img=1&zoom=1';">` 
           : '📘';
 
         return `<div class="book-card ${isCanceled ? 'canceled' : ''}">
