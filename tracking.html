@@ -2550,6 +2550,32 @@
         else { E.sentMonth.value = ""; S.sentMonth = ""; }
       }
 
+      // ─── GROUP ROWS: gabungkan baris judul yg sama menjadi 1 card dg qty/harga/dp diakumulasi ───
+      function groupByTitle(rows, keyFn) {
+        const map = new Map();
+        rows.forEach(r => {
+          const key = keyFn(r);
+          if (!map.has(key)) {
+            map.set(key, { base: { ...r }, qty: 0, harga: 0, dp: 0 });
+          }
+          const g = map.get(key);
+          const qRaw = col(r, "Qty", "QTY", "qty");
+          g.qty   += (qRaw === "" || qRaw === undefined) ? 1 : (toNum(qRaw) || 1);
+          g.harga += toNum(col(r, "Harga Total", "harga total", "HARGA TOTAL"));
+          g.dp    += toNum(col(r, "DP", "dp"));
+        });
+        return [...map.values()].map(({ base, qty, harga, dp }) => {
+          const m = { ...base };
+          const qk = Object.keys(m).find(k => k.toLowerCase() === "qty")    || "Qty";
+          const hk = Object.keys(m).find(k => k.toLowerCase() === "harga total") || "Harga Total";
+          const dk = Object.keys(m).find(k => k.toLowerCase() === "dp")     || "DP";
+          m[qk] = String(qty);
+          m[hk] = String(harga);
+          m[dk] = String(dp);
+          return m;
+        });
+      }
+
       function rowsBy(tab) {
         if (!S.data) return [];
         let rows = [];
@@ -2586,7 +2612,26 @@
           }
         }
 
+        // ─── GROUPING Active Orders: judul+penerbit+format+ETA → 1 card, qty/harga/dp diakumulasi ───
+        if (tab === "active") {
+          rows = groupByTitle(rows, r => {
+            const t = String(col(r, "JUDUL", "Judul", "judul", "Title") || "").trim().toLowerCase();
+            const p = String(col(r, "PENERBIT", "Penerbit", "penerbit") || "").trim().toLowerCase();
+            const f = String(col(r, "Format", "FORMAT", "format") || "").trim().toLowerCase();
+            const e = String(col(r, "ETA", "eta") || "").trim().toLowerCase();
+            return `${t}||${p}||${f}||${e}`;
+          });
+        }
+
         if (tab === "sent") {
+          // ─── GROUPING Delivered: judul+penerbit+format+shipdate → 1 card, qty/harga/dp diakumulasi ───
+          rows = groupByTitle(rows, r => {
+            const t = String(col(r, "JUDUL", "Judul", "judul", "Title") || "").trim().toLowerCase();
+            const p = String(col(r, "PENERBIT", "Penerbit", "penerbit") || "").trim().toLowerCase();
+            const f = String(col(r, "Format", "FORMAT", "format") || "").trim().toLowerCase();
+            const d = String(col(r, "Shipment Date", "shipment date", "SHIPMENT DATE") || "").trim();
+            return `${t}||${p}||${f}||${d}`;
+          });
           if (S.sentMonth) {
             const [yr, mo] = S.sentMonth.split("-").map(Number);
             rows = rows.filter(r => {
