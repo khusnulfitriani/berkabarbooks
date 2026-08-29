@@ -1519,7 +1519,8 @@
 
       function getIsbn10(isbnRaw) {
         if (!isbnRaw) return "";
-        const s = String(isbnRaw).replace(/[^\dX]/gi, "");
+        // Strip semua karakter selain angka dan X (termasuk tanda - dan spasi)
+        const s = String(isbnRaw).trim().replace(/[^\dX]/gi, "").toUpperCase();
         if (s.length === 10) return s;
         if (s.length === 13 && s.startsWith("978")) {
           const core = s.substring(3, 12);
@@ -1531,7 +1532,8 @@
           const chk = rem === 10 ? "X" : String(rem);
           return core + chk;
         }
-        return s;
+        // Jika panjang tidak valid (bukan 10 atau 13), return kosong agar tidak buat URL rusak
+        return "";
       }
 
       const fc = v => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(v || 0);
@@ -2255,10 +2257,13 @@
         }
         const isbnRaw = col(r, "ISBN", "isbn");
         const isbn10 = getIsbn10(isbnRaw);
-        const isbnFull = String(isbnRaw || "").replace(/[^\dX]/gi, "");
+        // Strip tanda - dan karakter non-digit (termasuk ISBN dengan dashes seperti 978-1665714969)
+        const isbnFull = String(isbnRaw || "").trim().replace(/[^\dX]/gi, "").toUpperCase();
+        // Amazon sebagai sumber utama, fallback ke Google Books
         const iconHtml = isbn10 
-          ? `<img src="https://images-na.ssl-images-amazon.com/images/P/${esc(isbn10)}.01.LZZZZZZZ.jpg" alt="Cover" class="book-cover-img" referrerpolicy="no-referrer" onerror="this.onerror=function(){this.parentNode.innerHTML='📘';};this.src='https://books.google.com/books/content?vid=isbn:${esc(isbnFull)}&printsec=frontcover&img=1&zoom=1';">` 
-          : '📘';
+          ? `<img src="https://images-na.ssl-images-amazon.com/images/P/${esc(isbn10)}.01.LZZZZZZZ.jpg" alt="Cover" class="book-cover-img" referrerpolicy="no-referrer"
+               onerror="if(!this._fb){this._fb=true;this.src='https://books.google.com/books/content?vid=isbn:${esc(isbnFull)}&printsec=frontcover&img=1&zoom=1';}else{this.style.display='none';this.parentNode.innerHTML='📘';}">`
+          : (isbnFull ? `<img src="https://books.google.com/books/content?vid=isbn:${esc(isbnFull)}&printsec=frontcover&img=1&zoom=1" alt="Cover" class="book-cover-img" referrerpolicy="no-referrer" onerror="this.style.display='none';this.parentNode.innerHTML='📘';">` : '📘');
 
         return `<div class="book-card ${isCanceled ? 'canceled' : ''}">
       <div class="book-card-top">
